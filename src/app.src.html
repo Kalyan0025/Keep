@@ -273,7 +273,8 @@ svg{display:block}
 /* landing: the camera screen is home; log in sits top left, search sits under the modes */
 .acctb{min-width:40px;height:40px;display:flex;align-items:center}
 .lgin{height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--bd);font-size:14px;font-weight:600;display:flex;align-items:center}
-.ov.landing .modes{padding-bottom:10px}
+.ov.landing .modes{padding-bottom:calc(var(--sab,env(safe-area-inset-bottom,0px)) + 16px)}
+.mb.mcal{margin-left:6px;box-shadow:0 0 0 1.5px var(--line2) inset;background:var(--bg)}
 .lbar{flex:none;padding:0 16px calc(var(--sab,env(safe-area-inset-bottom,0px)) + 16px)}
 .lbar .bar{height:52px;padding:0 6px;gap:4px}
 .lbar .bar input{font-size:16px;padding-left:2px}
@@ -854,15 +855,15 @@ function openAdd(dayKey,landing){
    <section class="pane" data-p="text"><textarea class="big-in" id="tx" style="flex:1;min-height:0" placeholder="${PH.text}"></textarea></section>
    <section class="pane" data-p="more"><div class="mseg" id="mseg">${MORE.map(m=>`<button data-m="${m[0]}" class="${m[0]==='quote'?'on':''}">${m[1]}</button>`).join('')}</div><div class="in-wrap" id="mbody"></div></section>
   </div>
-  <div class="modes" id="modes">${MODES.map(m=>`<button class="mb ${m[0]==='photo'?'on':''}" data-m="${m[0]}" aria-label="${m[1]}">${ic[m[2]]}</button>`).join('')}</div>${landing?`<div class="lbar"><div class="bar"><button class="b" id="ovCal" aria-label="Your memories">${ic.cal}</button><input id="q3" placeholder="Ask your memories" autocomplete="off" aria-label="Ask your memories"><button class="b" id="ovMic" aria-label="Dictate">${ic.mic}</button></div></div>`:''}`;
+  <div class="modes" id="modes">${MODES.map(m=>`<button class="mb ${m[0]==='photo'?'on':''}" data-m="${m[0]}" aria-label="${m[1]}">${ic[m[2]]}</button>`).join('')}${landing?`<button class="mb mcal" id="ovCal" aria-label="Your memories">${ic.cal}</button>`:''}</div>`;
   $('#ov').classList.toggle('landing',!!landing);
   $('#ov').classList.add('on');
   $('#ox').onclick=landing?()=>acct?openProfile():openLogin():closeAdd;$('#keep').onclick=save;
-  if(landing){$('#ovCal').onclick=closeAdd;$('#ovMic').onclick=()=>openChat();$('#q3').addEventListener('focus',e=>{e.target.blur();openChat()})}
-  $('#modes').addEventListener('pointerdown',e=>{const b=e.target.closest('.mb');if(b&&b.dataset.m==='voice'&&mode==='voice'){e.preventDefault();voiceDown()}});
-  $('#modes').addEventListener('pointerup',e=>{const b=e.target.closest('.mb');if(b&&b.dataset.m==='voice'&&mode==='voice')voiceUp()});
+  if(landing)$('#ovCal').onclick=closeAdd;
+  $('#modes').addEventListener('pointerdown',e=>{const b=e.target.closest('.mb[data-m]');if(b&&b.dataset.m==='voice'&&mode==='voice'){e.preventDefault();voiceDown()}});
+  $('#modes').addEventListener('pointerup',e=>{const b=e.target.closest('.mb[data-m]');if(b&&b.dataset.m==='voice'&&mode==='voice')voiceUp()});
   $('#modes').addEventListener('contextmenu',e=>e.preventDefault());
-  $('#modes').addEventListener('click',e=>{const b=e.target.closest('.mb');if(!b)return;if(b.dataset.m==='voice'&&mode==='voice')return;setMode(b.dataset.m)});
+  $('#modes').addEventListener('click',e=>{const b=e.target.closest('.mb[data-m]');if(!b)return;if(b.dataset.m==='voice'&&mode==='voice')return;setMode(b.dataset.m)});
   $('#mseg').onclick=e=>{const b=e.target.closest('button');if(!b)return;moreT=b.dataset.m;document.querySelectorAll('#mseg button').forEach(x=>x.classList.toggle('on',x===b));drawMore(true)};
   $('#shutter').onclick=shutter;$('#flip').onclick=flipCam;$('#auto').onclick=()=>{autoKeep=!autoKeep;try{localStorage.setItem('keep.auto',autoKeep?'1':'0')}catch(e){}drawAuto();toast(autoKeep?'Photos and videos go straight to your calendar':'Tap Keep to save each one')};drawAuto();
   {const br=$('#bigrec');br.addEventListener('pointerdown',e=>{e.preventDefault();try{br.setPointerCapture(e.pointerId)}catch(_){}voiceDown()});['pointerup','pointercancel'].forEach(t=>br.addEventListener(t,voiceUp));br.addEventListener('contextmenu',e=>e.preventDefault());br.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();voiceDown()}});br.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter')voiceUp()})}
