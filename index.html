@@ -3681,6 +3681,8 @@ addEventListener('pointerup',()=>{if(rec&&rec.kind==='voice')stopRec()});addEven
 </script>
 <!-- DialKit (MIT, joshpuckett/dialkit): live prototyping dials, desktop only. Loaded after the app so it never delays it. -->
 <script>
+/* when jsDelivr is unreachable (offline, or a locked-down network) use the copy vendored next to index.html */
+function loadLocalDials(){const t=document.createElement('script');t.src='vendor/dialkit/browser.global.js';t.onload=initDials;document.body.appendChild(t)}
 function initDials(){
   if(!window.DialKit||!matchMedia('(min-width: 900px)').matches)return;
   const r=document.documentElement.style;
@@ -3700,5 +3702,5 @@ function initDials(){
   });
 }
 </script>
-<script src="https://cdn.jsdelivr.net/npm/dialkit@2.0.2/dist/vanilla/browser.global.js" async onload="initDials()"></script>
+<script src="https://cdn.jsdelivr.net/npm/dialkit@2.0.2/dist/vanilla/browser.global.js" async onload="initDials()" onerror="loadLocalDials()"></script>
 </body></html>
