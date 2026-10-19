@@ -312,9 +312,9 @@ svg{display:block}
 :root[data-tx="parallax"] .dcard video.dv{object-position:calc(50% + var(--pc,0)*var(--tx-par,40%)) center}
 :root[data-tx="zoom"] .dcard{transform:scale(calc(1 + (1 - var(--tx-scale,.88))*1.5*var(--cp,0)));opacity:calc(1 - var(--tx-fade,.55)*1.4*var(--cp,0))}
 /* the caption fades and un-blurs in with the same motion curve as the swipe */
-.mcap.in{animation:capIn var(--ui-dur,.45s) var(--ui-ease,cubic-bezier(.2,.8,.2,1)) both}
-:root[data-capfx="off"] .mcap.in{animation:none}
-@keyframes capIn{from{opacity:0;transform:translateY(10px);filter:blur(6px)}}
+.mcap .mtxt.in{animation:capIn var(--ui-dur,.45s) var(--ui-ease,cubic-bezier(.2,.8,.2,1)) both}
+:root[data-capfx="off"] .mcap .mtxt.in{animation:none}
+@keyframes capIn{from{opacity:0;transform:translateY(4px);filter:blur(2px)}}
 .dcard:not(.gr){background-color:var(--fill)}
 .dcard .dsh{position:absolute;left:0;right:0;bottom:0;height:58%;background:linear-gradient(to top,rgba(0,0,0,.74),rgba(0,0,0,.34) 52%,transparent)}
 .dcard .dmeta{position:absolute;left:16px;right:16px;bottom:16px;color:#fff}
@@ -334,10 +334,12 @@ svg{display:block}
 /* photos read as memories, not cards: no edge or shadow, the picture dissolves into the page */
 .dcard.mem{--mf:var(--mem-fade,9%);border-radius:0;box-shadow:none;background-color:transparent;-webkit-mask-image:linear-gradient(to right,transparent,#000 var(--mf),#000 calc(100% - var(--mf)),transparent),linear-gradient(to bottom,transparent,#000 var(--mf),#000 calc(100% - var(--mf)),transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 var(--mf),#000 calc(100% - var(--mf)),transparent),linear-gradient(to bottom,transparent,#000 var(--mf),#000 calc(100% - var(--mf)),transparent);mask-composite:intersect}
 .mcap{padding:2px 4px 0;min-height:128px}
+.mcap .mtxt{min-height:76px}
 .mcap h3{font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .mcap p{font-size:14px;color:var(--mute);margin-top:4px;line-height:1.45}
 .mpill{display:flex;align-items:center;gap:10px;margin-top:14px;height:44px;border-radius:22px;background:var(--fill);padding:0 4px 0 14px;font-size:14px;color:var(--mute)}
 .mpill svg{width:18px;height:18px}
+.mpill .mic{display:grid;place-items:center;flex:none}
 .mpill .mn{margin-left:auto;width:36px;height:36px;border-radius:18px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
 .lb .mcap{width:100%;max-width:340px}
 .lb .deck{width:calc(100% + 32px);margin:0 -16px}
@@ -639,9 +641,15 @@ function memCap(el,list,m,api){
   const i=list.indexOf(m),n=list.length,photo=m.type==='photo'||m.type==='video';
   const title=photo?(m.text||TL[m.type]+' at '+tstr(m.ts)):(m.name||(m.type==='quote'?'Something '+(m.who||'someone')+' said':TL[m.type]));
   const desc=fullDay(new Date(m.ts))+' · '+tstr(m.ts);
-  el.innerHTML=`<h3>${esc(title)}</h3><p>${esc(desc)}</p><div class="mpill">${ic[TIC[m.type]]||''}<span>${TL[m.type]}${n>1?' · '+(i+1)+' of '+n:''}</span>${n>1?`<button class="mn" aria-label="Next memory">${ic.chev.replace('width="22" height="22"','width="18" height="18"')}</button>`:''}</div>`;
-  el.classList.remove('in');void el.offsetWidth;el.classList.add('in');
-  const b=el.querySelector('.mn');if(b)b.onclick=()=>api.ref&&api.ref.next();
+  /* the pill and its button are built once and stay put; only the title and date change, and only they fade in */
+  if(!el.querySelector('.mtxt')){
+    el.innerHTML=`<div class="mtxt"><h3></h3><p></p></div><div class="mpill"><span class="mic"></span><span class="mlab"></span>${n>1?`<button class="mn" aria-label="Next memory">${ic.chev.replace('width="22" height="22"','width="18" height="18"')}</button>`:''}</div>`;
+    const b=el.querySelector('.mn');if(b)b.onclick=()=>api.ref&&api.ref.next();
+  }
+  const tx=el.querySelector('.mtxt');tx.querySelector('h3').textContent=title;tx.querySelector('p').textContent=desc;
+  tx.classList.remove('in');void tx.offsetWidth;tx.classList.add('in');
+  el.querySelector('.mic').innerHTML=ic[TIC[m.type]]||'';
+  el.querySelector('.mlab').textContent=TL[m.type]+(n>1?' · '+(i+1)+' of '+n:'');
 }
 /* ---------- sheets ---------- */
 function openSheet(html,opts){
