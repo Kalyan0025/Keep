@@ -282,11 +282,14 @@ svg{display:block}
 .sugg2{display:flex;justify-content:space-around;align-items:center;height:34px;color:var(--keytx);font-size:14px;opacity:.85}
 .sugg2 i{width:1px;height:18px;background:var(--keyfn);opacity:.6}
 .kbb{display:flex;justify-content:space-between;padding:0 18px;color:var(--keytx);opacity:.8;margin-top:auto}
-/* card deck: a tilted 3D stack; the front card slides out left and drops behind as the next one comes forward */
-.deck{position:relative;height:486px;perspective:1100px;touch-action:pan-y;user-select:none;-webkit-user-select:none;flex:none}
-.dcard{position:absolute;left:50%;top:24px;width:272px;height:430px;margin-left:-162px;border-radius:24px;overflow:hidden;background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:0 16px 34px -10px rgba(0,0,0,.38),inset 0 0 0 1px rgba(255,255,255,.14);transform-origin:50% 90%;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .45s ease,filter .6s ease;cursor:grab;-webkit-user-drag:none}
+/* memory deck: a horizontal swipe row with scroll snapping; the centred memory is full size, its neighbours shrink and fade */
+.deck{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:22px calc(50% - 136px) 26px;scrollbar-width:none;user-select:none;-webkit-user-select:none;flex:none;cursor:grab}
+.deck::-webkit-scrollbar{display:none}
+.deck.drag{scroll-snap-type:none;cursor:grabbing}
+.pb .deck{margin:0 -20px;padding-left:calc(50% - 116px);padding-right:calc(50% - 116px)}
+.dcard{position:relative;flex:none;width:272px;height:430px;scroll-snap-align:center;scroll-snap-stop:always;border-radius:24px;overflow:hidden;background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:0 16px 34px -10px rgba(0,0,0,.38),inset 0 0 0 1px rgba(255,255,255,.14);transform:scale(.88);opacity:.45;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .45s ease;-webkit-user-drag:none}
+.dcard.on{transform:none;opacity:1}
 .dcard:not(.gr){background-color:var(--fill)}
-.dcard.drag,.dcard.snap{transition:none}
 .dcard .dsh{position:absolute;left:0;right:0;bottom:0;height:58%;background:linear-gradient(to top,rgba(0,0,0,.74),rgba(0,0,0,.34) 52%,transparent)}
 .dcard .dmeta{position:absolute;left:16px;right:16px;bottom:16px;color:#fff}
 .dcard .dwho{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
@@ -309,7 +312,7 @@ svg{display:block}
 .mpill svg{width:18px;height:18px}
 .mpill .mn{margin-left:auto;width:36px;height:36px;border-radius:18px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
 .lb .mcap{width:100%;max-width:340px}
-.lb .deck{width:100%}
+.lb .deck{width:calc(100% + 32px);margin:0 -16px;padding-left:calc(50% - 120px);padding-right:calc(50% - 120px)}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 </style>
 
@@ -544,27 +547,23 @@ function deckCard(m){
   else b=`<div style="font-size:21px;line-height:1.35;font-weight:500">${esc(m.text)}</div>`;
   return {cls:'gr g-'+g,bg:'',html:`<div class="dbody">${b}</div><div class="dmeta">${who}</div>`};
 }
-const OP=i=>[1,.62,.4,.22,.1][i]||0;
-const SLOT=i=>i===0?'translate3d(0,0,0) rotate(-5deg)':`translate3d(${i*17}px,${-i*3}px,${-i*42}px) rotateY(-22deg) rotate(${-5+i*2.4}deg)`;
-const OUT='translate3d(-170px,14px,-70px) rotate(-15deg) scale(.9)';
-/* deck(el, moments, onChange): tap or swipe left for the next card, swipe right for the previous one; it also turns on its own until touched */
+/* deck(el, moments, onChange): a horizontal swipe row; one memory sits in the middle with its neighbours peeking in.
+   Native scroll snapping does the motion; a mouse can drag it, and a tap moves to the next one. */
 function deck(root,list,onChange){
   const n=list.length,els=list.map(m=>{const c=deckCard(m),e=document.createElement('div');e.className='dcard '+c.cls;if(c.bg)e.style.backgroundImage=`url(${c.bg})`;e.innerHTML=c.html;e.style.setProperty('--hr',`${((m.id*17)%50)-25}deg`);root.appendChild(e);return e});
-  let top=0,busy=false,auto=null;
-  const place=()=>els.forEach((e,j)=>{const i=(j-top+n)%n;e.style.transform=SLOT(i);e.style.zIndex=100-i;e.style.opacity=OP(i)});
-  const changed=()=>{place();if(onChange)onChange(list[top])};
-  const next=()=>{if(n<2||busy)return;busy=true;const e=els[top];top=(top+1)%n;place();e.style.zIndex=99;e.style.transform=OUT;e.style.opacity=0;if(onChange)onChange(list[top]);
-    setTimeout(()=>{e.classList.add('snap');const i=n-1;e.style.transform=SLOT(i);e.style.zIndex=100-i;e.offsetWidth;e.classList.remove('snap');e.style.opacity=OP(i);busy=false},420)};
-  const prev=()=>{if(n<2||busy)return;busy=true;top=(top-1+n)%n;const e=els[top];e.classList.add('snap');e.style.transform=OUT;e.style.opacity=0;e.style.zIndex=101;e.offsetWidth;e.classList.remove('snap');changed();setTimeout(()=>busy=false,420)};
-  const stop=()=>{clearInterval(auto);auto=null};
-  let x0=null,dx=0;
-  root.addEventListener('pointerdown',e=>{stop();if(busy)return;x0=e.clientX;dx=0;els[top].classList.add('drag');try{root.setPointerCapture(e.pointerId)}catch(_){}});
-  root.addEventListener('pointermove',e=>{if(x0===null)return;dx=e.clientX-x0;els[top].style.transform=`translate3d(${dx}px,0,0) rotate(${-5+dx/16}deg)`});
-  const end=()=>{if(x0===null)return;x0=null;const e=els[top];e.classList.remove('drag');if(dx<-60||Math.abs(dx)<6)next();else if(dx>60)prev();else place()};
+  let cur=-1,raf=0;
+  const step=()=>els[0].offsetWidth+14;
+  const upd=()=>{raf=0;const i=Math.max(0,Math.min(n-1,Math.round(root.scrollLeft/step())));if(i===cur)return;cur=i;els.forEach((e,j)=>e.classList.toggle('on',j===i));if(onChange)onChange(list[i])};
+  const go=i=>root.scrollTo({left:((i%n)+n)%n*step(),behavior:'smooth'});
+  root.addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(upd)},{passive:true});
+  let x0=null,s0=0,i0=0,moved=false;
+  root.addEventListener('pointerdown',e=>{moved=false;if(e.pointerType!=='mouse')return;x0=e.clientX;s0=root.scrollLeft;i0=cur;root.classList.add('drag');try{root.setPointerCapture(e.pointerId)}catch(_){}});
+  root.addEventListener('pointermove',e=>{if(x0===null)return;const dx=e.clientX-x0;if(Math.abs(dx)>5)moved=true;root.scrollLeft=s0-dx});
+  const end=e=>{if(x0===null)return;const dx=e.clientX-x0;x0=null;if(moved)go(i0+(dx<-40?1:dx>40?-1:0));setTimeout(()=>root.classList.remove('drag'),420)};
   root.addEventListener('pointerup',end);root.addEventListener('pointercancel',end);
-  changed();
-  if(n>1&&!matchMedia('(prefers-reduced-motion:reduce)').matches)auto=setInterval(()=>{if(!root.isConnected||!root.offsetParent){stop();return}next()},2600);
-  return {next:()=>{stop();next()}};
+  root.addEventListener('click',()=>{if(!moved&&n>1)go(cur+1)});
+  upd();
+  return {next:()=>go(cur+1)};
 }
 /* caption under the deck: title, when, and a pill whose round button moves to the next memory */
 const TIC={photo:'img',video:'vid',voice:'mic',text:'txt',quote:'quote',person:'user',file:'doc',place:'pin'};
