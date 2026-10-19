@@ -283,11 +283,11 @@ svg{display:block}
 .sugg2 i{width:1px;height:18px;background:var(--keyfn);opacity:.6}
 .kbb{display:flex;justify-content:space-between;padding:0 18px;color:var(--keytx);opacity:.8;margin-top:auto}
 /* memory deck: a horizontal swipe row with scroll snapping; the centred memory is full size, its neighbours shrink and fade */
-.deck{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:22px calc(50% - 136px) 26px;scrollbar-width:none;user-select:none;-webkit-user-select:none;flex:none;cursor:grab}
+.deck{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:18px 12px 24px;scrollbar-width:none;user-select:none;-webkit-user-select:none;flex:none;cursor:grab}
 .deck::-webkit-scrollbar{display:none}
 .deck.drag{scroll-snap-type:none;cursor:grabbing}
-.pb .deck{margin:0 -20px;padding-left:calc(50% - 116px);padding-right:calc(50% - 116px)}
-.dcard{position:relative;flex:none;width:272px;height:430px;scroll-snap-align:center;scroll-snap-stop:always;border-radius:24px;overflow:hidden;background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:0 16px 34px -10px rgba(0,0,0,.38),inset 0 0 0 1px rgba(255,255,255,.14);transform:scale(.88);opacity:.45;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .45s ease;-webkit-user-drag:none}
+.pb .deck{margin:0 -20px}
+.dcard{position:relative;flex:none;width:100%;height:500px;scroll-snap-align:center;scroll-snap-stop:always;border-radius:24px;overflow:hidden;background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:0 16px 34px -10px rgba(0,0,0,.38),inset 0 0 0 1px rgba(255,255,255,.14);transform:scale(.88);opacity:.45;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .45s ease;-webkit-user-drag:none}
 .dcard.on{transform:none;opacity:1}
 .dcard:not(.gr){background-color:var(--fill)}
 .dcard .dsh{position:absolute;left:0;right:0;bottom:0;height:58%;background:linear-gradient(to top,rgba(0,0,0,.74),rgba(0,0,0,.34) 52%,transparent)}
@@ -304,7 +304,7 @@ svg{display:block}
 .dcard .dplay{position:absolute;left:50%;top:42%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(0,0,0,.45);display:grid;place-items:center;color:#fff}
 .dcnt{text-align:center;font-size:12px;color:var(--mute);margin-top:2px;font-variant-numeric:tabular-nums}
 /* photos read as memories, not cards: no edge or shadow, the picture dissolves into the page */
-.dcard.mem{border-radius:0;box-shadow:none;background-color:transparent;-webkit-mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent),linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent),linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent);mask-composite:intersect}
+.dcard.mem{border-radius:0;box-shadow:none;background-color:transparent;-webkit-mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 10%,#000 90%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 10%,#000 90%,transparent);mask-composite:intersect}
 .mcap{padding:2px 4px 0;min-height:128px}
 .mcap h3{font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .mcap p{font-size:14px;color:var(--mute);margin-top:4px;line-height:1.45}
@@ -312,7 +312,7 @@ svg{display:block}
 .mpill svg{width:18px;height:18px}
 .mpill .mn{margin-left:auto;width:36px;height:36px;border-radius:18px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
 .lb .mcap{width:100%;max-width:340px}
-.lb .deck{width:calc(100% + 32px);margin:0 -16px;padding-left:calc(50% - 120px);padding-right:calc(50% - 120px)}
+.lb .deck{width:calc(100% + 32px);margin:0 -16px}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 </style>
 
@@ -552,7 +552,7 @@ function deckCard(m){
 function deck(root,list,onChange){
   const n=list.length,els=list.map(m=>{const c=deckCard(m),e=document.createElement('div');e.className='dcard '+c.cls;if(c.bg)e.style.backgroundImage=`url(${c.bg})`;e.innerHTML=c.html;e.style.setProperty('--hr',`${((m.id*17)%50)-25}deg`);root.appendChild(e);return e});
   let cur=-1,raf=0;
-  const step=()=>els[0].offsetWidth+14;
+  const step=()=>els[0].offsetWidth+12;
   const upd=()=>{raf=0;const i=Math.max(0,Math.min(n-1,Math.round(root.scrollLeft/step())));if(i===cur)return;cur=i;els.forEach((e,j)=>e.classList.toggle('on',j===i));if(onChange)onChange(list[i])};
   const go=i=>root.scrollTo({left:((i%n)+n)%n*step(),behavior:'smooth'});
   root.addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(upd)},{passive:true});
