@@ -1,0 +1,202 @@
+<title>Keep for Meta</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column with a seasonal-mesh masthead (borrowed from the Keep app), spec sheets set in mono. */
+:root{
+  --bg:#FFFFFF; --ink:#0D0D0D; --mute:#5D5D5D; --faint:#8F8F8F; --fill:#F4F4F6; --line:rgba(0,0,0,.09);
+  --acc:#5468E0; --acc-soft:rgba(84,104,224,.10); --s1:#8FA6F5; --s2:#C4B5F7; --s3:#F4B3C8; --ok:#1F8A5B; --warn:#B26A00;
+  --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SF Mono',Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#17171A;--ink:#F2F2F4;--mute:#B4B4BC;--faint:#86868F;--fill:#222227;--line:rgba(255,255,255,.10);--acc:#9AA8FF;--acc-soft:rgba(154,168,255,.14);--ok:#5FD39C;--warn:#F2B35B;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17171A;--ink:#F2F2F4;--mute:#B4B4BC;--faint:#86868F;--fill:#222227;--line:rgba(255,255,255,.10);--acc:#9AA8FF;--acc-soft:rgba(154,168,255,.14);--ok:#5FD39C;--warn:#F2B35B;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 72px}
+.mast{position:relative;overflow:hidden;isolation:isolate}
+.mast::before{content:"";position:absolute;inset:0;z-index:-1;opacity:.55;background:radial-gradient(60% 90% at 12% 0%,var(--s1),transparent 70%),radial-gradient(55% 80% at 88% 10%,var(--s3),transparent 70%),radial-gradient(60% 70% at 50% 60%,var(--s2),transparent 75%);-webkit-mask-image:linear-gradient(#000 40%,transparent);mask-image:linear-gradient(#000 40%,transparent)}
+.mast .wrap{padding-block:56px 28px}
+.eyebrow{font:500 12px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--mute)}
+h1{font-size:clamp(32px,6vw,46px);line-height:1.08;letter-spacing:-.025em;margin:10px 0 14px;text-wrap:balance}
+h2{font-size:24px;line-height:1.2;letter-spacing:-.015em;margin:56px 0 12px;text-wrap:balance}
+h3{font-size:17px;margin:28px 0 6px;letter-spacing:-.005em}
+p{margin:0 0 14px;max-width:65ch}
+.lede{font-size:19px;line-height:1.5;color:var(--ink);max-width:60ch}
+.meta-row{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:18px;font:13px/1.4 var(--mono);color:var(--mute)}
+a{color:var(--acc)}
+ul{padding-left:20px;margin:0 0 14px}li{margin:4px 0;max-width:63ch}
+.callout{border-left:3px solid var(--acc);background:var(--acc-soft);padding:14px 18px;border-radius:0 12px 12px 0;margin:20px 0}
+.callout p:last-child{margin:0}
+.tbl{overflow-x:auto;margin:16px 0 8px}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:560px}
+th,td{text-align:left;vertical-align:top;padding:11px 12px;border-bottom:1px solid var(--line)}
+th{font:500 12px/1.4 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--mute);border-bottom-color:var(--ink)}
+td:first-child{font-weight:600;width:30%}
+.flow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}
+.node{background:var(--fill);border-radius:14px;padding:14px 16px;min-width:0}
+.node b{display:block;font-size:15px}
+.node span{display:block;font-size:13.5px;color:var(--mute);line-height:1.45;margin-top:4px}
+.node .tag{font:500 11px/1 var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--acc);margin:0 0 8px}
+.arrow{font:12px var(--mono);color:var(--faint);text-align:center;margin:-2px 0 0}
+.pend{display:grid;grid-template-columns:220px minmax(0,1fr);gap:26px;align-items:center;margin:18px 0}
+.pend svg{width:100%;height:auto;max-width:220px}
+.spec{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 16px;font-size:14.5px;margin:0}
+.spec dt{font:500 12px/1.9 var(--mono);letter-spacing:.04em;text-transform:uppercase;color:var(--mute)}
+.spec dd{margin:0}
+.steps{counter-reset:s;list-style:none;padding:0}
+.steps li{counter-increment:s;position:relative;padding-left:40px;margin:14px 0}
+.steps li::before{content:counter(s);position:absolute;left:0;top:1px;width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--bg);font:500 13px/26px var(--mono);text-align:center}
+.pill{display:inline-block;font:500 11px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;padding:5px 8px;border-radius:999px;vertical-align:2px;margin-right:6px}
+.pill.ok{color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,transparent)}
+.pill.warn{color:var(--warn);background:color-mix(in srgb,var(--warn) 16%,transparent)}
+.src{font-size:13.5px;color:var(--mute)}
+.src li{margin:6px 0}
+hr{border:0;border-top:1px solid var(--line);margin:48px 0 0}
+@media (max-width:600px){.flow{grid-template-columns:1fr}.pend{grid-template-columns:1fr}.pend svg{max-width:180px;margin:0 auto;display:block}}
+@media (prefers-reduced-motion:no-preference){.led{animation:breathe 3.2s ease-in-out infinite}@keyframes breathe{50%{opacity:.45}}}
+</style>
+
+<header class="mast"><div class="wrap">
+  <div class="eyebrow">Concept · Hackathon team · October 2026</div>
+  <h1>Keep for Meta: your glasses capture, your phone remembers</h1>
+  <p class="lede">Keep becomes the memory layer for Meta AI. Meta glasses, or a small Keep pendant, capture a moment with one deliberate tap. The phone receives it, works out who was there and why it matters, and files it on Keep's calendar, where Meta AI can answer questions about it later.</p>
+  <div class="meta-row"><span>Builds on: Keep prototype</span><span>Answers: mentor critique</span><span>Reference: OpenAI × Hardware "Tomo" case study</span></div>
+</div></header>
+
+<main class="wrap">
+
+<h2>The proposal in one minute</h2>
+<ul>
+  <li><b>Capture lives on the face, not the phone.</b> Meta glasses are the primary input. A tap on the temple saves a moment: a photo, a short clip or a voice note, plus time and place.</li>
+  <li><b>A pendant for people who don't wear glasses all day.</b> The Keep Charm is a small clip-on with a camera, microphone and one button. It's a fashion accessory first, styled like a Ray-Ban charm.</li>
+  <li><b>The phone is the receiving point.</b> Everything streams to the Keep app, which already has the calendar, the swipeable memories and "Ask your memories." Nothing is processed on the wearable.</li>
+  <li><b>Meta AI is the brain.</b> Asking "What did Jake say about the boat?" goes to Meta AI with the relevant memories attached. The answer shows the original photo or clip.</li>
+  <li><b>It pays off on day one.</b> Onboarding imports your people and your goals, so the very first capture already connects to something you care about.</li>
+</ul>
+
+<div class="callout"><p><b>Why now:</b> Meta's Wearables Device Access Toolkit 1.0 began rolling out on September 30, 2026. It gives a phone app access to the glasses' camera, microphone and speakers over Bluetooth, with photo capture and video streaming up to 720p at 30fps. That's exactly the "phone as receiver" setup this concept needs, so the glasses half is buildable today.</p></div>
+
+<h2>How data moves</h2>
+<div class="flow">
+  <div class="node"><p class="tag">Capture</p><b>Meta glasses or Keep Charm</b><span>Tap to save a moment. Hold to talk. The capture light is on whenever it records.</span></div>
+  <div class="node"><p class="tag">Receive</p><b>Keep on the phone</b><span>Pulls photos, clips and audio over Bluetooth through Meta's toolkit, and stamps them with time, place and who's nearby.</span></div>
+  <div class="node"><p class="tag">Understand</p><b>Meta AI + your context</b><span>Transcribes, matches the people you've named, links to your goals, and files it on the day.</span></div>
+</div>
+<p class="arrow">Everything lands on Keep's calendar → swipe through the day → ask your memories</p>
+<p>Keep's existing screens map onto this directly. The camera landing page becomes a <b>Devices</b> view showing what the glasses or charm just sent. The day sheet and swipe view show the moments. "Ask your memories" becomes the Meta AI entry point.</p>
+
+<h2>Answering the mentor</h2>
+<div class="tbl"><table>
+  <thead><tr><th>Question raised</th><th>Our answer</th></tr></thead>
+  <tbody>
+    <tr><td>Delayed utility: why save memories now for a payoff months away?</td><td>Make the first week rewarding on its own. Tonight's recap ("3 moments, 2 people"), people cards that fill in as you meet them, and promises you made ("you told Priya you'd send the article") surfaced the next morning. The long-term archive is a bonus, not the reason to capture.</td></tr>
+    <tr><td>Retro's engagement mechanic</td><td>Borrow the close-friends idea without the give-to-get gate: a weekly "shared day" with one or two people you've named, where both of you see the moments you were in together. Sharing is opt-in per moment.</td></tr>
+    <tr><td>Memory completeness: a photo doesn't record who was there or what happened</td><td>Every capture is a bundle, not a picture: the photo, a few seconds of audio, place, time, and the named people recognised in it. Holding the button adds a spoken line ("Jake explaining the hull"). Keep asks a one-tap follow-up only when something is missing, such as "Who's this?"</td></tr>
+    <tr><td>Validation: does it capture enough to be useful?</td><td>Run a four-week diary study (plan below). Measure whether Keep answers recall questions people get wrong from memory alone, and whether answers add something they'd forgotten.</td></tr>
+    <tr><td>People tagging</td><td>During onboarding, Keep groups faces from your camera roll on the phone and asks you to name the five to ten people who show up most. After that, those people are tagged in new captures automatically. Strangers are never identified.</td></tr>
+    <tr><td>Personal-context import</td><td>A guided step: Keep gives you a prompt to paste into Meta AI or ChatGPT ("Write a page about my goals, the people who matter to me and how I like to be reminded"), and you paste the answer back. It's editable and stays on the phone.</td></tr>
+    <tr><td>Visible early intelligence</td><td>Combine the two. The first time you capture a moment with your brother, Keep connects it to the goal you imported: "You wanted to spend more time with Arjun since moving to New York. This is your second dinner this month."</td></tr>
+    <tr><td>Who is it for?</td><td>See the next section. We pick one psychographic segment and let it drive every design decision.</td></tr>
+  </tbody>
+</table></div>
+
+<h2>Who it's for</h2>
+<p>The brief was broad, so we narrow it to <b>people in their first year in a new city who already wear Meta glasses</b>. They're defined by a situation and a habit, not an age:</p>
+<ul>
+  <li><b>Lots of new people, fast.</b> Names, faces and "what did they do again?" are the main thing they forget, and the people graph solves exactly that.</li>
+  <li><b>Lots of firsts worth keeping.</b> First apartment tour, first coffee spot, first friend dinner. Each one feels small at the time and meaningful a year later.</li>
+  <li><b>Early adopters.</b> They already own the hardware, are comfortable with Meta AI, and are the people Meta wants to show new uses to.</li>
+</ul>
+<p><b>Why not creators?</b> Vloggers capture a lot, but much of it is performed for an audience. Their goal is finding footage to publish, not remembering their own lives, which makes it a different product. We'd keep them as a later segment for a "find that clip" feature.</p>
+<p><b>Portfolio angle:</b> designing for a problem Meta is actively exploring, with a working prototype on their real developer toolkit, is a strong signal to Meta and to wearable-AI startups.</p>
+
+<h2>The Keep Charm</h2>
+<div class="pend">
+  <svg viewBox="0 0 220 240" role="img" aria-labelledby="charmT"><title id="charmT">Keep Charm pendant sketch: a rounded pebble on a thin chain, with a small camera lens and a light ring</title>
+    <path d="M110 8 C 70 40, 60 60, 92 86 M110 8 C 150 40, 160 60, 128 86" fill="none" stroke="var(--faint)" stroke-width="1.6"/>
+    <rect x="100" y="80" width="20" height="16" rx="6" fill="none" stroke="var(--mute)" stroke-width="2"/>
+    <ellipse cx="110" cy="160" rx="62" ry="68" fill="var(--fill)" stroke="var(--line)" stroke-width="1.5"/>
+    <ellipse cx="96" cy="136" rx="26" ry="18" fill="var(--bg)" opacity=".55"/>
+    <circle cx="110" cy="152" r="17" fill="var(--ink)"/>
+    <circle cx="110" cy="152" r="9" fill="#2B3550"/>
+    <circle cx="106" cy="148" r="3" fill="#FFFFFF" opacity=".7"/>
+    <circle class="led" cx="110" cy="152" r="23" fill="none" stroke="var(--acc)" stroke-width="2.5"/>
+    <text x="110" y="205" text-anchor="middle" font-family="var(--mono)" font-size="9" letter-spacing="1.5" fill="var(--mute)">KEEP</text>
+  </svg>
+  <div>
+    <p>A pebble about the size of a coin, worn on a chain, clipped to a collar or hung from a bag. It isn't an always-on recorder. It captures only when you press it, which keeps the battery small and the people around you comfortable.</p>
+    <dl class="spec">
+      <dt>Size</dt><dd>About 28 × 32 mm, 12 g</dd>
+      <dt>Capture</dt><dd>Press: photo. Press and hold: voice note. Double press: 10-second clip.</dd>
+      <dt>Signal</dt><dd>Light ring glows while capturing, visible from the front</dd>
+      <dt>Link</dt><dd>Bluetooth to the phone; larger clips transfer when the phone app is open</dd>
+      <dt>Wear</dt><dd>Magnetic back: necklace, collar clip or bag charm</dd>
+      <dt>Maker</dt><dd>Pitched as a Ray-Ban × Meta accessory, sold beside the glasses</dd>
+    </dl>
+  </div>
+</div>
+<h3>Why Meta would want to make it</h3>
+<ul>
+  <li><b>A cheaper door into the ecosystem.</b> Someone who isn't ready for glasses can still start capturing with Meta AI, then upgrade later.</li>
+  <li><b>Fashion first.</b> Ray-Ban's maker, EssilorLuxottica, already builds Meta's glasses. A charm fits their jewellery and accessories business.</li>
+  <li><b>Privacy by design.</b> Button-only capture with a visible light avoids the "always recording" fear that has followed other AI pendants.</li>
+  <li><b>Same software path.</b> The phone app receives charm captures the same way it receives glasses captures, so Keep doesn't need a second pipeline.</li>
+</ul>
+
+<h2>Privacy and social comfort</h2>
+<p>Our mentor flagged this as the core design challenge for glasses. These are our rules:</p>
+<ul>
+  <li><b>Deliberate capture only.</b> No background recording. Every moment starts with a tap, press or voice command, and the capture light is always on while recording.</li>
+  <li><b>Only your people get names.</b> Face matching runs on the phone and only against people you've named. Anyone else stays an unnamed face and is blurred if you share the moment.</li>
+  <li><b>Explain why it captured.</b> When Keep saves something on its own suggestion, a notification says why ("Saved because you said 'remember this'").</li>
+  <li><b>Easy forgetting.</b> One swipe deletes a moment everywhere. A "just us" switch keeps a day off the record entirely.</li>
+</ul>
+
+<h2>How we'd validate it</h2>
+<ol class="steps">
+  <li><b>Recruit 6 to 8 Meta glasses owners</b> who moved cities in the last year. Hackathon networks and Phoenix's design community are a good start.</li>
+  <li><b>Four weeks of normal life with Keep.</b> Glasses capture through the toolkit; we hand-make a few charm prototypes from 3D-printed shells around an off-the-shelf camera module.</li>
+  <li><b>Weekly recall quiz.</b> Ask each person five questions about their own week, first from memory, then with Keep. Track how often Keep is right, and how often it adds something they'd forgotten.</li>
+  <li><b>Watch the first week.</b> Captures per day, day-7 return rate, and whether the first-capture insight felt helpful or creepy.</li>
+</ol>
+
+<h2>How it differs from Tomo</h2>
+<p>The OpenAI × Hardware case study made a strong case that memory is the moat, and explored a pendant feeding ChatGPT's "Moments." We take that idea further in three ways:</p>
+<ul>
+  <li><b>Hardware that already exists.</b> Glasses-first means people can use it now, through Meta's real toolkit, not only in renders.</li>
+  <li><b>People and goals, not just moments.</b> The people graph and imported context are what make day one useful.</li>
+  <li><b>One audience.</b> New-city early adopters shape every decision, from onboarding to the recap.</li>
+</ul>
+
+<h2>What's real and what's assumed</h2>
+<ul>
+  <li><span class="pill ok">Available</span>Phone apps can use Meta glasses' camera, microphone and speakers through the Device Access Toolkit (1.0 rolling out from September 30, 2026; iOS and Android).</li>
+  <li><span class="pill ok">Available</span>Meta AI on the glasses already remembers things you ask it to ("remember where I parked").</li>
+  <li><span class="pill warn">Assumed</span>That Keep can pass memories to Meta AI as context for answers. That needs a Meta AI integration we haven't confirmed; the fallback is Keep's own search and an LLM we choose.</li>
+  <li><span class="pill warn">Assumed</span>The Keep Charm is a concept. Meta has not announced a pendant, and the specs above are design targets, not engineering numbers.</li>
+  <li><span class="pill warn">Check</span>Toolkit availability varies by country, and face recognition has legal limits in places such as Illinois and the EU. On-device matching against named people only is our starting position, not legal advice.</li>
+</ul>
+
+<h2>Next steps for the team</h2>
+<ol class="steps">
+  <li><b>Prototype the receiving screen in Keep:</b> a Devices view where simulated glasses captures arrive and file themselves onto today.</li>
+  <li><b>Build onboarding:</b> camera-roll people naming and the context-import prompt, ending on the first-capture insight.</li>
+  <li><b>Render the Keep Charm</b> in two finishes and a 3D-printed shell for the pitch.</li>
+  <li><b>Apply for the Wearables Device Access Toolkit</b> and test one real capture from glasses into the Keep app.</li>
+  <li><b>Line up three glasses owners</b> for a one-week pilot before the full study.</li>
+</ol>
+
+<hr>
+<h2 style="margin-top:28px;font-size:18px">Sources</h2>
+<ul class="src">
+  <li><a href="https://developers.meta.com/blog/explore-whats-possible-with-wearables-device-access-toolkit/" target="_blank" rel="noopener">Meta for Developers: Build apps that see, hear and respond with the Wearables Device Access Toolkit</a></li>
+  <li><a href="https://developers.meta.com/wearables/faq/" target="_blank" rel="noopener">Meta Wearables Device Access Toolkit FAQ</a></li>
+  <li><a href="https://roadtovr.com/meta-ray-ban-smart-glasses-third-party-app-sdk-device-access-toolkit/" target="_blank" rel="noopener">Road to VR: Meta developer tool brings third-party apps to its smart glasses</a></li>
+  <li><a href="https://developers.meta.com/blog/build-for-display-glasses/" target="_blank" rel="noopener">Meta for Developers: Build for display glasses</a></li>
+  <li><a href="https://www.maginative.com/article/meta-begins-rolling-out-memory-feature-to-ray-ban-smart-glasses/" target="_blank" rel="noopener">Maginative: Meta begins rolling out memory feature to Ray-Ban smart glasses</a></li>
+  <li>OpenAI × Hardware "Tomo" case study, from the team's screen recording</li>
+</ul>
+</main>
