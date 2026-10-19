@@ -189,7 +189,7 @@ svg{display:block}
 .mseg button{height:32px;padding:0 14px;border-radius:16px;font-size:14px;font-weight:500;background:var(--fill);transition:.2s}.mseg button.on{background:var(--ink);color:var(--bg)}
 .pane .in-wrap{flex:1;min-height:0;overflow-y:auto;padding:0 4px;scrollbar-width:none}
 /* chat overlay */
-.chat{position:absolute;left:0;right:0;top:0;bottom:var(--kbh);z-index:15;background:var(--bg);display:none;flex-direction:column}
+.chat{position:absolute;left:0;right:0;top:0;bottom:var(--kbh);z-index:30;background:var(--bg);display:none;flex-direction:column}
 .chat.on{display:flex}
 .cb{flex:1;overflow-y:auto;padding:6px 20px 16px;scrollbar-width:none}.cb::-webkit-scrollbar{display:none}
 .qb{margin:14px 0 0 auto;background:var(--fill);border-radius:22px;padding:10px 16px;font-size:16px;line-height:1.4;width:max-content;max-width:82%}
@@ -218,7 +218,7 @@ svg{display:block}
 .qcard q{display:block;font-size:18px;font-weight:500;line-height:1.35;quotes:"“" "”"}.qcard small{display:block;margin-top:6px;font-size:12px;color:var(--mute)}
 .fi{width:38px;height:46px;border:1.5px dashed var(--faint);border-radius:6px;flex:none;display:grid;place-items:center;color:var(--mute)}
 /* sheets */
-.sheet{position:absolute;left:0;right:0;top:0;bottom:var(--kbh);z-index:20;display:flex;flex-direction:column;justify-content:flex-end;visibility:hidden}
+.sheet{position:absolute;left:0;right:0;top:0;bottom:var(--kbh);z-index:35;display:flex;flex-direction:column;justify-content:flex-end;visibility:hidden}
 .sheet.on{visibility:visible}
 .scrim{position:absolute;inset:0;background:var(--scrim);opacity:0;transition:opacity .3s}.sheet.on .scrim{opacity:1}
 .panel{position:relative;background:var(--bg);border-radius:24px 24px 0 0;max-height:calc(100% - 24px);display:flex;flex-direction:column;transform:translateY(102%);transition:transform .38s cubic-bezier(.2,.85,.25,1);border:1px solid var(--bd);border-bottom:0}
@@ -242,6 +242,18 @@ svg{display:block}
 /* add overlay */
 .ov{position:absolute;left:0;right:0;top:0;bottom:var(--kbh);z-index:25;background:var(--bg);display:none;flex-direction:column}
 .ov.on{display:flex}
+/* landing: the camera screen is home; log in sits top left, search sits under the modes */
+.acctb{min-width:40px;height:40px;display:flex;align-items:center}
+.lgin{height:34px;padding:0 14px;border-radius:17px;border:1px solid var(--bd);font-size:14px;font-weight:600;display:flex;align-items:center}
+.ov.landing .modes{padding-bottom:10px}
+.lbar{flex:none;padding:0 16px calc(var(--sab,env(safe-area-inset-bottom,0px)) + 16px)}
+.lbar .bar{height:52px;padding:0 6px;gap:4px}
+.lbar .bar input{font-size:16px;padding-left:2px}
+.lin{width:100%;height:50px;border-radius:14px;border:1px solid var(--bd);background:var(--bg);padding:0 16px;font-size:16px;outline:0}
+.lin:focus{border-color:var(--ink)}
+.lbtn{width:100%;height:50px;border-radius:25px;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
+.lbtn.d{background:var(--ink);color:var(--bg)}.lbtn.g{background:var(--fill)}
+.lor{display:flex;align-items:center;gap:12px;margin:18px 0 8px;font-size:12px;color:var(--faint)}.lor::before,.lor::after{content:"";flex:1;height:1px;background:var(--line)}
 .ot{flex:none;display:flex;align-items:center;justify-content:space-between;padding:calc(var(--sat,env(safe-area-inset-top,0px)) + 12px) 12px 6px;height:calc(var(--sat,env(safe-area-inset-top,0px)) + 58px)}
 .keepb{height:36px;padding:0 16px;border-radius:18px;background:var(--ink);color:var(--bg);font-size:14px;font-weight:600}.keepb:disabled{background:var(--fill2);color:var(--faint)}
 .obody{flex:1;min-height:0;overflow-y:auto;padding:8px 20px 12px;scrollbar-width:none}.obody::-webkit-scrollbar{display:none}
@@ -703,9 +715,9 @@ function frame(){
   if(live){const v=$('#cam'),w=v.videoWidth||640,h=v.videoHeight||480,k=Math.min(1,720/Math.max(w,h)),c=document.createElement('canvas');c.width=w*k;c.height=h*k;lastAr=w>=h?'4 / 3':'3 / 4';c.getContext('2d').drawImage(v,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.8)}
   return IMG.bike||IMG.lake||'';
 }
-function openAdd(dayKey){
-  newM={day:dayKey||dk(TODAY)};mode='photo';moreT='quote';cap={photo:null,video:null,voice:null};
-  $('#ov').innerHTML=`<div class="ot"><button class="ib" id="ox" aria-label="Close">${ic.x}</button><div class="title" id="otitle">Photo</div><button class="keepb" id="keep" disabled>Keep</button></div>
+function openAdd(dayKey,landing){
+  newM={day:dayKey||dk(TODAY),landing:!!landing};mode='photo';moreT='quote';cap={photo:null,video:null,voice:null};
+  $('#ov').innerHTML=`<div class="ot">${landing?`<button class="acctb" id="ox" aria-label="${acct?'Account':'Log in'}">${acctHTML()}</button>`:`<button class="ib" id="ox" aria-label="Close">${ic.x}</button>`}<div class="title" id="otitle">Photo</div><button class="keepb" id="keep" disabled>Keep</button></div>
   <div class="canvas">
    <section class="pane on" data-p="cam"><div class="vf" id="vf"><video id="cam" playsinline muted autoplay></video><div class="fbk" id="fbk" style="background-image:url(${IMG.bike||''})"></div><img id="shot" alt="" hidden><div class="vflab" id="vflab">Demo viewfinder</div>
       <label class="vfb" id="libb" style="left:12px;bottom:12px" aria-label="Choose from library">${ic.img.replace('width="22" height="22"','width="20" height="20"')}<input type="file" id="lib" accept="image/*,video/*" hidden></label>
@@ -716,9 +728,11 @@ function openAdd(dayKey){
    <section class="pane" data-p="text"><textarea class="big-in" id="tx" style="flex:1;min-height:0" placeholder="${PH.text}"></textarea></section>
    <section class="pane" data-p="more"><div class="mseg" id="mseg">${MORE.map(m=>`<button data-m="${m[0]}" class="${m[0]==='quote'?'on':''}">${m[1]}</button>`).join('')}</div><div class="in-wrap" id="mbody"></div></section>
   </div>
-  <div class="modes" id="modes">${MODES.map(m=>`<button class="mb ${m[0]==='photo'?'on':''}" data-m="${m[0]}" aria-label="${m[1]}">${ic[m[2]]}</button>`).join('')}</div>`;
+  <div class="modes" id="modes">${MODES.map(m=>`<button class="mb ${m[0]==='photo'?'on':''}" data-m="${m[0]}" aria-label="${m[1]}">${ic[m[2]]}</button>`).join('')}</div>${landing?`<div class="lbar"><div class="bar"><button class="b" id="ovCal" aria-label="Your memories">${ic.cal}</button><input id="q3" placeholder="Ask your memories" autocomplete="off" aria-label="Ask your memories"><button class="b" id="ovMic" aria-label="Dictate">${ic.mic}</button></div></div>`:''}`;
+  $('#ov').classList.toggle('landing',!!landing);
   $('#ov').classList.add('on');
-  $('#ox').onclick=closeAdd;$('#keep').onclick=save;
+  $('#ox').onclick=landing?()=>acct?openProfile():openLogin():closeAdd;$('#keep').onclick=save;
+  if(landing){$('#ovCal').onclick=closeAdd;$('#ovMic').onclick=()=>openChat();$('#q3').addEventListener('focus',e=>{e.target.blur();openChat()})}
   $('#modes').addEventListener('pointerdown',e=>{const b=e.target.closest('.mb');if(b&&b.dataset.m==='voice'&&mode==='voice'){e.preventDefault();voiceStart()}});
   $('#modes').addEventListener('contextmenu',e=>e.preventDefault());
   $('#modes').addEventListener('click',e=>{const b=e.target.closest('.mb');if(!b)return;if(b.dataset.m==='voice'&&mode==='voice')return;setMode(b.dataset.m)});
@@ -824,12 +838,36 @@ function save(){
 let userTheme='light';
 function applyTheme(){if(document.documentElement.getAttribute('data-theme')!==userTheme)document.documentElement.setAttribute('data-theme',userTheme)}
 applyTheme();new MutationObserver(applyTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+/* ---------- account: demo sign-in, nothing leaves this browser ---------- */
+let acct=null;
+try{acct=JSON.parse(localStorage.getItem('keep.acct')||'null')}catch(e){}
+const acctIni=()=>acct?((acct.email||'K')[0]||'K').toUpperCase():'';
+function acctHTML(){return acct?`<span class="av0">${esc(acctIni())}</span>`:'<span class="lgin">Log in</span>'}
+function syncAcct(){
+  try{acct?localStorage.setItem('keep.acct',JSON.stringify(acct)):localStorage.removeItem('keep.acct')}catch(e){}
+  $('#profBtn').innerHTML=acct?`<span class="av0">${esc(acctIni())}</span>`:`<span class="av0">${ic.user.replace('width="22" height="22"','width="16" height="16"')}</span>`;
+  const o=$('#ox');if(o&&o.classList.contains('acctb')){o.innerHTML=acctHTML();o.setAttribute('aria-label',acct?'Account':'Log in')}
+}
+function openLogin(){
+  openSheet(`<div class="dh"><h1>Log in to Keep</h1><p>Your memories, on every device.</p></div><div class="pb" style="padding-top:8px">
+   <button class="lbtn d" data-via="Apple">Continue with Apple</button>
+   <button class="lbtn g" data-via="Google">Continue with Google</button>
+   <div class="lor">or</div>
+   <input class="lin" id="lmail" type="email" placeholder="Email address" autocomplete="email" aria-label="Email address">
+   <button class="lbtn d" id="lgo">Continue</button>
+   <p class="note">Demo sign-in. Nothing is sent anywhere; this only remembers you in this browser.</p></div>`);
+  const done=(via,email)=>{acct={via,email:email||''};syncAcct();closeSheet();toast('Signed in')};
+  document.querySelectorAll('#pc [data-via]').forEach(b=>b.onclick=()=>done(b.dataset.via));
+  const go=()=>{const v=$('#lmail').value.trim();if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){toast('Enter an email address');return}done('Email',v)};
+  $('#lgo').onclick=go;$('#lmail').addEventListener('keydown',e=>{if(e.key==='Enter')go()});
+}
 /* ---------- profile ---------- */
 function openProfile(){
   const n=all().length,first=n?new Date(Math.min(...all().map(m=>m.ts))):null;
   const th=document.documentElement.getAttribute('data-theme')||'light';
   openSheet(`<div class="dh"><h1>Profile</h1><p>${n} kept${first?' · since '+MS[first.getMonth()]+' '+first.getFullYear():''}</p></div><div class="pb" style="padding-top:0">
    <div class="grp">
+    <div class="row"><span>${acct?esc(acct.email||'Signed in with '+acct.via):'Not signed in'}</span><button class="chip fb flat" id="acctB" style="height:32px;font-size:14px;padding:0 12px">${acct?'Log out':'Log in'}</button></div>
     <div class="row"><span>Appearance</span><div class="seg" data-k="theme">${['light','dark'].map(x=>`<button data-v="${x}" class="${th===x?'on':''}">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</div></div>
     <div class="row"><span>Add button</span><div class="seg" data-k="addb">${[['icon','Icon'],['word','Memory']].map(x=>`<button data-v="${x[0]}" class="${addStyle===x[0]?'on':''}">${x[1]}</button>`).join('')}</div></div>
     <div class="row"><span>Revisits</span><div class="seg" data-k="rev">${[['off','Off'],['monthly','Monthly'],['weekly','Weekly']].map(x=>`<button data-v="${x[0]}" class="${revOn===x[0]?'on':''}">${x[1]}</button>`).join('')}</div></div>
@@ -843,6 +881,7 @@ function openProfile(){
     if(k==='addb')setAddStyle(v);
     if(k==='empty'){emptyMode=v==='1';refresh()}
     sg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))});
+  $('#acctB').onclick=()=>{if(acct){acct=null;syncAcct();closeSheet();toast('Signed out')}else openLogin()};
   $('#exp').onclick=()=>{const t=JSON.stringify(all().map(m=>({...m,src:m.src?'[image]':undefined})),null,1);(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Copied')).catch(()=>toast('Copy not available here'))};
 }
 /* ---------- simulated iPhone keyboard (desktop only) ---------- */
@@ -927,6 +966,6 @@ $('#chatX').onclick=closeChat;
 $('#cb').addEventListener('click',e=>{const s=e.target.closest('[data-s]');if(s){ask(s.dataset.s);return}const d=e.target.closest('[data-d]');if(d){blurAll();openDay(d.dataset.d)}});
 document.addEventListener('click',e=>{const t=e.target.closest('[data-lb]');if(t){e.stopPropagation();openLb(t.dataset.lb.split(','))}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#lb').classList.contains('on'))closeLb();else if($('#ov').classList.contains('on'))closeAdd();else if($('#sh').classList.contains('on'))closeSheet();else closeChat()}});
-refresh();setYear(false);
+refresh();setYear(false);syncAcct();openAdd(null,true);
 addEventListener('pointerup',()=>{if(rec&&rec.kind==='voice')stopRec()});addEventListener('pointercancel',()=>{if(rec&&rec.kind==='voice')stopRec()});
 </script>
