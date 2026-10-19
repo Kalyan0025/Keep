@@ -147,6 +147,15 @@ svg{display:block}
 .lbx{position:absolute;right:12px;top:calc(var(--sab,env(safe-area-inset-bottom,0px)) + 12px);background:var(--fill)}
 .lbc{margin-top:16px;text-align:center;font-size:16px;line-height:24px;max-width:320px}.lbn{margin-top:6px;font-size:12px;color:var(--mute)}
 .ev{padding:0;margin:0 0 26px;border:0}.ev::before{display:none}
+/* the day as a timeline: a hairline rail, a dot on each moment's time, Keep's mark at the top */
+.tl{position:relative;padding-left:28px;margin-top:22px}
+.tl::before{content:"";position:absolute;left:10px;top:24px;bottom:12px;width:1.5px;border-radius:1px;background:linear-gradient(to bottom,var(--line2),var(--line2) 85%,transparent)}
+.tl .ev{position:relative}
+.tl .ev::before{display:block;content:"";position:absolute;left:-22px;top:4px;width:9px;height:9px;border-radius:50%;background:linear-gradient(135deg,var(--s1),var(--s3));box-shadow:0 0 0 3px var(--bg)}
+.tlk{display:flex;align-items:center;gap:10px;margin:0 0 18px -28px;font-size:12px;font-weight:500;color:var(--mute)}
+.tlk em{font-style:normal;color:var(--faint)}
+.tlm{position:relative;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;color:#fff;flex:none;overflow:hidden;isolation:isolate;background:radial-gradient(70% 70% at 25% 20%,var(--s1),transparent 70%),radial-gradient(80% 80% at 85% 90%,var(--s3),transparent 70%),var(--s2);box-shadow:0 0 0 3px var(--bg)}
+.tlm .logo{display:block}
 /* revolving rings */
 @keyframes spin{to{transform:rotate(360deg)}}
 .rg{animation:spin var(--sp,16s) linear infinite}
@@ -3356,17 +3365,19 @@ function openSheet(html,opts){
 function closeSheet(){$('#sh').classList.remove('on');pauseIn('#pc')}
 $('#scrim').onclick=closeSheet;$('#px').onclick=closeSheet;
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1700)}
+/* Keep's flower mark, reused from the header, heads the day's timeline */
+const KEEP_MARK=(document.querySelector('.title .logo')||{outerHTML:''}).outerHTML.replace('width="22" height="22"','width="14" height="14"');
 function openDay(k){
   const [y,m,d]=k.split('-').map(Number),dt=new Date(y,m-1,d),L=byDay[k]||[];
   const ph=L.filter(x=>x.type==='photo'||x.type==='video');let done=false,h='';
   L.forEach(x=>{
     if(x.type==='photo'||x.type==='video'){
       if(done)return;done=true;const caps=ph.map(p=>p.text).filter(Boolean);
-      h+=`<div class="ev">${stackHTML(ph)}<div class="tm">${tstr(ph[0].ts)}${ph.length>1?' to '+tstr(ph[ph.length-1].ts):''} <em>· ${[ph.filter(p=>p.type==='photo').length&&ph.filter(p=>p.type==='photo').length+' photo'+(ph.filter(p=>p.type==='photo').length>1?'s':''),ph.filter(p=>p.type==='video').length&&ph.filter(p=>p.type==='video').length+' video'+(ph.filter(p=>p.type==='video').length>1?'s':'')].filter(Boolean).join(' · ')}</em></div>${caps[0]?`<div class="tx">${esc(caps[0])}</div>`:''}</div>`;
+      h+=`<div class="ev"><div class="tm">${tstr(ph[0].ts)}${ph.length>1?' to '+tstr(ph[ph.length-1].ts):''} <em>· ${[ph.filter(p=>p.type==='photo').length&&ph.filter(p=>p.type==='photo').length+' photo'+(ph.filter(p=>p.type==='photo').length>1?'s':''),ph.filter(p=>p.type==='video').length&&ph.filter(p=>p.type==='video').length+' video'+(ph.filter(p=>p.type==='video').length>1?'s':'')].filter(Boolean).join(' · ')}</em></div>${stackHTML(ph)}${caps[0]?`<div class="tx">${esc(caps[0])}</div>`:''}</div>`;
     }else h+=`<div class="ev">${item(x)}</div>`;
   });
   if(!L.length)h=`<div class="empty">Nothing kept on this day.</div>`;
-  openSheet(`<div class="dh"><h1>${longDay(dt)}</h1><p>${dt.getFullYear()} · ${L.length?L.length+' moment'+(L.length>1?'s':''):'quiet day'}</p></div><div class="pb" style="padding-top:0">${L.length?'<div class="deck" id="daydeck"></div><div class="mcap" id="daycap"></div><div class="lbl" style="margin-top:22px">The whole day</div>':''}${h}</div>`,{full:true});
+  openSheet(`<div class="dh"><h1>${longDay(dt)}</h1><p>${dt.getFullYear()} · ${L.length?L.length+' moment'+(L.length>1?'s':''):'quiet day'}</p></div><div class="pb" style="padding-top:0">${L.length?`<div class="deck" id="daydeck"></div><div class="mcap" id="daycap"></div><div class="tl"><div class="tlk"><span class="tlm">${KEEP_MARK}</span><span>The whole day <em>· ${L.length} kept</em></span></div>${h}</div>`:h}</div>`,{full:true});
   if(L.length){const api={};api.ref=deck($('#daydeck'),L,m=>memCap($('#daycap'),L,m,api))}
 }
 /* revisit */
