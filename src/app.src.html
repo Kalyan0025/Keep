@@ -313,6 +313,8 @@ svg{display:block}
 .dcard .dbody .wv i{background:#fff}
 .dcard.gr{filter:hue-rotate(var(--hr,0deg))}
 .dcard.gr::after{content:"";position:absolute;inset:0;background-image:var(--noise);background-size:50px;opacity:.32;mix-blend-mode:overlay;pointer-events:none}
+.dcard video.dv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dcard.vidc.on .dplay{opacity:0;transition:opacity .3s}
 .dcard .dplay{position:absolute;left:50%;top:42%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(0,0,0,.45);display:grid;place-items:center;color:#fff}
 .dcnt{text-align:center;font-size:12px;color:var(--mute);margin-top:2px;font-variant-numeric:tabular-nums}
 /* photos read as memories, not cards: no edge or shadow, the picture dissolves into the page */
@@ -407,7 +409,7 @@ const pool={
  photo:['mug','bike','lake','forest','meadow','orchard','coast','brownstone','library','park'],
  place:['Tempe Town Lake, east bench','Cartel Coffee on Mill','The overlook past the water tower']
 };
-const VT=['Clip from the walk home','Street band outside the station','The cat doing nothing, perfectly','Wind in the trees by the lake'];
+const VT=['Flowers from the Saturday market','The bouquet, before it went in the vase','Picking ranunculus at the garden stall','Five seconds of sun in the garden','Mina’s flowers for the front counter'];
 function build(){
   uid=0;resetRnd();const out=[];
   for(let d=new Date(2025,2,12);d<TODAY;d.setDate(d.getDate()+1)){
@@ -417,7 +419,7 @@ function build(){
       const np=recent?1+Math.floor(rnd()*3.4):(rnd()<.6?1+Math.floor(rnd()*2.4):0);
       for(let i=0;i<np;i++)out.push(M(d,8+Math.floor(rnd()*13),Math.floor(rnd()*60),{type:'photo',img:pick(pool.photo),text:i===0&&rnd()<.6?pick(pool.text):''}));
       if(rnd()<.4){const v=pick(pool.voice);out.push(M(d,8+Math.floor(rnd()*13),Math.floor(rnd()*60),{type:'voice',dur:v[0],text:v[1]}))}
-      if(rnd()<.18)out.push(M(d,8+Math.floor(rnd()*13),Math.floor(rnd()*60),{type:'video',img:pick(pool.photo),dur:'0:'+pad(8+Math.floor(rnd()*20)),text:pick(VT)}));
+      if(rnd()<.18)out.push(M(d,8+Math.floor(rnd()*13),Math.floor(rnd()*60),{type:'video',img:(pick(pool.photo),'bouquet'),vid:'bouquet',dur:'0:05',text:(rnd(),pick(VT))}));
       if(rnd()<.5){
         const h=8+Math.floor(rnd()*13),mi=Math.floor(rnd()*60),t=pick(['text','quote','person','place']);
         if(t==='text')out.push(M(d,h,mi,{type:'text',text:pick(pool.text)}));
@@ -431,14 +433,14 @@ function build(){
   out.push(M(a,9,12,{type:'photo',img:'orchard',text:'The bench under the apple trees behind Cartel. Perfect morning.'}));
   out.push(M(a,9,20,{type:'photo',img:'brownstone',text:'The stoop on Mill Ave, all autumn light.'}));
   out.push(M(a,9,40,{type:'person',name:'Mina Okafor',text:'Owns Cartel, roasts in the back. Says she’ll teach me to pull a shot.'}));
-  out.push(M(a,10,5,{type:'video',img:'forest',dur:'0:14',text:'The path home through the woods'}));
+  out.push(M(a,10,5,{type:'video',img:'bouquet',vid:'bouquet',dur:'0:05',text:'Mina’s flower stall out back of Cartel'}));
   out.push(M(a,11,5,{type:'voice',dur:'0:18',text:'Walking out, still tasting it. Come back on a weekday when it’s quiet.'}));
   out.push(M(a,14,30,{type:'quote',text:'Good coffee needs bad weather.',who:'Mina'}));
   const j=new Date(2026,5,22);
   out.push(M(j,9,12,{type:'photo',img:'lake',text:'Fog lifting off the lake. Still good.'}));
   out.push(M(j,9,30,{type:'photo',img:'mug',text:'Jake, insisting I try his coffee before we head out.'}));
   out.push(M(j,12,40,{type:'person',name:'Jake Moreno',text:'Builds boats. Works at Harbor Labs. Said to visit in spring.'}));
-  out.push(M(j,13,10,{type:'video',img:'coast',dur:'0:21',text:'Jake pointing out the boats in the cove'}));
+  out.push(M(j,13,10,{type:'video',img:'bouquet',vid:'bouquet',dur:'0:05',text:'Flowers from the market for Jake’s new place'}));
   out.push(M(j,15,5,{type:'voice',dur:'0:24',text:'Jake explained how a hull gets its curve. I only half followed and loved it.'}));
   out.push(M(j,18,30,{type:'quote',text:'Keep the question, lose the answer.',who:'Jake'}));
   out.push(M(j,20,15,{type:'file',name:'Suns vs. Lakers',text:'Sec 112 · Row 9 · ticket'}));
@@ -452,6 +454,10 @@ const all=()=>emptyMode?user:base.concat(user);
 let byDay={};
 function index(){byDay={};all().forEach(m=>{const k=dk(new Date(m.ts));(byDay[k]=byDay[k]||[]).push(m)});Object.values(byDay).forEach(a=>a.sort((x,y)=>x.ts-y.ts))}
 const src=m=>m.src||IMG[m.img]||'';
+/* the sample clip: video memories with vid play it for real */
+const vsrc=m=>m.vid&&IMG[m.vid+'_mp4']||'';
+/* WebM first, MP4 as the fallback, so every browser finds a format it can decode */
+const vsources=k=>`<source src="${IMG[k+'_webm']||''}" type="video/webm"><source src="${IMG[k+'_mp4']||''}" type="video/mp4">`;
 /* ---------- day marker: one ring, one cover ---------- */
 const PRI={photo:0,video:0,person:1,voice:2,quote:3,text:4,file:5,place:6};
 function cover(m){
@@ -530,7 +536,8 @@ function openLb(ids){
   const api={};api.ref=deck($('#lbdeck'),lbList,m=>memCap($('#lbcap'),lbList,m,api));
   $('#lb').classList.add('on');
 }
-function closeLb(){$('#lb').classList.remove('on')}
+const pauseIn=sel=>document.querySelectorAll(sel+' video').forEach(v=>v.pause());
+function closeLb(){$('#lb').classList.remove('on');pauseIn('#lb')}
 
 const wave=(n,seed)=>'<div class="wv">'+Array.from({length:n},(_,i)=>`<i style="height:${6+Math.abs(Math.sin(i*1.7+seed))*16}px"></i>`).join('')+'</div>';
 function item(m,withTime){
@@ -548,7 +555,7 @@ function item(m,withTime){
 function deckCard(m){
   const who=`<div class="dwho"><i>${m.type==='person'?esc(ini(m.name||'?')).slice(0,1):''}</i>${TL[m.type]} · ${tstr(m.ts)}</div>`;
   if((m.type==='photo'||m.type==='video')&&src(m))
-    return {cls:'mem',bg:src(m),html:m.type==='video'?`<span class="dplay">${ic.play}</span>`:''};
+    return {cls:'mem'+(vsrc(m)?' vidc':''),bg:src(m),html:(vsrc(m)?`<video class="dv" muted loop playsinline preload="auto">${vsources(m.vid)}</video>`:'')+(m.type==='video'?`<span class="dplay">${ic.play}</span>`:'')};
   const g={voice:'voice',quote:'quote',person:'person',text:'text',file:'file',place:'place'}[m.type]||'text';
   let b='';
   if(m.type==='quote')b=`<q>${esc(m.text)}</q>${m.who?`<div style="font-size:14px;opacity:.85">${esc(m.who)}</div>`:''}`;
@@ -565,7 +572,7 @@ function deck(root,list,onChange){
   const n=list.length,els=list.map(m=>{const c=deckCard(m),e=document.createElement('div');e.className='dcard '+c.cls;if(c.bg)e.style.backgroundImage=`url(${c.bg})`;e.innerHTML=c.html;e.style.setProperty('--hr',`${((m.id*17)%50)-25}deg`);root.appendChild(e);return e});
   let cur=-1,raf=0;
   const step=()=>els[0].offsetWidth+12;
-  const upd=()=>{raf=0;const i=Math.max(0,Math.min(n-1,Math.round(root.scrollLeft/step())));if(i===cur)return;cur=i;els.forEach((e,j)=>e.classList.toggle('on',j===i));if(onChange)onChange(list[i])};
+  const upd=()=>{raf=0;const i=Math.max(0,Math.min(n-1,Math.round(root.scrollLeft/step())));if(i===cur)return;cur=i;els.forEach((e,j)=>{e.classList.toggle('on',j===i);const v=e.querySelector('video');if(v)j===i?v.play().catch(()=>{}):v.pause()});if(onChange)onChange(list[i])};
   const go=i=>root.scrollTo({left:((i%n)+n)%n*step(),behavior:'smooth'});
   root.addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(upd)},{passive:true});
   let x0=null,s0=0,i0=0,moved=false;
@@ -590,7 +597,7 @@ function memCap(el,list,m,api){
 function openSheet(html,opts){
   opts=opts||{};$('#pc').innerHTML=html;$('#sh').classList.toggle('full',!!opts.full);$('#sh').classList.add('on');
 }
-function closeSheet(){$('#sh').classList.remove('on')}
+function closeSheet(){$('#sh').classList.remove('on');pauseIn('#pc')}
 $('#scrim').onclick=closeSheet;$('#px').onclick=closeSheet;
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1700)}
 function openDay(k){
@@ -708,18 +715,18 @@ async function startCam(){
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw 0;
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
     const v=$('#cam');if(!v){stopCam();return}
-    v.srcObject=stream;v.style.display='block';$('#fbk').style.display='none';live=true;$('#vflab').innerHTML='Camera';
+    v.srcObject=stream;v.style.display='block';$('#fbk').style.display='none';demoVid();live=true;$('#vflab').innerHTML='Camera';
   }catch(e){live=false;const l=$('#vflab');if(l)l.innerHTML='Demo viewfinder'}
 }
 function frame(){
   if(live){const v=$('#cam'),w=v.videoWidth||640,h=v.videoHeight||480,k=Math.min(1,720/Math.max(w,h)),c=document.createElement('canvas');c.width=w*k;c.height=h*k;lastAr=w>=h?'4 / 3':'3 / 4';c.getContext('2d').drawImage(v,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.8)}
-  return IMG.bike||IMG.lake||'';
+  return (mode==='video'?IMG.bouquet:IMG.mug)||IMG.lake||'';
 }
 function openAdd(dayKey,landing){
   newM={day:dayKey||dk(TODAY),landing:!!landing};mode='photo';moreT='quote';cap={photo:null,video:null,voice:null};
   $('#ov').innerHTML=`<div class="ot">${landing?`<button class="acctb" id="ox" aria-label="${acct?'Account':'Log in'}">${acctHTML()}</button>`:`<button class="ib" id="ox" aria-label="Close">${ic.x}</button>`}<div class="title" id="otitle">Photo</div><button class="keepb" id="keep" disabled>Keep</button></div>
   <div class="canvas">
-   <section class="pane on" data-p="cam"><div class="vf" id="vf"><video id="cam" playsinline muted autoplay></video><div class="fbk" id="fbk" style="background-image:url(${IMG.bike||''})"></div><img id="shot" alt="" hidden><div class="vflab" id="vflab">Demo viewfinder</div>
+   <section class="pane on" data-p="cam"><div class="vf" id="vf"><video id="cam" playsinline muted autoplay></video><div class="fbk" id="fbk" style="background-image:url(${IMG.mug||''})"></div><video id="fbkv" muted loop playsinline preload="auto">${vsources('bouquet')}</video><img id="shot" alt="" hidden><div class="vflab" id="vflab">Demo viewfinder</div>
       <label class="vfb" id="libb" style="left:12px;bottom:12px" aria-label="Choose from library">${ic.img.replace('width="22" height="22"','width="20" height="20"')}<input type="file" id="lib" accept="image/*,video/*" hidden></label>
       <button class="vfb" id="retake" style="right:12px;bottom:12px" hidden aria-label="Retake">${ic.x.replace('width="22" height="22"','width="18" height="18"')}</button></div>
      <div class="shut"><button class="shutter" id="shutter" aria-label="Capture"><i></i></button></div>
@@ -744,6 +751,8 @@ function openAdd(dayKey,landing){
   drawMore(false);setMode('photo',true);startCam();
 }
 function titleFor(){const t=MODES.find(m=>m[0]===mode)[1];return newM.day!==dk(TODAY)?t+' · '+longDay(new Date(...newM.day.split('-').map((v,i)=>i===1?v-1:+v))):t}
+/* demo viewfinder in video mode plays the sample clip until something is recorded or a real camera is on */
+function demoVid(){const v=$('#fbkv');if(!v)return;const on=mode==='video'&&!stream&&!(cap.video&&cap.video.src);v.style.display=on?'block':'none';on?v.play().catch(()=>{}):v.pause()}
 function setMode(m,first){
   if(mode===m&&!first)return;
   if(rec&&m!==mode)stopRec();
@@ -754,6 +763,7 @@ function setMode(m,first){
   $('#otitle').textContent=titleFor();
   const sh=$('#shutter');sh.classList.toggle('v',m==='video');sh.classList.remove('rec');
   if(p==='cam'){showShot();if(!stream)startCam()}else{stopCam()}
+  demoVid();
   if(document.activeElement&&document.activeElement.blur&&p!=='text'&&p!=='more')blurAll();
   setTimeout(()=>{const f=p==='text'?$('#tx'):p==='more'?($('#f1')||$('#f2')):null;if(f)f.focus({preventScroll:true})},180);
   validate();
@@ -762,6 +772,7 @@ function showShot(){
   const v=m=>mode==='video'?cap.video&&cap.video.src:cap.photo,src_=v();
   const sh=$('#shot');if(!sh)return;
   if(src_){sh.src=src_;sh.hidden=false;$('#retake').hidden=false;$('#libb').style.display='none'}else{sh.hidden=true;$('#retake').hidden=true;$('#libb').style.display=''}
+  demoVid();
 }
 function shutter(){
   if(mode==='photo'){cap.photo=frame();showShot();validate();return}
@@ -826,7 +837,7 @@ function save(){
   stopRec();const [y,m,d]=newM.day.split('-').map(Number),now=new Date();
   const o={id:Date.now(),ts:new Date(y,m-1,d,now.getHours(),now.getMinutes()).getTime()};
   if(mode==='photo'){o.type='photo';o.ar=lastAr;o.src=cap.photo;o.text=val('capIn')}
-  if(mode==='video'){o.type='video';o.src=cap.video.src;o.dur=cap.video.dur;o.text=val('capIn')}
+  if(mode==='video'){o.type='video';o.src=cap.video.src;o.dur=cap.video.dur;o.text=val('capIn');if(!live){o.img='bouquet';o.vid='bouquet';delete o.src}}
   if(mode==='voice'){o.type='voice';o.dur=cap.voice;o.text=val('vtx')}
   if(mode==='text'){o.type='text';o.text=val('tx')}
   if(mode==='more'){o.type=moreT;if(moreT==='quote'){o.text=val('f2');o.who=val('f1')}else{o.name=val('f1');o.text=val('f2')}}
