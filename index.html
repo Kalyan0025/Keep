@@ -327,6 +327,8 @@ svg{display:block}
 .mpill .mn{margin-left:auto;width:36px;height:36px;border-radius:18px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
 .lb .mcap{width:100%;max-width:340px}
 .lb .deck{width:calc(100% + 32px);margin:0 -16px}
+/* narrow screens: the dial button sits above the search bar instead of over the header */
+@media (max-width:899px){body .dialkit-panel[data-position="top-right"]{top:auto;bottom:150px;right:12px}}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 </style>
 
@@ -3684,9 +3686,10 @@ addEventListener('pointerup',()=>{if(rec&&rec.kind==='voice')stopRec()});addEven
 /* when jsDelivr is unreachable (offline, or a locked-down network) use the copy vendored next to index.html */
 function loadLocalDials(){const t=document.createElement('script');t.src='vendor/dialkit/browser.global.js';t.onload=initDials;document.body.appendChild(t)}
 function initDials(){
-  if(!window.DialKit||!matchMedia('(min-width: 900px)').matches)return;
+  if(!window.DialKit||window.keepDials)return;
+  const wide=matchMedia('(min-width: 900px)').matches;
   const r=document.documentElement.style;
-  DialKit.createDialRoot({position:'top-right',theme:'light',defaultOpen:true});
+  DialKit.createDialRoot({position:'top-right',theme:'light',defaultOpen:wide});
   const kit=DialKit.createDialKit('Keep prototype',{
     Memories:{'Photo height':[500,320,680,4],'Side margin':[12,0,48,1],'Gap':[12,0,40,1],'Edge fade':[9,0,30,1],'Neighbour size':[0.88,0.6,1,0.01],'Neighbour fade':[0.45,0,1,0.01],'Slide speed':[0.45,0.1,1.2,0.05]},
     Camera:{'Viewfinder radius':[28,0,48,1],'Shutter size':[64,48,88,2],_collapsed:true},
