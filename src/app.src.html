@@ -392,7 +392,7 @@ const pool={
  quote:[['The long way is usually the right way.','a stranger at the bus stop'],['Say it plainly, then say it once.','my professor'],['Good coffee needs bad weather.','Mina']],
  voice:[['0:14','Walking home. The sky went pink over the mall and nobody looked up.'],['0:31','Recording this so I remember how loud the market was today.'],['0:09','Idea for the weekend: take the train until it stops.']],
  person:[['Priya Nair','Met at the climbing gym. Studies marine biology, owns three plants named after rivers.'],['Daniel Ortiz','Landlord’s cousin. Fixes anything with tape and patience.'],['Mrs. Alvarez','Runs the corner bakery. Remembers every order.']],
- photo:['mug','bike','lake','forest','meadow','orchard','coast'],
+ photo:['mug','bike','lake','forest','meadow','orchard','coast','brownstone','library','park'],
  place:['Tempe Town Lake, east bench','Cartel Coffee on Mill','The overlook past the water tower']
 };
 const VT=['Clip from the walk home','Street band outside the station','The cat doing nothing, perfectly','Wind in the trees by the lake'];
@@ -417,7 +417,7 @@ function build(){
   }
   const a=new Date(2025,9,18);
   out.push(M(a,9,12,{type:'photo',img:'orchard',text:'The bench under the apple trees behind Cartel. Perfect morning.'}));
-  out.push(M(a,9,20,{type:'photo',img:'meadow'}));
+  out.push(M(a,9,20,{type:'photo',img:'brownstone',text:'The stoop on Mill Ave, all autumn light.'}));
   out.push(M(a,9,40,{type:'person',name:'Mina Okafor',text:'Owns Cartel, roasts in the back. Says she’ll teach me to pull a shot.'}));
   out.push(M(a,10,5,{type:'video',img:'forest',dur:'0:14',text:'The path home through the woods'}));
   out.push(M(a,11,5,{type:'voice',dur:'0:18',text:'Walking out, still tasting it. Come back on a weekday when it’s quiet.'}));
@@ -431,7 +431,7 @@ function build(){
   out.push(M(j,18,30,{type:'quote',text:'Keep the question, lose the answer.',who:'Jake'}));
   out.push(M(j,20,15,{type:'file',name:'Suns vs. Lakers',text:'Sec 112 · Row 9 · ticket'}));
   out.push(M(j,21,0,{type:'photo',img:'bike',text:'Jake’s bike outside the gym.'}));
-  out.push(M(j,21,10,{type:'photo',img:'orchard'}));
+  out.push(M(j,21,10,{type:'photo',img:'park',text:'Last bench in the park before heading home.'}));
   return out;
 }
 let base=build(),user=[],emptyMode=false,revOn='weekly';
