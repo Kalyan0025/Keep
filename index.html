@@ -741,6 +741,10 @@ function save(){
   try{localStorage.setItem('kept.user',JSON.stringify(user.filter(x=>!x.src||x.src.length<150000)))}catch(e){}
   closeAdd();refresh();toast('Kept');
 }
+/* ---------- theme: always opens in light; only the Profile switch changes it, so a host page's dark setting can't override it ---------- */
+let userTheme='light';
+function applyTheme(){if(document.documentElement.getAttribute('data-theme')!==userTheme)document.documentElement.setAttribute('data-theme',userTheme)}
+applyTheme();new MutationObserver(applyTheme).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 /* ---------- profile ---------- */
 function openProfile(){
   const n=all().length,first=n?new Date(Math.min(...all().map(m=>m.ts))):null;
@@ -754,7 +758,7 @@ function openProfile(){
    </div>
    <p class="note">Demo build. Moments you add stay in this browser only. Revisits only look backward. Keep never asks you to add anything.</p></div>`);
   document.querySelectorAll('.seg').forEach(sg=>sg.onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=sg.dataset.k,v=b.dataset.v;
-    if(k==='theme'){v==='light'?document.documentElement.removeAttribute('data-theme'):document.documentElement.setAttribute('data-theme',v)}
+    if(k==='theme'){userTheme=v;applyTheme()}
     if(k==='rev'){revOn=v;renderRv()}
     if(k==='empty'){emptyMode=v==='1';refresh()}
     sg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))});
