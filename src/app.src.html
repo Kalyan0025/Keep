@@ -300,6 +300,15 @@ svg{display:block}
 .dcard.gr::after{content:"";position:absolute;inset:0;background-image:var(--noise);background-size:50px;opacity:.32;mix-blend-mode:overlay;pointer-events:none}
 .dcard .dplay{position:absolute;left:50%;top:42%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(0,0,0,.45);display:grid;place-items:center;color:#fff}
 .dcnt{text-align:center;font-size:12px;color:var(--mute);margin-top:2px;font-variant-numeric:tabular-nums}
+/* photos read as memories, not cards: no edge or shadow, the picture dissolves into the page */
+.dcard.mem{border-radius:0;box-shadow:none;background-color:transparent;-webkit-mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent),linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 16%,#000 84%,transparent),linear-gradient(to bottom,transparent,#000 14%,#000 86%,transparent);mask-composite:intersect}
+.mcap{padding:2px 4px 0;min-height:128px}
+.mcap h3{font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.mcap p{font-size:14px;color:var(--mute);margin-top:4px;line-height:1.45}
+.mpill{display:flex;align-items:center;gap:10px;margin-top:14px;height:44px;border-radius:22px;background:var(--fill);padding:0 4px 0 14px;font-size:14px;color:var(--mute)}
+.mpill svg{width:18px;height:18px}
+.mpill .mn{margin-left:auto;width:36px;height:36px;border-radius:18px;background:var(--ink);color:var(--bg);display:grid;place-items:center}
+.lb .mcap{width:100%;max-width:340px}
 .lb .deck{width:100%}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 </style>
@@ -501,9 +510,9 @@ function stackHTML(ms){
 let lbList=[],lbI=0;
 function openLb(ids){
   lbList=ids.map(i=>lbReg[i]).filter(Boolean);if(!lbList.length)return;
-  $('#lb').innerHTML=`<button class="ib lbx" id="lbx" aria-label="Close">${ic.x}</button><div class="deck" id="lbdeck"></div><div class="lbn" id="lbn"></div>`;
+  $('#lb').innerHTML=`<button class="ib lbx" id="lbx" aria-label="Close">${ic.x}</button><div class="deck" id="lbdeck"></div><div class="mcap" id="lbcap"></div>`;
   $('#lbx').onclick=closeLb;
-  deck($('#lbdeck'),lbList,m=>{$('#lbn').textContent=fullDay(new Date(m.ts))+(lbList.length>1?' · '+(lbList.indexOf(m)+1)+' of '+lbList.length:'')});
+  const api={};api.ref=deck($('#lbdeck'),lbList,m=>memCap($('#lbcap'),lbList,m,api));
   $('#lb').classList.add('on');
 }
 function closeLb(){$('#lb').classList.remove('on')}
@@ -524,7 +533,7 @@ function item(m,withTime){
 function deckCard(m){
   const who=`<div class="dwho"><i>${m.type==='person'?esc(ini(m.name||'?')).slice(0,1):''}</i>${TL[m.type]} · ${tstr(m.ts)}</div>`;
   if((m.type==='photo'||m.type==='video')&&src(m))
-    return {cls:'',bg:src(m),html:`${m.type==='video'?`<span class="dplay">${ic.play}</span>`:''}<div class="dsh"></div><div class="dmeta">${who}${m.text?`<div class="dsay">${m.type==='video'?'':'“'}${esc(m.text)}${m.type==='video'?'':'”'}</div>`:''}</div>`};
+    return {cls:'mem',bg:src(m),html:m.type==='video'?`<span class="dplay">${ic.play}</span>`:''};
   const g={voice:'voice',quote:'quote',person:'person',text:'text',file:'file',place:'place'}[m.type]||'text';
   let b='';
   if(m.type==='quote')b=`<q>${esc(m.text)}</q>${m.who?`<div style="font-size:14px;opacity:.85">${esc(m.who)}</div>`:''}`;
@@ -535,16 +544,17 @@ function deckCard(m){
   else b=`<div style="font-size:21px;line-height:1.35;font-weight:500">${esc(m.text)}</div>`;
   return {cls:'gr g-'+g,bg:'',html:`<div class="dbody">${b}</div><div class="dmeta">${who}</div>`};
 }
+const OP=i=>[1,.62,.4,.22,.1][i]||0;
 const SLOT=i=>i===0?'translate3d(0,0,0) rotate(-5deg)':`translate3d(${i*17}px,${-i*3}px,${-i*42}px) rotateY(-22deg) rotate(${-5+i*2.4}deg)`;
 const OUT='translate3d(-170px,14px,-70px) rotate(-15deg) scale(.9)';
 /* deck(el, moments, onChange): tap or swipe left for the next card, swipe right for the previous one; it also turns on its own until touched */
 function deck(root,list,onChange){
   const n=list.length,els=list.map(m=>{const c=deckCard(m),e=document.createElement('div');e.className='dcard '+c.cls;if(c.bg)e.style.backgroundImage=`url(${c.bg})`;e.innerHTML=c.html;e.style.setProperty('--hr',`${((m.id*17)%50)-25}deg`);root.appendChild(e);return e});
   let top=0,busy=false,auto=null;
-  const place=()=>els.forEach((e,j)=>{const i=(j-top+n)%n;e.style.transform=SLOT(i);e.style.zIndex=100-i;e.style.opacity=i<5?1:0;e.style.filter=i?`brightness(${1-i*.07})`:''});
+  const place=()=>els.forEach((e,j)=>{const i=(j-top+n)%n;e.style.transform=SLOT(i);e.style.zIndex=100-i;e.style.opacity=OP(i)});
   const changed=()=>{place();if(onChange)onChange(list[top])};
   const next=()=>{if(n<2||busy)return;busy=true;const e=els[top];top=(top+1)%n;place();e.style.zIndex=99;e.style.transform=OUT;e.style.opacity=0;if(onChange)onChange(list[top]);
-    setTimeout(()=>{e.classList.add('snap');const i=n-1;e.style.transform=SLOT(i);e.style.zIndex=100-i;e.offsetWidth;e.classList.remove('snap');e.style.opacity=i<5?1:0;busy=false},420)};
+    setTimeout(()=>{e.classList.add('snap');const i=n-1;e.style.transform=SLOT(i);e.style.zIndex=100-i;e.offsetWidth;e.classList.remove('snap');e.style.opacity=OP(i);busy=false},420)};
   const prev=()=>{if(n<2||busy)return;busy=true;top=(top-1+n)%n;const e=els[top];e.classList.add('snap');e.style.transform=OUT;e.style.opacity=0;e.style.zIndex=101;e.offsetWidth;e.classList.remove('snap');changed();setTimeout(()=>busy=false,420)};
   const stop=()=>{clearInterval(auto);auto=null};
   let x0=null,dx=0;
@@ -554,6 +564,16 @@ function deck(root,list,onChange){
   root.addEventListener('pointerup',end);root.addEventListener('pointercancel',end);
   changed();
   if(n>1&&!matchMedia('(prefers-reduced-motion:reduce)').matches)auto=setInterval(()=>{if(!root.isConnected||!root.offsetParent){stop();return}next()},2600);
+  return {next:()=>{stop();next()}};
+}
+/* caption under the deck: title, when, and a pill whose round button moves to the next memory */
+const TIC={photo:'img',video:'vid',voice:'mic',text:'txt',quote:'quote',person:'user',file:'doc',place:'pin'};
+function memCap(el,list,m,api){
+  const i=list.indexOf(m),n=list.length,photo=m.type==='photo'||m.type==='video';
+  const title=photo?(m.text||TL[m.type]+' at '+tstr(m.ts)):(m.name||(m.type==='quote'?'Something '+(m.who||'someone')+' said':TL[m.type]));
+  const desc=fullDay(new Date(m.ts))+' · '+tstr(m.ts);
+  el.innerHTML=`<h3>${esc(title)}</h3><p>${esc(desc)}</p><div class="mpill">${ic[TIC[m.type]]||''}<span>${TL[m.type]}${n>1?' · '+(i+1)+' of '+n:''}</span>${n>1?`<button class="mn" aria-label="Next memory">${ic.chev.replace('width="22" height="22"','width="18" height="18"')}</button>`:''}</div>`;
+  const b=el.querySelector('.mn');if(b)b.onclick=()=>api.ref&&api.ref.next();
 }
 /* ---------- sheets ---------- */
 function openSheet(html,opts){
@@ -572,8 +592,8 @@ function openDay(k){
     }else h+=`<div class="ev">${item(x)}</div>`;
   });
   if(!L.length)h=`<div class="empty">Nothing kept on this day.</div>`;
-  openSheet(`<div class="dh"><h1>${longDay(dt)}</h1><p>${dt.getFullYear()} · ${L.length?L.length+' moment'+(L.length>1?'s':''):'quiet day'}</p></div><div class="pb" style="padding-top:0">${L.length?'<div class="deck" id="daydeck"></div><div class="dcnt" id="daycnt"></div><div class="lbl" style="margin-top:26px">The whole day</div>':''}${h}</div>`,{full:true});
-  if(L.length)deck($('#daydeck'),L,m=>{$('#daycnt').textContent=L.length>1?(L.indexOf(m)+1)+' of '+L.length+' · tap or swipe':''});
+  openSheet(`<div class="dh"><h1>${longDay(dt)}</h1><p>${dt.getFullYear()} · ${L.length?L.length+' moment'+(L.length>1?'s':''):'quiet day'}</p></div><div class="pb" style="padding-top:0">${L.length?'<div class="deck" id="daydeck"></div><div class="mcap" id="daycap"></div><div class="lbl" style="margin-top:22px">The whole day</div>':''}${h}</div>`,{full:true});
+  if(L.length){const api={};api.ref=deck($('#daydeck'),L,m=>memCap($('#daycap'),L,m,api))}
 }
 /* revisit */
 let rvDate=null;
