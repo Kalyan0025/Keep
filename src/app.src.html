@@ -90,7 +90,7 @@ svg{display:block}
 .bar .send{background:var(--ink);color:var(--bg)}
 .chat .cb{padding-bottom:110px}
 /* seasonal mesh wash: four layers cross-fade with scroll so months blend into each other, and it dissolves to white */
-.topg{position:absolute;left:0;right:0;top:0;height:50%;z-index:0;pointer-events:none;-webkit-mask-image:linear-gradient(to bottom,#000 28%,transparent 100%);mask-image:linear-gradient(to bottom,#000 28%,transparent 100%)}
+.topg{position:absolute;left:0;right:0;top:0;height:50%;z-index:0;opacity:var(--wash,1);pointer-events:none;-webkit-mask-image:linear-gradient(to bottom,#000 28%,transparent 100%);mask-image:linear-gradient(to bottom,#000 28%,transparent 100%)}
 .ss{position:absolute;inset:0;opacity:0}
 .ss[data-s="0"]{background:radial-gradient(62% 78% at 10% 0%,rgba(111,211,245,.55),transparent 72%),radial-gradient(58% 72% at 90% 6%,rgba(143,166,245,.50),transparent 72%),radial-gradient(60% 55% at 50% 52%,rgba(196,181,247,.34),transparent 74%)}
 .ss[data-s="1"]{background:radial-gradient(60% 72% at 14% 22%,rgba(155,227,176,.50),transparent 72%),radial-gradient(58% 74% at 92% 0%,rgba(127,208,247,.50),transparent 72%),radial-gradient(56% 50% at 60% 56%,rgba(245,195,220,.32),transparent 74%)}
@@ -157,7 +157,7 @@ svg{display:block}
 .canvas{position:relative;flex:1;min-height:0;overflow:hidden}
 .pane{position:absolute;inset:0;padding:4px 16px 8px;display:flex;flex-direction:column;opacity:0;transform:translateY(12px) scale(.985);visibility:hidden;pointer-events:none;transition:opacity .28s ease,transform .34s cubic-bezier(.2,.8,.2,1),visibility 0s .34s}
 .pane.on{opacity:1;transform:none;visibility:visible;pointer-events:auto;transition-delay:0s}
-.vf{flex:1;min-height:110px;border-radius:28px;overflow:hidden;position:relative;background:var(--fill);border:1px solid var(--bd)}
+.vf{flex:1;min-height:110px;border-radius:var(--vf-r,28px);overflow:hidden;position:relative;background:var(--fill);border:1px solid var(--bd)}
 .vf video,.vf .fbk,.vf img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background-size:cover;background-position:center}
 .vf video{display:none}
 .vflab{position:absolute;left:12px;top:12px;height:26px;padding:0 10px;border-radius:13px;background:rgba(0,0,0,.45);color:#fff;font-size:12px;display:flex;align-items:center;gap:6px}
@@ -166,9 +166,9 @@ svg{display:block}
 .vfb[hidden],.vf img[hidden]{display:none!important}
 .vfb{position:absolute;width:40px;height:40px;border-radius:20px;background:rgba(0,0,0,.45);color:#fff;display:grid;place-items:center}
 .shut{flex:none;display:grid;place-items:center;padding:12px 0 2px}
-.shutter{width:64px;height:64px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;transition:transform .2s}
+.shutter{width:var(--sh,64px);height:var(--sh,64px);border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;transition:transform .2s}
 .shutter:active{transform:scale(.94)}
-.shutter i{width:50px;height:50px;border-radius:50%;background:var(--ink);transition:all .25s cubic-bezier(.2,.8,.2,1)}
+.shutter i{width:calc(var(--sh,64px) - 14px);height:calc(var(--sh,64px) - 14px);border-radius:50%;background:var(--ink);transition:all .25s cubic-bezier(.2,.8,.2,1)}
 .shutter.v{border-color:var(--ink)}.shutter.v i{background:var(--ink)}
 .shutter.v.rec i{width:26px;height:26px;border-radius:7px}
 .cap-in{width:100%;border:0;outline:0;background:none;resize:none;font-size:16px;line-height:24px;padding:8px 4px 0;text-align:center}
@@ -295,11 +295,11 @@ svg{display:block}
 .sugg2 i{width:1px;height:18px;background:var(--keyfn);opacity:.6}
 .kbb{display:flex;justify-content:space-between;padding:0 18px;color:var(--keytx);opacity:.8;margin-top:auto}
 /* memory deck: a horizontal swipe row with scroll snapping; the centred memory is full size, its neighbours shrink and fade */
-.deck{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:18px 12px 24px;scrollbar-width:none;user-select:none;-webkit-user-select:none;flex:none;cursor:grab}
+.deck{display:flex;gap:var(--mem-gap,12px);overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;padding:18px var(--mem-gut,12px) 24px;scrollbar-width:none;user-select:none;-webkit-user-select:none;flex:none;cursor:grab}
 .deck::-webkit-scrollbar{display:none}
 .deck.drag{scroll-snap-type:none;cursor:grabbing}
 .pb .deck{margin:0 -20px}
-.dcard{position:relative;flex:none;width:100%;height:500px;scroll-snap-align:center;scroll-snap-stop:always;border-radius:24px;overflow:hidden;background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:0 16px 34px -10px rgba(0,0,0,.38),inset 0 0 0 1px rgba(255,255,255,.14);transform:scale(.88);opacity:.45;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .45s ease;-webkit-user-drag:none}
+.dcard{position:relative;flex:none;width:100%;height:var(--mem-h,500px);scroll-snap-align:center;scroll-snap-stop:always;border-radius:24px;overflow:hidden;background-position:center;background-size:cover;background-repeat:no-repeat;box-shadow:0 16px 34px -10px rgba(0,0,0,.38),inset 0 0 0 1px rgba(255,255,255,.14);transform:scale(var(--mem-ns,.88));opacity:var(--mem-no,.45);transition:transform var(--mem-dur,.45s) cubic-bezier(.2,.8,.2,1),opacity var(--mem-dur,.45s) ease;-webkit-user-drag:none}
 .dcard.on{transform:none;opacity:1}
 .dcard:not(.gr){background-color:var(--fill)}
 .dcard .dsh{position:absolute;left:0;right:0;bottom:0;height:58%;background:linear-gradient(to top,rgba(0,0,0,.74),rgba(0,0,0,.34) 52%,transparent)}
@@ -318,7 +318,7 @@ svg{display:block}
 .dcard .dplay{position:absolute;left:50%;top:42%;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;background:rgba(0,0,0,.45);display:grid;place-items:center;color:#fff}
 .dcnt{text-align:center;font-size:12px;color:var(--mute);margin-top:2px;font-variant-numeric:tabular-nums}
 /* photos read as memories, not cards: no edge or shadow, the picture dissolves into the page */
-.dcard.mem{border-radius:0;box-shadow:none;background-color:transparent;-webkit-mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 10%,#000 90%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 10%,#000 90%,transparent);mask-composite:intersect}
+.dcard.mem{--mf:var(--mem-fade,9%);border-radius:0;box-shadow:none;background-color:transparent;-webkit-mask-image:linear-gradient(to right,transparent,#000 var(--mf),#000 calc(100% - var(--mf)),transparent),linear-gradient(to bottom,transparent,#000 var(--mf),#000 calc(100% - var(--mf)),transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 var(--mf),#000 calc(100% - var(--mf)),transparent),linear-gradient(to bottom,transparent,#000 var(--mf),#000 calc(100% - var(--mf)),transparent);mask-composite:intersect}
 .mcap{padding:2px 4px 0;min-height:128px}
 .mcap h3{font-size:18px;font-weight:600;line-height:1.3;letter-spacing:-.01em;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .mcap p{font-size:14px;color:var(--mute);margin-top:4px;line-height:1.45}
@@ -331,6 +331,7 @@ svg{display:block}
 </style>
 
 <div class="hw" id="hw" aria-hidden="true"><i style="left:-18px;top:150px;height:32px"></i><i style="left:-18px;top:210px;height:62px"></i><i style="left:-18px;top:288px;height:62px"></i><i style="right:-18px;top:240px;height:100px"></i><i style="right:-16px;top:520px;height:64px;width:2px"></i></div>
+<style>__DIALKIT_CSS__</style>
 <div class="app" id="app">
   <div class="isl" aria-hidden="true"></div>
   <div class="sbar" aria-hidden="true"><span>9:41</span><span><svg width="18" height="12" viewBox="0 0 18 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y="0" width="3" height="12" rx="1"/></svg><svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.3c2.3 0 4.4.9 6 2.4l1.1-1.2C13.2 1.7 10.7.6 8 .6S2.8 1.7.9 3.5L2 4.7c1.6-1.5 3.7-2.4 6-2.4zm0 3.4c1.4 0 2.6.5 3.6 1.4l1.1-1.2C11.5 4.8 9.8 4.1 8 4.1s-3.5.7-4.7 1.8l1.1 1.2c1-.9 2.2-1.4 3.6-1.4zM8 9.1c-.6 0-1.2.2-1.6.6L8 11.5l1.6-1.8c-.4-.4-1-.6-1.6-.6z"/></svg><svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x=".5" y=".5" width="23" height="12" rx="3.8" stroke="currentColor" opacity=".4"/><rect x="2" y="2" width="20" height="9" rx="2.5" fill="currentColor"/><path d="M25 4.5v4c.8-.3 1.3-1.1 1.3-2s-.5-1.7-1.3-2z" fill="currentColor" opacity=".45"/></svg></span></div>
@@ -571,7 +572,7 @@ function deckCard(m){
 function deck(root,list,onChange){
   const n=list.length,els=list.map(m=>{const c=deckCard(m),e=document.createElement('div');e.className='dcard '+c.cls;if(c.bg)e.style.backgroundImage=`url(${c.bg})`;e.innerHTML=c.html;e.style.setProperty('--hr',`${((m.id*17)%50)-25}deg`);root.appendChild(e);return e});
   let cur=-1,raf=0;
-  const step=()=>els[0].offsetWidth+12;
+  const step=()=>els[0].offsetWidth+(parseFloat(getComputedStyle(root).columnGap)||0);
   const upd=()=>{raf=0;const i=Math.max(0,Math.min(n-1,Math.round(root.scrollLeft/step())));if(i===cur)return;cur=i;els.forEach((e,j)=>{e.classList.toggle('on',j===i);const v=e.querySelector('video');if(v)j===i?v.play().catch(()=>{}):v.pause()});if(onChange)onChange(list[i])};
   const go=i=>root.scrollTo({left:((i%n)+n)%n*step(),behavior:'smooth'});
   root.addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(upd)},{passive:true});
@@ -980,3 +981,25 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#lb').classLi
 refresh();setYear(false);syncAcct();openAdd(null,true);
 addEventListener('pointerup',()=>{if(rec&&rec.kind==='voice')stopRec()});addEventListener('pointercancel',()=>{if(rec&&rec.kind==='voice')stopRec()});
 </script>
+<!-- DialKit (MIT, joshpuckett/dialkit): live prototyping dials, desktop only. Loaded after the app so it never delays it. -->
+<script>
+function initDials(){
+  if(!window.DialKit||!matchMedia('(min-width: 900px)').matches)return;
+  const r=document.documentElement.style;
+  DialKit.createDialRoot({position:'top-right',theme:'light',defaultOpen:true});
+  const kit=DialKit.createDialKit('Keep prototype',{
+    Memories:{'Photo height':[500,320,680,4],'Side margin':[12,0,48,1],'Gap':[12,0,40,1],'Edge fade':[9,0,30,1],'Neighbour size':[0.88,0.6,1,0.01],'Neighbour fade':[0.45,0,1,0.01],'Slide speed':[0.45,0.1,1.2,0.05]},
+    Camera:{'Viewfinder radius':[28,0,48,1],'Shutter size':[64,48,88,2],_collapsed:true},
+    Look:{'Accent':'#7B8CF0','Page':'#E9E9EB','Season wash':[1,0,1,0.05],_collapsed:true}
+  },{id:'keep-prototype',persist:true});
+  window.keepDials=kit;
+  kit.subscribe(v=>{
+    const m=v.Memories,c=v.Camera,l=v.Look;
+    r.setProperty('--mem-h',m['Photo height']+'px');r.setProperty('--mem-gut',m['Side margin']+'px');r.setProperty('--mem-gap',m['Gap']+'px');
+    r.setProperty('--mem-fade',m['Edge fade']+'%');r.setProperty('--mem-ns',m['Neighbour size']);r.setProperty('--mem-no',m['Neighbour fade']);r.setProperty('--mem-dur',m['Slide speed']+'s');
+    r.setProperty('--vf-r',c['Viewfinder radius']+'px');r.setProperty('--sh',c['Shutter size']+'px');
+    r.setProperty('--acc',l['Accent']);r.setProperty('--page',l['Page']);r.setProperty('--wash',l['Season wash']);
+  });
+}
+</script>
+<script src="https://cdn.jsdelivr.net/npm/dialkit@2.0.2/dist/vanilla/browser.global.js" async onload="initDials()"></script>
