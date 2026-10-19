@@ -3499,7 +3499,7 @@ const PH={text:'What do you want to keep?',quote:'The words, exactly as said',pe
 const P1={quote:'Said by',person:'Name',place:'Place name',file:'File name'};
 ic.cam=st('<path d="M4 8.5A2.5 2.5 0 016.5 6h1.2l1.3-2h6l1.3 2h1.2A2.5 2.5 0 0120 8.5v8a2.5 2.5 0 01-2.5 2.5h-11A2.5 2.5 0 014 16.5z"/><circle cx="12" cy="12.5" r="3.4"/>',1.6);
 ic.dots='<svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5.5" cy="12" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="18.5" cy="12" r="1.7"/></svg>';
-let lastAr='4 / 3';let mode='photo',moreT='quote',stream=null,live=false,rec=null,cap={photo:null,video:null,voice:null},newM={},facing='environment';
+let camErr='';let lastAr='4 / 3';let mode='photo',moreT='quote',stream=null,live=false,rec=null,cap={photo:null,video:null,voice:null},newM={},facing='environment';
 /* ---------- real capture: kept on this phone in IndexedDB, metadata in localStorage ---------- */
 const KDB={db:null,open(){return this.db||(this.db=new Promise((ok,no)=>{try{const r=indexedDB.open('keep-media',1);r.onupgradeneeded=()=>r.result.createObjectStore('m');r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)}catch(e){no(e)}}))},
   async tx(mode,fn){const d=await this.open();return new Promise((ok,no)=>{const t=d.transaction('m',mode),q=fn(t.objectStore('m'));t.oncomplete=()=>ok(q&&q.result);t.onerror=()=>no(t.error)})},
@@ -3523,7 +3523,7 @@ async function startCam(){
     const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:facing,width:{ideal:1280},height:{ideal:960}},audio:false});
     const v=$('#cam');if(!v||!(mode==='photo'||mode==='video')){st.getTracks().forEach(t=>t.stop());return}
     stream=st;v.srcObject=stream;v.classList.toggle('selfie',facing==='user');v.style.display='block';$('#fbk').style.display='none';live=true;demoVid();$('#vflab').innerHTML='Camera';$('#flip').hidden=false;
-  }catch(e){live=false;const l=$('#vflab');if(l)l.innerHTML='Tap the shutter to use your camera'}
+  }catch(e){live=false;camErr=(e&&e.name)||'unsupported';const l=$('#vflab');if(l)l.innerHTML='Tap the shutter to use your camera'}
 }
 function flipCam(){if(rec)return;facing=facing==='user'?'environment':'user';stopCam();startCam()}
 function frame(){
@@ -3595,9 +3595,9 @@ function showShot(){
   demoVid();
 }
 async function shutter(){
-  if(mode==='photo'){if(!live){$('#capP').click();return}cap.photo=frame();showShot();validate();return}
+  if(!live&&!rec){await startCam();if(!live){$(mode==='photo'?'#capP':'#capV').click();return}if(mode==='photo')return}
+  if(mode==='photo'){cap.photo=frame();showShot();validate();return}
   if(rec){stopRec();return}
-  if(!live){$('#capV').click();return}
   const t0=Date.now(),l=$('#vflab');
   rec={t0,iv:setInterval(()=>{l.innerHTML='<i></i>'+fmt((Date.now()-t0)/1000)},250),kind:'video',poster:frame()};
   l.classList.add('rec');l.innerHTML='<i></i>0:00';$('#shutter').classList.add('rec');$('#flip').hidden=true;
