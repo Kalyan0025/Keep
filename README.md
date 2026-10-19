@@ -12,3 +12,7 @@ Prototyping dials: a [DialKit](https://github.com/joshpuckett/dialkit) panel (MI
 
 Design: the Keep for Meta design system by default (Meta-style greys, one blue for the primary action, pill controls, Optimistic with Figtree as the fallback, and a blue-to-pink AI gradient used only on Meta AI moments: the Ask bar while in use, today's ring, the voice orb, the Keep mark). The original look, built on OpenAI apps-sdk-ui tokens with seasonal mesh gradients, is one switch away in the DialKit panel (Look > Design system). Both are token layers in `src/app.src.html`, switched by `data-ds` on the root element.
 Demo data is sample content. Search is keyword matching, voice and video recording are simulated unless the browser grants camera and microphone access.
+
+## Open it on your phone (live camera and mic)
+
+The camera and microphone only work on a page served over HTTPS, not inside an embedded viewer. `.github/workflows/pages.yml` publishes `index.html` to GitHub Pages. One-time setup: repo **Settings → Pages → Source: GitHub Actions**, then run the workflow (Actions → Deploy Keep to GitHub Pages → Run workflow). The page is at `https://<owner>.github.io/Keep/`.
