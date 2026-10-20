@@ -457,10 +457,9 @@ svg{display:block}
 
 /* capture: the camera fills the whole phone and dissolves into the page at the edges, like a memory; the controls sit on the mist */
 .ov{--sb:var(--sab,env(safe-area-inset-bottom,0px));--st:var(--sat,env(safe-area-inset-top,0px))}
-.ov .canvas{position:absolute;inset:0;flex:none}
-.ov .ot{position:absolute;left:0;right:0;top:0;z-index:6}
-.ov .modes{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:10px 16px calc(var(--sb) + 16px)}
-.pane:not([data-p="cam"]){padding:calc(var(--st) + 64px) 16px calc(var(--sb) + 92px)}
+.ov.fb .canvas{position:absolute;inset:0;flex:none}
+.ov.fb .ot{position:absolute;left:0;right:0;top:0;z-index:6}
+.ov.fb .modes{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:10px 16px calc(var(--sb) + 16px)}
 .pane[data-p="cam"]{padding:0}
 .vfw{position:absolute;inset:0}
 .vf{position:absolute;inset:0;border-radius:0;border:0;background:var(--bg);flex:none;-webkit-mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 13%,#000 72%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 13%,#000 72%,transparent);mask-composite:intersect}
@@ -976,6 +975,7 @@ function setMode(m,first){
   document.querySelectorAll('.pane').forEach(x=>x.classList.toggle('on',x.dataset.p===p));
   $('#otitle').textContent=titleFor();
   const sh=$('#shutter');sh.classList.toggle('v',m==='video');sh.classList.remove('rec');
+  $('#ov').classList.toggle('fb',p==='cam');
   if(p==='cam'){showShot();if(!stream)startCam()}else{stopCam()}
   if(p!=='voice'){const a=$('#vplay');if(a)a.pause()}
   demoVid();
