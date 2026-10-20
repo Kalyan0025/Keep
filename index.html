@@ -446,6 +446,29 @@ svg{display:block}
 .wbai .im{margin-top:12px;aspect-ratio:3/4;border-radius:16px;background-size:cover;background-position:center;background-color:var(--fill);position:relative;overflow:hidden}
 .wbai .im.ld::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.55) 50%,transparent 80%);background-size:250% 100%;animation:wbsh 1.1s linear infinite}
 @keyframes wbsh{from{background-position:150% 0}to{background-position:-100% 0}}
+.wbm .wbask{position:absolute;left:20px;right:20px;top:calc(var(--sat,env(safe-area-inset-top,0px)) + 62px);z-index:2;text-align:center;color:#fff;font-size:15px;font-weight:600;text-shadow:0 1px 8px rgba(0,0,0,.55)}
+.wbfr{border-radius:24px;padding:14px;background:var(--fill)}
+.wbchip{display:inline-flex;align-items:center;height:26px;padding:0 12px;border-radius:13px;font-size:12px;font-weight:600;color:var(--on-blue,#fff);background:linear-gradient(90deg,var(--ai1,#0082FB),var(--ai2,#8A5CF6),var(--ai3,#F2589D))}
+.wbfi{margin-top:12px;aspect-ratio:4/5;border-radius:18px;background-size:cover;background-position:center}
+.wbmt2{height:6px;border-radius:3px;background:var(--fill2);margin-top:12px;overflow:hidden}.wbmt2 i{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,var(--ai1,#0082FB),var(--ai2,#8A5CF6),var(--ai3,#F2589D))}
+.wbav .wbavl{position:absolute;inset:0;pointer-events:none}.wbav .av3{position:absolute;transform:translate(-50%,-100%);animation:avb 3.2s ease-in-out infinite alternate;filter:drop-shadow(0 8px 12px rgba(0,0,0,.35))}.wbav .av3 svg{display:block;width:100%;height:auto}
+@keyframes avb{from{transform:translate(-50%,-100%)}to{transform:translate(-50%,calc(-100% - 5px))}}
+.wbav .wbbot .wbbtn.p{background:var(--blue,#0064E0);color:#fff}
+
+/* capture: the camera fills the whole phone and dissolves into the page at the edges, like a memory; the controls sit on the mist */
+.ov{--sb:var(--sab,env(safe-area-inset-bottom,0px));--st:var(--sat,env(safe-area-inset-top,0px))}
+.ov .canvas{position:absolute;inset:0;flex:none}
+.ov .ot{position:absolute;left:0;right:0;top:0;z-index:6}
+.ov .modes{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:10px 16px calc(var(--sb) + 16px)}
+.pane:not([data-p="cam"]){padding:calc(var(--st) + 64px) 16px calc(var(--sb) + 92px)}
+.pane[data-p="cam"]{padding:0}
+.vfw{position:absolute;inset:0}
+.vf{position:absolute;inset:0;border-radius:0;border:0;background:var(--bg);flex:none;-webkit-mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 13%,#000 72%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 13%,#000 72%,transparent);mask-composite:intersect}
+.vflab{left:16px;top:calc(var(--st) + 62px);z-index:3}
+.vfa{right:16px;top:calc(var(--st) + 62px)}
+.vfb{z-index:3;bottom:calc(var(--sb) + 124px)}.vfb.vl{left:24px}.vfb.vr{right:24px}
+.pane[data-p="cam"] .shut{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 112px);padding:0;z-index:3}
+.pane[data-p="cam"] .cap-in{position:absolute;left:24px;right:24px;bottom:calc(var(--sb) + 72px);width:auto;padding:4px;z-index:3}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 </style>
 
@@ -3606,10 +3629,10 @@ function openAdd(dayKey,landing){
   newM={day:dayKey||dk(TODAY),landing:!!landing};mode='photo';moreT='quote';cap={photo:null,video:null,voice:null};
   $('#ov').innerHTML=`<div class="ot">${landing?`<button class="acctb" id="ox" aria-label="${acct?'Account':'Log in'}">${acctHTML()}</button>`:`<button class="ib" id="ox" aria-label="Close">${ic.x}</button>`}<div class="title" id="otitle">Photo</div><button class="keepb" id="keep" disabled>Keep</button></div>
   <div class="canvas">
-   <section class="pane on" data-p="cam"><div class="vf" id="vf"><video id="cam" playsinline muted autoplay></video><div class="fbk" id="fbk" style="background-image:url(${IMG.mug||''})"></div><video id="fbkv" muted loop playsinline preload="auto">${vsources('bouquet')}</video><img id="shot" alt="" hidden><video id="shotv" playsinline loop hidden></video><div class="vflab" id="vflab">Demo viewfinder</div>
-      <label class="vfb" id="libb" style="left:12px;bottom:12px" aria-label="Choose from library">${ic.img.replace('width="22" height="22"','width="20" height="20"')}<input type="file" id="lib" accept="image/*,video/*" hidden></label>
-      <button class="vfb" id="flip" style="right:12px;bottom:12px" hidden aria-label="Switch camera"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9a8 8 0 0114-3l2 2M20 15a8 8 0 01-14 3l-2-2"/><path d="M20 4v4h-4M4 20v-4h4"/></svg></button>
-      <button class="vfb" id="retake" style="right:12px;bottom:12px" hidden aria-label="Retake">${ic.x.replace('width="22" height="22"','width="18" height="18"')}</button>
+   <section class="pane on" data-p="cam"><div class="vfw"><div class="vf" id="vf"><video id="cam" playsinline muted autoplay></video><div class="fbk" id="fbk" style="background-image:url(${IMG.mug||''})"></div><video id="fbkv" muted loop playsinline preload="auto">${vsources('bouquet')}</video><img id="shot" alt="" hidden><video id="shotv" playsinline loop hidden></video></div><div class="vflab" id="vflab">Demo viewfinder</div>
+      <label class="vfb vl" id="libb" aria-label="Choose from library">${ic.img.replace('width="22" height="22"','width="20" height="20"')}<input type="file" id="lib" accept="image/*,video/*" hidden></label>
+      <button class="vfb vr" id="flip" hidden aria-label="Switch camera"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9a8 8 0 0114-3l2 2M20 15a8 8 0 01-14 3l-2-2"/><path d="M20 4v4h-4M4 20v-4h4"/></svg></button>
+      <button class="vfb vr" id="retake" hidden aria-label="Retake">${ic.x.replace('width="22" height="22"','width="18" height="18"')}</button>
       <button class="vfa" id="auto" aria-pressed="true" aria-label="Send to calendar after capture"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span></span></button><input type="file" id="capP" accept="image/*" capture="environment" hidden><input type="file" id="capV" accept="video/*" capture="environment" hidden></div>
      <div class="shut"><button class="shutter" id="shutter" aria-label="Capture"><i></i></button></div>
      <textarea class="cap-in" id="capIn" rows="1" placeholder="Add a line (optional)"></textarea></section>
@@ -3836,10 +3859,10 @@ async function openWalk(){
   try{localStorage.setItem('keep.fwSeen','1')}catch(e){}const b=$('#ovWalk');if(b)b.classList.remove('new');
   $('#wb').classList.add('on');$('#wb').setAttribute('aria-hidden','false');await fwLoad();WB.done={};wbHome();
 }
-function closeWalk(){wbStopMatch();wbStopGPS();$('#wb').classList.remove('on');$('#wb').setAttribute('aria-hidden','true')}
+function closeWalk(){wbStopAv();wbStopMatch();wbStopGPS();$('#wb').classList.remove('on');$('#wb').setAttribute('aria-hidden','true')}
 const wbHead=(t,back)=>`<div class="wbh"><button class="ib" id="wbx" aria-label="${back?'Back':'Close'}">${back?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>':ic.x}</button><div class="t">${t}</div><div style="width:40px"></div></div>`;
 function wbHome(){
-  wbStopMatch();wbStopGPS();const L=wbSpots();
+  wbStopAv();wbStopMatch();wbStopGPS();const L=wbSpots();
   $('#wb').innerHTML=wbHead('First weeks')+`<div class="wbb"><h1>Bring in your first weeks</h1><p class="sub">Add two weeks to a month of photos. Keep remembers where each one was taken and which way you were facing. When you walk back, hold up your phone and look for it.</p>
    <div class="wbs"><span>${L.length} moments</span><span>${L.length} places</span><span>${WB.fw.length?WB.fw.length+' yours':'sample set'}</span></div>
    <div class="wbg">${L.map(x=>`<div><div class="wbt${WB.done[x.id]?' done':''}" style="background-image:url(${x.src})"><b>${dayLab(x)}</b>${WB.done[x.id]?'<i>✓</i>':''}</div><small>${esc(x.name)}${x.approx?' · near you':''}</small></div>`).join('')}</div>
@@ -3855,7 +3878,7 @@ function wbPos(){
   const a=40*Math.PI/180;return{lat:t.lat+WB.d*Math.sin(a)/MLAT,lng:t.lng+WB.d*Math.cos(a)/mlng()};
 }
 function wbWalk(){
-  wbStopMatch();WB.target=wbNext();
+  wbStopAv();wbStopMatch();WB.target=wbNext();
   if(!WB.target){$('#wb').innerHTML=wbHead('All matched')+`<div class="wbb"><h1>Every place matched</h1><p class="sub">You found all of your first weeks again.</p><button class="wbbtn p" id="wbdone">Done</button></div>`;$('#wbx').onclick=closeWalk;$('#wbdone').onclick=closeWalk;return}
   WB.sim=true;WB.d=240;
   $('#wb').innerHTML=wbHead('Walking',true)+`<div class="wbb"><div class="wbrad" id="wbrad"></div><div class="wbd" id="wbdist"></div>
@@ -3905,7 +3928,7 @@ async function wbMatch(spot){
   const timg=new Image();timg.src=spot.src;await new Promise(ok=>{timg.onload=ok;timg.onerror=ok});WM.timg=timg;WM.tsig=sig(timg,24,32);
   $('#wb').innerHTML=`<div class="wbm" id="wbm"><div id="wbview"></div><img class="wbgh" id="wbgh" alt="" src="${spot.src}"><div class="fogw"><i></i><i></i><i></i><i></i></div>
    <div class="wbtop"><button class="ib" id="wbx" aria-label="Back">${ic.x}</button><div class="t">${esc(spot.name)}</div><div style="width:40px"></div></div>
-   <div class="wbedge" id="wbedge" aria-hidden="true"></div>
+   <div class="wbask">Match the photo with the real-world view</div><div class="wbedge" id="wbedge" aria-hidden="true"></div>
    <div class="wbbot"><div class="wbmt"><i id="wbmeter"></i></div><div class="wbhint" id="wbhint">Starting the camera…</div></div></div>`;
   $('#wbx').onclick=()=>wbWalk();
   try{
@@ -3963,29 +3986,53 @@ function wbMatched(){
   wbStopMatch();WB.done[spot.id]=1;
   setTimeout(()=>wbReveal(spot,now,live,pct),650);
 }
-/* Meta AI plug-in point: today this is an on-device stylisation so the screen can be designed; swap in Meta AI's avatar image generation here */
-async function metaRecreate(src){
-  await new Promise(r=>setTimeout(r,1100));
-  const im=await new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.src=src}),w=540,h=Math.round(540*im.height/im.width),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
-  x.filter='saturate(1.35) contrast(1.08) blur(1.2px)';x.drawImage(im,0,0,w,h);x.filter='none';
-  const d=x.getImageData(0,0,w,h),p=d.data;for(let i=0;i<p.length;i+=4){for(let k=0;k<3;k++)p[i+k]=Math.round(p[i+k]/42)*42}x.putImageData(d,0,0);
-  x.globalCompositeOperation='soft-light';const g=x.createLinearGradient(0,0,w,h);g.addColorStop(0,'rgba(0,130,251,.55)');g.addColorStop(.55,'rgba(138,92,246,.45)');g.addColorStop(1,'rgba(242,88,157,.55)');x.fillStyle=g;x.fillRect(0,0,w,h);
-  x.globalCompositeOperation='screen';x.filter='blur(14px)';x.globalAlpha=.35;x.drawImage(im,0,0,w,h);
-  return c.toDataURL('image/jpeg',.85);
+/* Meta AI avatars: flat illustrated people placed where the people in the photo were. Today they are drawn on the device from a small scene description,
+   which is the plug-in point for Meta AI's avatar generation: swap avatarsFor() for a call that returns avatars for this photo. */
+const AV_COL={orange:'#F28A3D',purple:'#9B7BF2',blue:'#2F8FF5',pink:'#F2589D',green:'#3DBE8B',teal:'#2FB7C4'};
+const AV_SCENES={brownstone:[{x:.34,y:.78,s:.30,c:'orange',pose:'sit'},{x:.64,y:.78,s:.30,c:'purple',pose:'sit'}],library:[{x:.5,y:.8,s:.34,c:'blue',pose:'sit'}],park:[{x:.36,y:.8,s:.32,c:'pink',pose:'sit'},{x:.66,y:.8,s:.32,c:'teal',pose:'sit'}],bike:[{x:.62,y:.82,s:.34,c:'green',pose:'stand'}],lake:[{x:.38,y:.84,s:.3,c:'orange',pose:'stand'},{x:.62,y:.84,s:.3,c:'purple',pose:'stand'}],coast:[{x:.5,y:.82,s:.32,c:'blue',pose:'sit'}]};
+function avatarsFor(spot){const k=spot.id&&spot.id.startsWith('d')?spot.id.slice(1):'';return AV_SCENES[k]||[{x:.38,y:.78,s:.30,c:'orange',pose:'sit'},{x:.64,y:.78,s:.30,c:'purple',pose:'sit'}]}
+function avatarSVG(a){
+  const sh=AV_COL[a.c]||a.c,sk=a.c==='purple'||a.c==='pink'?'#F1C7A5':'#E7B48C',hair=a.c==='orange'?'#2B2B33':a.c==='blue'?'#6B4A33':'#3A2A4A',pn='#3B4256',sit=a.pose==='sit';
+  const legs=sit?`<rect x="33" y="76" width="34" height="15" rx="7.5" fill="${pn}"/><rect x="33" y="86" width="14" height="40" rx="7" fill="${pn}"/><rect x="53" y="86" width="14" height="40" rx="7" fill="${pn}"/><ellipse cx="40" cy="128" rx="10" ry="5" fill="#E8E8EE"/><ellipse cx="60" cy="128" rx="10" ry="5" fill="#E8E8EE"/>`:`<rect x="34" y="74" width="14" height="52" rx="7" fill="${pn}"/><rect x="52" y="74" width="14" height="52" rx="7" fill="${pn}"/><ellipse cx="41" cy="128" rx="10" ry="5" fill="#E8E8EE"/><ellipse cx="59" cy="128" rx="10" ry="5" fill="#E8E8EE"/>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 135" width="200" height="270">${legs}<rect x="30" y="36" width="40" height="46" rx="15" fill="${sh}"/><rect x="21" y="40" width="12" height="36" rx="6" fill="${sh}"/><rect x="67" y="40" width="12" height="36" rx="6" fill="${sh}"/><circle cx="27" cy="79" r="6" fill="${sk}"/><circle cx="73" cy="79" r="6" fill="${sk}"/><rect x="44" y="28" width="12" height="12" rx="4" fill="${sk}"/><circle cx="50" cy="22" r="14" fill="${sk}"/><path d="M35 22c0-13 8-18 15-18s15 5 15 18c-5-7-9-9-15-9s-10 2-15 9z" fill="${hair}"/></svg>`;
 }
+let AV=null;
+function wbStopAv(){if(AV){AV.done=true;cancelAnimationFrame(AV.raf);if(AV.stream)AV.stream.getTracks().forEach(t=>t.stop())}AV=null}
 function wbReveal(spot,now,live,pct){
-  $('#wb').innerHTML=wbHead('Found it',true)+`<div class="wbb"><h1>You found it</h1><p class="sub">${esc(spot.name)} · ${dayLab(spot).toLowerCase()} · ${pct}% match${live?'':' (demo)'}</p>
-   <div class="wbpair"><div style="background-image:url(${spot.src})"><span>Then</span></div><div style="background-image:url(${now})"><span>Now</span></div></div>
-   <div class="wbai"><div><h3>Meta AI avatar scene <em>Preview</em></h3><p class="sub" style="font-size:13px;margin-top:4px">Recreate this memory with avatars, as an illustrated scene.</p><div class="im" id="wbai" hidden></div><button class="wbbtn" id="wbre">Recreate with Meta AI</button></div></div>
-   <button class="wbbtn p" id="wbkeep">Keep then &amp; now</button><button class="wbbtn" id="wbnext">Next place</button>
-   <p class="wbnote">The recreation here is an on-device style preview. Meta AI's real avatar image generation plugs in at this step.</p></div>`;
-  $('#wbx').onclick=wbHome;let ai=null;
-  $('#wbre').onclick=async()=>{const im=$('#wbai'),b=$('#wbre');b.disabled=true;b.textContent='Recreating…';im.hidden=false;im.classList.add('ld');ai=await metaRecreate(live?now:spot.src);im.classList.remove('ld');im.style.backgroundImage=`url(${ai})`;b.textContent='Recreate again';b.disabled=false};
+  const L=wbSpots(),n=Object.keys(WB.done).length;
+  $('#wb').innerHTML=wbHead('Memory recovered',true)+`<div class="wbb"><div class="wbfr"><span class="wbchip">Memory fragments recovered</span><div class="wbfi" style="background-image:url(${spot.src})"></div><h1 style="font-size:22px;margin-top:14px">${esc(spot.name)}</h1><p class="sub">${esc(dayLab(spot))} · ${pct}% match${live?'':' · preview'}</p><div class="wbmt2"><i style="width:${Math.round(n/L.length*100)}%"></i></div><p class="wbnote" style="margin-top:6px">${n} of ${L.length} places found again</p></div>
+   <button class="wbbtn p" id="wbre">See who was there with Meta AI</button><button class="wbbtn" id="wbnext">Skip to the next place</button>
+   <p class="wbnote">Meta AI recreates the people in this memory as avatars and places them in the real scene. Here they are drawn on your device from a small scene description; Meta AI's avatar generation plugs in at this step.</p></div>`;
+  $('#wbx').onclick=wbHome;$('#wbre').onclick=()=>wbAvatars(spot,live);$('#wbnext').onclick=()=>wbWalk();
+}
+/* the avatars stand where the people stood in the photo and stay put in the world as you move the phone */
+async function wbAvatars(spot,live){
+  wbStopAv();const av=avatarsFor(spot);
+  AV={spot,av,done:false,mode:'demo',t0:performance.now()};
+  $('#wb').innerHTML=`<div class="wbm wbav" id="wbav" style="--fog:0"><div id="wbview"></div><div class="wbavl" id="wbavl">${av.map((a,i)=>`<div class="av3" style="left:${a.x*100}%;top:${a.y*100}%;width:${a.s*100}%;animation-delay:${-i*.9}s">${avatarSVG(a)}</div>`).join('')}</div>
+   <div class="wbtop"><button class="ib" id="wbx" aria-label="Back">${ic.x}</button><div class="t">${esc(spot.name)}</div><div style="width:40px"></div></div>
+   <div class="wbbot"><span class="wbchip" style="background:rgba(255,255,255,.16);color:#fff">Meta AI avatars · preview</span><div class="wbhint" style="text-align:left;font-size:20px;font-weight:600;margin:8px 0 14px">And discover the details you missed</div><button class="wbbtn p" id="wbkeep" style="margin-top:0">Keep then &amp; now</button><button class="wbbtn" id="wbnext" style="background:rgba(255,255,255,.18);color:#fff">Next place</button></div></div>`;
+  $('#wbx').onclick=()=>{wbStopAv();wbHome()};$('#wbnext').onclick=()=>{wbStopAv();wbWalk()};
+  try{
+    if(!live||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw 0;
+    const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:960},height:{ideal:1280}},audio:false});
+    if(!AV||AV.spot!==spot){st.getTracks().forEach(t=>t.stop());return}
+    AV.stream=st;AV.mode='cam';$('#wbview').outerHTML='<video id="wbcam" playsinline muted autoplay></video>';$('#wbcam').srcObject=st;
+  }catch(e){$('#wbview').outerHTML=`<div class="wbdemo" id="wbdemo" style="background:center/cover url(${spot.src})"><span style="color:#fff;background:rgba(0,0,0,.35);width:max-content;margin:0 auto;padding:4px 10px;border-radius:12px">Preview. On your phone the avatars appear in your live camera.</span></div>`}
+  const loop=()=>{if(!AV||AV.done)return;AV.raf=requestAnimationFrame(loop);const root=$('#wbav'),l=$('#wbavl');if(!root||!l)return;
+    if(AV.mode==='cam'&&spot.hd!==undefined&&OR.h!==null){const x=angd(spot.hd,OR.h)/HFOV*root.clientWidth,y=-((spot.pt||0)-(OR.p||0))/VFOV*root.clientHeight;l.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`}};
+  AV.raf=requestAnimationFrame(loop);
   $('#wbkeep').onclick=async()=>{
     const o={id:Date.now(),ts:Date.now(),type:'photo',ar:'3 / 4',text:'Then & now · '+spot.name,geo:{lat:spot.lat,lng:spot.lng}};
-    try{const bl=await dataBlob(now);await KDB.put(o.id,{photo:bl});o.idb=1;o.src=url(bl)}catch(e){o.src=now}
+    try{
+      const c=document.createElement('canvas'),v=$('#wbcam');let w=720,h=960;
+      if(v&&v.videoWidth){const k=Math.min(1,1080/Math.max(v.videoWidth,v.videoHeight));w=v.videoWidth*k;h=v.videoHeight*k}
+      c.width=w;c.height=h;const x=c.getContext('2d');
+      if(v&&v.videoWidth)x.drawImage(v,0,0,w,h);else{const im=await new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.src=spot.src});const k=Math.max(w/im.width,h/im.height);x.drawImage(im,(w-im.width*k)/2,(h-im.height*k)/2,im.width*k,im.height*k)}
+      for(const a of AV.av){const im=await new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.src='data:image/svg+xml;utf8,'+encodeURIComponent(avatarSVG(a))}),aw=a.s*w,ah=aw*1.35;x.drawImage(im,a.x*w-aw/2,a.y*h-ah,aw,ah)}
+      const bl=await dataBlob(c.toDataURL('image/jpeg',.85));await KDB.put(o.id,{photo:bl});o.idb=1;o.src=url(bl);
+    }catch(e){o.src=spot.src}
     user.push(o);persist();refresh();toast('Kept to your calendar');$('#wbkeep').disabled=true;$('#wbkeep').textContent='Kept'};
-  $('#wbnext').onclick=()=>wbWalk();
 }
 /* ---------- theme: always opens in light; only the Profile switch changes it, so a host page's dark setting can't override it ---------- */
 document.documentElement.dataset.ds=document.documentElement.dataset.ds||'meta';
