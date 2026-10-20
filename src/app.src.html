@@ -492,6 +492,10 @@ svg{display:block}
 .wbm .wbdemo{background:var(--fill)}.wbm .wbdemo span{color:var(--mute)}
 .wbav .wbbot .wbbtn{background:var(--fill);color:var(--ink)}.wbav .wbbot .wbbtn.p{background:var(--blue,#0064E0);color:#fff}
 .wbav .av3{z-index:2}
+.wbav .eyes{position:absolute;inset:0;display:flex}.wbav .eye{position:relative;flex:1;overflow:hidden;background:var(--bg)}.wbav .eye[data-e="1"]{display:none}
+.wbav .eyebg{position:absolute;inset:0;background:var(--fill)}.wbav .wbdemo-note{position:absolute;left:0;right:0;top:calc(var(--sat,env(safe-area-inset-top,0px)) + 64px);text-align:center;color:var(--mute);font-size:13px;padding:0 24px}
+.wbav.vr .eye[data-e="1"]{display:block}.wbav.vr .eye+.eye{box-shadow:-1px 0 0 rgba(0,0,0,.4)}.wbav.vr .wbbot,.wbav.vr .wbtop{display:none}
+.wbav .wbvrx{display:none;position:absolute;left:50%;top:10px;margin-left:-20px;z-index:5;background:rgba(0,0,0,.55);color:#fff}.wbav.vr .wbvrx{display:grid}
 .wbav .av3.bust{-webkit-mask-image:linear-gradient(to bottom,#000 78%,transparent);mask-image:linear-gradient(to bottom,#000 78%,transparent)}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 </style>
@@ -1156,7 +1160,7 @@ function locNow(){try{navigator.geolocation.getCurrentPosition(p=>{LOC={lat:p.co
 /* ---------- First weeks: upload the first couple of weeks, then match each place again when you walk past ---------- */
 const wbSeen=()=>{try{return localStorage.getItem('keep.fwSeen')==='1'}catch(e){return true}};
 const WB={a:{lat:33.4255,lng:-111.94},spots:[],fw:[],target:null,sim:true,d:220,cur:null,watch:null,done:{}};
-const DEMO_SPOTS=[['dinner','Garden lunch',.0006,-.0009,3,95],['potting','Moving-in day',-.0004,.0016,6,210],['brownstone','Brownstone steps',-.0012,.0007,2,40],['library','The library',.0009,.0011,5,120],['park','Park bench',.0016,-.0004,8,200],['bike','Bike rack on Mill',-.0008,-.0013,11,285],['lake','Lake path',.0004,-.0019,14,320],['coast','Rocky overlook',.0021,.0012,18,75]];
+const DEMO_SPOTS=[['summit','Summit rock',.0003,.0004,4,150],['dinner','Garden lunch',.0006,-.0009,3,95],['potting','Moving-in day',-.0004,.0016,6,210],['brownstone','Brownstone steps',-.0012,.0007,2,40],['library','The library',.0009,.0011,5,120],['park','Park bench',.0016,-.0004,8,200],['bike','Bike rack on Mill',-.0008,-.0013,11,285],['lake','Lake path',.0004,-.0019,14,320],['coast','Rocky overlook',.0021,.0012,18,75]];
 const dayLab=x=>x.lab||'Day '+x.day;
 const MLAT=111320,mlng=()=>111320*Math.cos(WB.a.lat*Math.PI/180);
 const ofs=(a,b)=>({x:(b.lng-a.lng)*mlng(),y:(b.lat-a.lat)*MLAT});
@@ -1318,15 +1322,16 @@ function wbMatched(){
 /* Meta AI avatars: flat illustrated people placed where the people in the photo were. Today they are drawn on the device from a small scene description,
    which is the plug-in point for Meta AI's avatar generation: swap avatarsFor() for a call that returns avatars for this photo. */
 const AV_COL={orange:'#F28A3D',purple:'#9B7BF2',blue:'#2F8FF5',pink:'#F2589D',green:'#3DBE8B',teal:'#2FB7C4',cream:'#F1E3CC',beige:'#E4CDAA',white:'#F6F3EC'};
-const AV_SCENES={dinner:[{x:.2,y:.8,s:.4,c:'cream',pose:'bust',hair:'long'},{x:.5,y:.76,s:.4,c:'beige',pose:'bust',hair:'curly'},{x:.84,y:.8,s:.4,c:'white',pose:'bust',hair:'short'}],potting:[{x:.3,y:.78,s:.42,c:'white',pose:'bust',hair:'short'},{x:.76,y:.82,s:.4,c:'cream',pose:'bust',hair:'long'}],brownstone:[{x:.34,y:.78,s:.30,c:'orange',pose:'sit'},{x:.64,y:.78,s:.30,c:'purple',pose:'sit'}],library:[{x:.5,y:.8,s:.34,c:'blue',pose:'sit'}],park:[{x:.36,y:.8,s:.32,c:'pink',pose:'sit'},{x:.66,y:.8,s:.32,c:'teal',pose:'sit'}],bike:[{x:.62,y:.82,s:.34,c:'green',pose:'stand'}],lake:[{x:.38,y:.84,s:.3,c:'orange',pose:'stand'},{x:.62,y:.84,s:.3,c:'purple',pose:'stand'}],coast:[{x:.5,y:.82,s:.32,c:'blue',pose:'sit'}]};
+const AV_SCENES={summit:[{x:.415,y:.92,s:.32,c:'#4A4F5E',pose:'stand',hair:'cap',cap:'#8E3A3A',pants:'#1D1D22',skin:'#EBC09C'},{x:.5,y:.87,s:.34,c:'#7B7568',pose:'stand',hair:'cap',cap:'#2A292D',pants:'#4F6C99',skin:'#B98A63'},{x:.605,y:.89,s:.35,c:'#1F2024',pose:'stand',hair:'curly',pants:'#2F6FD0',skin:'#E2AE86'}],dinner:[{x:.2,y:.8,s:.4,c:'cream',pose:'bust',hair:'long'},{x:.5,y:.76,s:.4,c:'beige',pose:'bust',hair:'curly'},{x:.84,y:.8,s:.4,c:'white',pose:'bust',hair:'short'}],potting:[{x:.3,y:.78,s:.42,c:'white',pose:'bust',hair:'short'},{x:.76,y:.82,s:.4,c:'cream',pose:'bust',hair:'long'}],brownstone:[{x:.34,y:.78,s:.30,c:'orange',pose:'sit'},{x:.64,y:.78,s:.30,c:'purple',pose:'sit'}],library:[{x:.5,y:.8,s:.34,c:'blue',pose:'sit'}],park:[{x:.36,y:.8,s:.32,c:'pink',pose:'sit'},{x:.66,y:.8,s:.32,c:'teal',pose:'sit'}],bike:[{x:.62,y:.82,s:.34,c:'green',pose:'stand'}],lake:[{x:.38,y:.84,s:.3,c:'orange',pose:'stand'},{x:.62,y:.84,s:.3,c:'purple',pose:'stand'}],coast:[{x:.5,y:.82,s:.32,c:'blue',pose:'sit'}]};
 function avatarsFor(spot){const k=spot.id&&spot.id.startsWith('d')?spot.id.slice(1):'';return AV_SCENES[k]||[{x:.38,y:.78,s:.30,c:'orange',pose:'sit'},{x:.64,y:.78,s:.30,c:'purple',pose:'sit'}]}
 function avatarSVG(a){
-  const sh=AV_COL[a.c]||a.c,sk=['purple','pink','cream','beige'].includes(a.c)?'#F1C7A5':'#E7B48C',hc=a.hair==='long'?'#3A2A24':a.hair==='curly'?'#4A3328':a.c==='orange'?'#2B2B33':a.c==='blue'?'#6B4A33':'#2E2A30',pn='#3B4256',sit=a.pose==='sit',bust=a.pose==='bust';
+  const sh=AV_COL[a.c]||a.c,sk=a.skin||(['purple','pink','cream','beige'].includes(a.c)?'#F1C7A5':'#E7B48C'),hc=a.hair==='cap'?'#2E2A30':a.hair==='long'?'#3A2A24':a.hair==='curly'?'#4A3328':a.c==='orange'?'#2B2B33':a.c==='blue'?'#6B4A33':'#2E2A30',pn=a.pants||'#3B4256',sit=a.pose==='sit',bust=a.pose==='bust';
   const legs=bust?'':sit?`<rect x="33" y="76" width="34" height="15" rx="7.5" fill="${pn}"/><rect x="33" y="86" width="14" height="40" rx="7" fill="${pn}"/><rect x="53" y="86" width="14" height="40" rx="7" fill="${pn}"/><ellipse cx="40" cy="128" rx="10" ry="5" fill="#E8E8EE"/><ellipse cx="60" cy="128" rx="10" ry="5" fill="#E8E8EE"/>`:`<rect x="34" y="74" width="14" height="52" rx="7" fill="${pn}"/><rect x="52" y="74" width="14" height="52" rx="7" fill="${pn}"/><ellipse cx="41" cy="128" rx="10" ry="5" fill="#E8E8EE"/><ellipse cx="59" cy="128" rx="10" ry="5" fill="#E8E8EE"/>`;
   const back=a.hair==='long'?`<path d="M33 22c0-14 8-19 17-19s17 5 17 19v34c0 4-3 6-7 6H40c-4 0-7-2-7-6z" fill="${hc}"/>`:'';
   const top=a.hair==='long'?`<path d="M35 24c0-14 7-20 15-20s15 6 15 20c-3-8-7-11-15-11s-12 3-15 11z" fill="${hc}"/>`:a.hair==='curly'?`<g fill="${hc}"><circle cx="38" cy="14" r="8"/><circle cx="50" cy="9" r="9"/><circle cx="62" cy="14" r="8"/><circle cx="35" cy="24" r="6"/><circle cx="65" cy="24" r="6"/></g>`:`<path d="M35 22c0-13 8-18 15-18s15 5 15 18c-5-7-9-9-15-9s-10 2-15 9z" fill="${hc}"/>`;
+  const capEl=a.hair==='cap'?`<path d="M35 19c0-12 7-17 15-17s15 5 15 17z" fill="${a.cap||'#8E3A3A'}"/><rect x="33" y="17" width="34" height="5" rx="2.5" fill="${a.cap||'#8E3A3A'}"/>`:'';
   const vb=bust?'0 0 100 92':'0 0 100 135',h=bust?184:270;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="200" height="${h}">${back}${legs}<rect x="30" y="36" width="40" height="${bust?60:46}" rx="15" fill="${sh}"/><rect x="21" y="40" width="12" height="${bust?44:36}" rx="6" fill="${sh}"/><rect x="67" y="40" width="12" height="${bust?44:36}" rx="6" fill="${sh}"/>${bust?'':`<circle cx="27" cy="79" r="6" fill="${sk}"/><circle cx="73" cy="79" r="6" fill="${sk}"/>`}<rect x="44" y="28" width="12" height="12" rx="4" fill="${sk}"/><circle cx="50" cy="22" r="14" fill="${sk}"/>${top}</svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="200" height="${h}">${back}${legs}<rect x="30" y="36" width="40" height="${bust?60:46}" rx="15" fill="${sh}"/><rect x="21" y="40" width="12" height="${bust?44:36}" rx="6" fill="${sh}"/><rect x="67" y="40" width="12" height="${bust?44:36}" rx="6" fill="${sh}"/>${bust?'':`<circle cx="27" cy="79" r="6" fill="${sk}"/><circle cx="73" cy="79" r="6" fill="${sk}"/>`}<rect x="44" y="28" width="12" height="12" rx="4" fill="${sk}"/><circle cx="50" cy="22" r="14" fill="${sk}"/>${a.hair==='cap'?capEl:top}</svg>`;
 }
 let AV=null;
 function wbStopAv(){if(AV){AV.done=true;cancelAnimationFrame(AV.raf);if(AV.stream)AV.stream.getTracks().forEach(t=>t.stop())}AV=null}
@@ -1339,31 +1344,41 @@ function wbReveal(spot,now,live,pct){
 /* the avatars stand where the people stood in the photo and stay put in the world as you move the phone */
 async function wbAvatars(spot,live){
   wbStopAv();const av=avatarsFor(spot);
-  AV={spot,av,done:false,mode:'demo',t0:performance.now()};
-  $('#wb').innerHTML=`<div class="wbm wbav" id="wbav" style="--fog:0"><div id="wbview"></div><div class="wbimg" id="wbavl">${spot.clean?`<img class="wbgh" alt="" src="${spot.clean}" style="opacity:.92">`:''}${av.map((a,i)=>`<div class="av3${a.pose==='bust'?' bust':''}" style="left:${a.x*100}%;top:${a.y*100}%;width:${a.s*100}%;animation-delay:${-i*.9}s">${avatarSVG(a)}</div>`).join('')}</div><div class="wbmist"></div>
+  AV={spot,av,done:false,mode:'demo',vr:false};
+  const eye=i=>`<div class="eye" data-e="${i}"><div class="eyebg"></div>${spot.clean?`<div class="wbimg plate" data-d="2"><img class="wbgh" alt="" src="${spot.clean}" style="opacity:.92"></div>`:''}<div class="wbimg avl" data-d="14">${av.map((a,k)=>`<div class="av3${a.pose==='bust'?' bust':''}" style="left:${a.x*100}%;top:${a.y*100}%;width:${a.s*100}%;animation-delay:${-k*.9}s">${avatarSVG(a)}</div>`).join('')}</div><div class="wbmist"></div></div>`;
+  $('#wb').innerHTML=`<div class="wbm wbav" id="wbav" style="--fog:0"><div class="eyes" id="eyes">${eye(0)}${eye(1)}</div>
    <div class="wbtop"><button class="ib" id="wbx" aria-label="Back">${ic.x}</button><div class="t">${esc(spot.name)}</div><div style="width:40px"></div></div>
-   <div class="wbbot"><span class="wbchip">Meta AI avatars · preview</span><div class="wbhint" style="text-align:left;font-size:20px;font-weight:600;margin:8px 0 14px">And discover the details you missed</div><button class="wbbtn p" id="wbkeep" style="margin-top:0">Keep then &amp; now</button><button class="wbbtn" id="wbnext">Next place</button></div></div>`;
+   <button class="ib wbvrx" id="wbvrx" aria-label="Leave VR">${ic.x}</button>
+   <div class="wbbot"><span class="wbchip">Meta AI avatars · preview</span><div class="wbhint" style="text-align:left;font-size:20px;font-weight:600;margin:8px 0 14px">And discover the details you missed</div><button class="wbbtn p" id="wbkeep" style="margin-top:0">Keep then &amp; now</button><div style="display:flex;gap:10px"><button class="wbbtn" id="wbvr">View in 3D / VR</button><button class="wbbtn" id="wbnext">Next place</button></div></div></div>`;
   $('#wbx').onclick=()=>{wbStopAv();wbHome()};$('#wbnext').onclick=()=>{wbStopAv();wbWalk()};
+  const setVR=on=>{AV.vr=on;$('#wbav').classList.toggle('vr',on);
+    if(on){try{($('#app').requestFullscreen||$('#app').webkitRequestFullscreen||(()=>0)).call($('#app'))}catch(e){}try{screen.orientation.lock('landscape').catch(()=>{})}catch(e){}toast('Turn your phone sideways and slide it into a viewer')}
+    else{try{document.exitFullscreen&&document.fullscreenElement&&document.exitFullscreen()}catch(e){}try{screen.orientation.unlock()}catch(e){}}};
+  $('#wbvr').onclick=()=>setVR(true);$('#wbvrx').onclick=()=>setVR(false);
   try{
     if(!live||!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw 0;
     const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:960},height:{ideal:1280}},audio:false});
     if(!AV||AV.spot!==spot){st.getTracks().forEach(t=>t.stop());return}
-    AV.stream=st;AV.mode='cam';$('#wbview').outerHTML='<video id="wbcam" playsinline muted autoplay></video>';$('#wbcam').srcObject=st;
-  }catch(e){$('#wbview').outerHTML=`<div class="wbdemo" id="wbdemo"><span>Preview. On your phone the avatars appear in your live camera.</span></div>`}
+    AV.stream=st;AV.mode='cam';
+    document.querySelectorAll('#wbav .eye').forEach(e=>{const v=document.createElement('video');v.className='wbcam';v.playsInline=true;v.muted=true;v.autoplay=true;v.srcObject=st;e.insertBefore(v,e.firstChild.nextSibling)});
+  }catch(e){document.querySelector('#wbav .eye .eyebg').innerHTML='<span class="wbdemo-note">Preview. On your phone the avatars appear in your live camera.</span>'}
   const timg=new Image();timg.src=spot.clean||spot.src;
-  const loop=()=>{if(!AV||AV.done)return;AV.raf=requestAnimationFrame(loop);const root=$('#wbav'),l=$('#wbavl');if(!root||!l)return;wbFit(l,root,timg);
-    if(AV.mode==='cam'&&spot.hd!==undefined&&OR.h!==null){const x=angd(spot.hd,OR.h)/HFOV*root.clientWidth,y=-((spot.pt||0)-(OR.p||0))/VFOV*root.clientHeight;l.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`}};
+  /* every layer hangs in the world where the photo was taken; in VR each eye sees the near layer (avatars) shifted a little more than the far one (the scene), which is what makes it read as 3D */
+  const loop=()=>{if(!AV||AV.done)return;AV.raf=requestAnimationFrame(loop);
+    document.querySelectorAll('#wbav .eye').forEach(ey=>{if(ey.offsetWidth===0)return;const e=+ey.dataset.e,W=ey.clientWidth,H=ey.clientHeight;
+      let x=0,y=0;if(AV.mode==='cam'&&spot.hd!==undefined&&OR.h!==null){x=angd(spot.hd,OR.h)/HFOV*W;y=-((spot.pt||0)-(OR.p||0))/VFOV*H}
+      ey.querySelectorAll('.wbimg').forEach(l=>{wbFit(l,ey,timg);const d=AV.vr?(e===0?1:-1)*(+l.dataset.d):0;l.style.transform=`translate(${(x+d).toFixed(1)}px,${y.toFixed(1)}px)`})})};
   AV.raf=requestAnimationFrame(loop);
   $('#wbkeep').onclick=async()=>{
     const o={id:Date.now(),ts:Date.now(),type:'photo',ar:'3 / 4',text:'Then & now · '+spot.name,geo:{lat:spot.lat,lng:spot.lng}};
     try{
-      const c=document.createElement('canvas'),v=$('#wbcam');let w=720,h=960;
+      const c=document.createElement('canvas'),v=document.querySelector('#wbav .wbcam');let w=720,h=960;
       if(v&&v.videoWidth){const k=Math.min(1,1080/Math.max(v.videoWidth,v.videoHeight));w=v.videoWidth*k;h=v.videoHeight*k}
       c.width=w;c.height=h;const x=c.getContext('2d');
-      if(v&&v.videoWidth)x.drawImage(v,0,0,w,h);else{const im=await new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.src=spot.src});const k=Math.max(w/im.width,h/im.height);x.drawImage(im,(w-im.width*k)/2,(h-im.height*k)/2,im.width*k,im.height*k)}
+      if(v&&v.videoWidth)x.drawImage(v,0,0,w,h);else{const im=await new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.src=spot.clean||spot.src});const k=Math.max(w/im.width,h/im.height);x.drawImage(im,(w-im.width*k)/2,(h-im.height*k)/2,im.width*k,im.height*k)}
       for(const a of AV.av){const im=await new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.src='data:image/svg+xml;utf8,'+encodeURIComponent(avatarSVG(a))}),aw=a.s*w,ah=aw*(a.pose==='bust'?.92:1.35);x.drawImage(im,a.x*w-aw/2,a.y*h-ah,aw,ah)}
       const bl=await dataBlob(c.toDataURL('image/jpeg',.85));await KDB.put(o.id,{photo:bl});o.idb=1;o.src=url(bl);
-    }catch(e){o.src=spot.src}
+    }catch(e){o.src=spot.clean||spot.src}
     user.push(o);persist();refresh();toast('Kept to your calendar');$('#wbkeep').disabled=true;$('#wbkeep').textContent='Kept'};
 }
 /* ---------- theme: always opens in light; only the Profile switch changes it, so a host page's dark setting can't override it ---------- */
