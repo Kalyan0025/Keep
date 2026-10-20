@@ -433,7 +433,10 @@ svg{display:block}
 .wbm .wbbot{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:0 20px calc(var(--sab,env(safe-area-inset-bottom,0px)) + 22px);color:#fff}
 .wbm .wbmt{height:6px;border-radius:3px;background:rgba(255,255,255,.28);overflow:hidden}.wbm .wbmt i{display:block;height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--ai1,#0082FB),var(--ai2,#8A5CF6),var(--ai3,#F2589D));transition:width .15s}
 .wbm .wbhint{margin-top:12px;font-size:15px;line-height:1.4;text-shadow:0 1px 8px rgba(0,0,0,.5);text-align:center}
-.wbm .wbz{margin:10px auto 0;display:block;width:60%;accent-color:#fff}
+.wbm .wbdemo{position:absolute;inset:0;background:radial-gradient(90% 70% at 30% 20%,#2a3550,#0d0d0f 70%)}.wbm .wbdemo span{position:absolute;left:0;right:0;top:calc(var(--sat,env(safe-area-inset-top,0px)) + 64px);text-align:center;color:rgba(255,255,255,.7);font-size:13px;padding:0 24px}
+.wbm .wbgh{will-change:transform}
+.wbm .wbedge{position:absolute;top:44%;width:56px;height:56px;margin-top:-28px;z-index:2;display:none;place-items:center;color:#fff;font-size:30px;text-shadow:0 2px 10px rgba(0,0,0,.5);animation:wbn 1s ease-in-out infinite alternate}.wbm .wbedge.on{display:grid}.wbm .wbedge.r{right:8px}.wbm .wbedge.l{left:8px}.wbm .wbedge.r::before{content:"›"}.wbm .wbedge.l::before{content:"‹"}
+@keyframes wbn{to{transform:translateX(6px);opacity:.6}}
 .wbpair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
 .wbpair div{position:relative;aspect-ratio:3/4;border-radius:16px;background-size:cover;background-position:center;background-color:var(--fill)}
 .wbpair span{position:absolute;left:8px;top:8px;height:22px;padding:0 9px;border-radius:11px;background:rgba(0,0,0,.5);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center}
@@ -3664,6 +3667,7 @@ function showShot(){
   demoVid();
 }
 async function shutter(){
+  orStart();locNow();
   if(!live&&!rec){await startCam();if(!live){$(mode==='photo'?'#capP':'#capV').click();return}if(mode==='photo')return}
   if(mode==='photo'){cap.photo=frame();showShot();validate();maybeAuto();return}
   if(rec){stopRec();return}
@@ -3757,8 +3761,9 @@ const persist=()=>{try{localStorage.setItem('kept.user',JSON.stringify(user.map(
 async function save(stay){
   if(rec||saving)return;saving=true;const [y,m,d]=newM.day.split('-').map(Number),now=new Date();
   const o={id:Date.now(),ts:new Date(y,m-1,d,now.getHours(),now.getMinutes()).getTime()},media={};
-  if(mode==='photo'){o.type='photo';o.ar=lastAr;o.src=cap.photo;o.text=val('capIn');if(cap.photo&&cap.photo.startsWith('data:')&&cap.photo!==IMG.mug)media.photo=await dataBlob(cap.photo)}
-  if(mode==='video'){o.type='video';o.ar=lastAr;o.src=cap.video.src;o.dur=cap.video.dur;o.text=val('capIn');
+  const where=()=>{if(LOC)o.geo={...LOC};if(OR.h!==null){o.hd=Math.round(OR.h);o.pt=Math.round(OR.p||0)}};
+  if(mode==='photo'){o.type='photo';o.ar=lastAr;o.src=cap.photo;o.text=val('capIn');where();if(cap.photo&&cap.photo.startsWith('data:')&&cap.photo!==IMG.mug)media.photo=await dataBlob(cap.photo)}
+  if(mode==='video'){o.type='video';o.ar=lastAr;o.src=cap.video.src;o.dur=cap.video.dur;o.text=val('capIn');where();
     if(cap.video.blob){o.vurl=cap.video.url;media.video=cap.video.blob;if(o.src&&o.src.startsWith('data:'))media.photo=await dataBlob(o.src)}
     else if(!live){o.img='bouquet';o.vid='bouquet';delete o.src}}
   if(mode==='voice'){o.type='voice';o.dur=cap.voice.dur;o.text=cap.voice.text||'';if(cap.voice.blob){o.aurl=cap.voice.url;media.audio=cap.voice.blob}}
@@ -3775,14 +3780,41 @@ let playing=null;
 document.addEventListener('click',e=>{const t=e.target.closest('[data-aid]');if(!t)return;e.stopPropagation();e.preventDefault();const m=user.find(x=>String(x.id)===t.dataset.aid);if(!m||!m.aurl)return;
   if(playing&&playing.id===m.id&&!playing.a.paused){playing.a.pause();return}if(playing)playing.a.pause();playing={id:m.id,a:new Audio(m.aurl)};playing.a.play().catch(()=>toast('Could not play this recording'))},true);
 
+
+/* where the phone is pointing: compass heading and tilt from the motion sensors, so a memory can be found by looking, not by dragging */
+const angd=(a,b)=>((a-b+540)%360)-180;
+const OR={h:null,p:null,on:false};
+function orEv(e){
+  let h=null,p=null;
+  if(e.webkitCompassHeading!=null&&!isNaN(e.webkitCompassHeading)){h=e.webkitCompassHeading;if(e.beta!=null)p=e.beta-90}
+  else if(e.absolute&&e.alpha!=null&&e.beta!=null&&e.gamma!=null){const r=Math.PI/180,a=e.alpha*r,b=e.beta*r,g=e.gamma*r,vx=-Math.sin(g)*Math.cos(a)-Math.cos(g)*Math.sin(b)*Math.sin(a),vy=-Math.sin(g)*Math.sin(a)+Math.cos(g)*Math.sin(b)*Math.cos(a),vz=-Math.cos(g)*Math.cos(b);h=(Math.atan2(vx,vy)/r+360)%360;p=Math.asin(Math.max(-1,Math.min(1,vz)))/r}
+  if(h===null)return;
+  OR.h=OR.h===null?h:(OR.h+angd(h,OR.h)*.35+360)%360;OR.p=OR.p===null?p:OR.p+((p===null?OR.p:p)-OR.p)*.35;
+}
+/* call from a tap: iOS asks for motion access only then */
+async function orStart(){
+  if(OR.on)return OR.h!==null;
+  try{
+    if(typeof DeviceOrientationEvent==='undefined')return false;
+    if(DeviceOrientationEvent.requestPermission){const r=await DeviceOrientationEvent.requestPermission();if(r!=='granted')return false}
+    addEventListener('deviceorientationabsolute',orEv,true);addEventListener('deviceorientation',orEv,true);OR.on=true;
+    await new Promise(ok=>{const t=setTimeout(ok,1400),i=setInterval(()=>{if(OR.h!==null){clearTimeout(t);clearInterval(i);ok()}},60);setTimeout(()=>clearInterval(i),1500)});
+  }catch(e){}
+  return OR.h!==null;
+}
+let LOC=null;
+function locNow(){try{navigator.geolocation.getCurrentPosition(p=>{LOC={lat:p.coords.latitude,lng:p.coords.longitude}},()=>{},{timeout:4000,maximumAge:15000})}catch(e){}}
 /* ---------- First weeks: upload the first couple of weeks, then match each place again when you walk past ---------- */
 const wbSeen=()=>{try{return localStorage.getItem('keep.fwSeen')==='1'}catch(e){return true}};
 const WB={a:{lat:33.4255,lng:-111.94},spots:[],fw:[],target:null,sim:true,d:220,cur:null,watch:null,done:{}};
-const DEMO_SPOTS=[['brownstone','Brownstone steps',-.0012,.0007,2],['library','The library',.0009,.0011,5],['park','Park bench',.0016,-.0004,8],['bike','Bike rack on Mill',-.0008,-.0013,11],['lake','Lake path',.0004,-.0019,14],['coast','Rocky overlook',.0021,.0012,18]];
+const DEMO_SPOTS=[['brownstone','Brownstone steps',-.0012,.0007,2,40],['library','The library',.0009,.0011,5,120],['park','Park bench',.0016,-.0004,8,200],['bike','Bike rack on Mill',-.0008,-.0013,11,285],['lake','Lake path',.0004,-.0019,14,320],['coast','Rocky overlook',.0021,.0012,18,75]];
+const dayLab=x=>x.lab||'Day '+x.day;
 const MLAT=111320,mlng=()=>111320*Math.cos(WB.a.lat*Math.PI/180);
 const ofs=(a,b)=>({x:(b.lng-a.lng)*mlng(),y:(b.lat-a.lat)*MLAT});
-function wbSpots(){return [...DEMO_SPOTS.filter(d=>IMG[d[0]]).map(d=>({id:'d'+d[0],src:IMG[d[0]],name:d[1],lat:WB.a.lat+d[2],lng:WB.a.lng+d[3],day:d[4],demo:1})),...WB.fw]}
-function exifGPS(buf){try{const v=new DataView(buf);if(v.getUint16(0)!==0xFFD8)return null;let o=2;while(o<v.byteLength-4){const m=v.getUint16(o);if(m===0xFFE1){if(v.getUint32(o+4)!==0x45786966)return null;const t=o+10,le=v.getUint16(t)===0x4949,g16=p=>v.getUint16(p,le),g32=p=>v.getUint32(p,le),ifd=p=>{const n=g16(p),r={};for(let i=0;i<n;i++){const e=p+2+i*12;r[g16(e)]=e}return r},i0=ifd(t+g32(t+4));if(!i0[0x8825])return null;const g=ifd(t+g32(i0[0x8825]+8)),ch=e=>String.fromCharCode(v.getUint8(e+8)),rat=e=>{const q=t+g32(e+8);return[0,1,2].map(k=>g32(q+k*8)/g32(q+k*8+4))};if(!g[2]||!g[4])return null;const dm=a=>a[0]+a[1]/60+a[2]/3600;let la=dm(rat(g[2])),lo=dm(rat(g[4]));if(ch(g[1])==='S')la=-la;if(ch(g[3])==='W')lo=-lo;return isFinite(la)&&isFinite(lo)?{lat:la,lng:lo}:null}o+=2+v.getUint16(o+2)}}catch(e){}return null}
+function wbSpots(){
+  const own=user.filter(m=>m.type==='photo'&&m.geo&&src(m)).map(m=>({id:'k'+m.id,src:src(m),name:(m.text||'Photo').slice(0,24),lat:m.geo.lat,lng:m.geo.lng,hd:m.hd,pt:m.pt,lab:new Date(m.ts).toLocaleDateString(undefined,{month:'short',day:'numeric'}),day:'',own:1}));
+  return [...DEMO_SPOTS.filter(d=>IMG[d[0]]).map(d=>({id:'d'+d[0],src:IMG[d[0]],name:d[1],lat:WB.a.lat+d[2],lng:WB.a.lng+d[3],day:d[4],hd:d[5],pt:4,demo:1})),...WB.fw,...own]}
+function exifGPS(buf){try{const v=new DataView(buf);if(v.getUint16(0)!==0xFFD8)return null;let o=2;while(o<v.byteLength-4){const m=v.getUint16(o);if(m===0xFFE1){if(v.getUint32(o+4)!==0x45786966)return null;const t=o+10,le=v.getUint16(t)===0x4949,g16=p=>v.getUint16(p,le),g32=p=>v.getUint32(p,le),ifd=p=>{const n=g16(p),r={};for(let i=0;i<n;i++){const e=p+2+i*12;r[g16(e)]=e}return r},i0=ifd(t+g32(t+4));if(!i0[0x8825])return null;const g=ifd(t+g32(i0[0x8825]+8)),ch=e=>String.fromCharCode(v.getUint8(e+8)),rat=e=>{const q=t+g32(e+8);return[0,1,2].map(k=>g32(q+k*8)/g32(q+k*8+4))};if(!g[2]||!g[4])return null;const dm=a=>a[0]+a[1]/60+a[2]/3600;let la=dm(rat(g[2])),lo=dm(rat(g[4]));if(ch(g[1])==='S')la=-la;if(ch(g[3])==='W')lo=-lo;let hd;if(g[0x11]){const q=t+g32(g[0x11]+8);hd=g32(q)/g32(q+4)}return isFinite(la)&&isFinite(lo)?{lat:la,lng:lo,hd:isFinite(hd)?hd:undefined}:null}o+=2+v.getUint16(o+2)}}catch(e){}return null}
 const shrink=(d,max)=>new Promise(ok=>{const im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.82))};im.onerror=()=>ok(d);im.src=d});
 async function fwLoad(){
   let meta=[];try{meta=JSON.parse(localStorage.getItem('keep.fw')||'[]')}catch(e){}
@@ -3795,7 +3827,7 @@ async function fwAdd(files){
   for(const f of files){if(!f.type.startsWith('image/'))continue;
     const buf=await f.arrayBuffer(),g=exifGPS(buf),d=await new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(r.result);r.readAsDataURL(f)}),sm=await shrink(d,1080),bl=await dataBlob(sm),i=WB.fw.length+n++;
     const geo=g||(near?{lat:near.lat+(i%5)*.0002,lng:near.lng+Math.floor(i/5)*.0002}:{lat:WB.a.lat+.0007*Math.cos(i*1.3)+.0003,lng:WB.a.lng+.0007*Math.sin(i*1.3)-.0003});
-    const m={id:'u'+Date.now()+'_'+i,name:f.name.replace(/\.[^.]+$/,'').slice(0,24)||'Photo',lat:geo.lat,lng:geo.lng,day:Math.min(30,3+i),approx:g?0:1};
+    const m={id:'u'+Date.now()+'_'+i,name:f.name.replace(/\.[^.]+$/,'').slice(0,24)||'Photo',lat:geo.lat,lng:geo.lng,day:Math.min(30,3+i),approx:g?0:1,hd:g&&g.hd!==undefined?g.hd:undefined};
     try{await KDB.put('fw'+m.id,{photo:bl})}catch(e){}
     WB.fw.push({...m,src:url(bl)})}
   fwSave();wbHome();toast(n?n+' added to your first weeks':'Choose photos');
@@ -3808,12 +3840,12 @@ function closeWalk(){wbStopMatch();wbStopGPS();$('#wb').classList.remove('on');$
 const wbHead=(t,back)=>`<div class="wbh"><button class="ib" id="wbx" aria-label="${back?'Back':'Close'}">${back?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>':ic.x}</button><div class="t">${t}</div><div style="width:40px"></div></div>`;
 function wbHome(){
   wbStopMatch();wbStopGPS();const L=wbSpots();
-  $('#wb').innerHTML=wbHead('First weeks')+`<div class="wbb"><h1>Bring in your first weeks</h1><p class="sub">Add two weeks to a month of photos. Keep remembers where each one was taken, and when you walk past that place again it asks you to find the spot.</p>
+  $('#wb').innerHTML=wbHead('First weeks')+`<div class="wbb"><h1>Bring in your first weeks</h1><p class="sub">Add two weeks to a month of photos. Keep remembers where each one was taken and which way you were facing. When you walk back, hold up your phone and look for it.</p>
    <div class="wbs"><span>${L.length} moments</span><span>${L.length} places</span><span>${WB.fw.length?WB.fw.length+' yours':'sample set'}</span></div>
-   <div class="wbg">${L.map(x=>`<div><div class="wbt${WB.done[x.id]?' done':''}" style="background-image:url(${x.src})"><b>Day ${x.day}</b>${WB.done[x.id]?'<i>✓</i>':''}</div><small>${esc(x.name)}${x.approx?' · near you':''}</small></div>`).join('')}</div>
+   <div class="wbg">${L.map(x=>`<div><div class="wbt${WB.done[x.id]?' done':''}" style="background-image:url(${x.src})"><b>${dayLab(x)}</b>${WB.done[x.id]?'<i>✓</i>':''}</div><small>${esc(x.name)}${x.approx?' · near you':''}</small></div>`).join('')}</div>
    <label class="wbbtn" for="wbf">${ic.img.replace('width="22" height="22"','width="20" height="20"')} Add photos<input type="file" id="wbf" accept="image/*" multiple hidden></label>
    <button class="wbbtn p" id="wbgo">Start a walk</button>
-   <p class="wbnote">Locations come from each photo's GPS tag. Photos without one are placed near you. The sample set is spread around a made-up neighbourhood so you can try the walk from your desk.</p></div>`;
+   <p class="wbnote">Locations and the direction you were facing come from each photo's GPS tag when it has one. Photos without one are placed near you. The sample set is spread around a made-up neighbourhood so you can try the walk from your desk.</p></div>`;
   $('#wbx').onclick=closeWalk;$('#wbf').onchange=e=>fwAdd([...e.target.files]);$('#wbgo').onclick=()=>wbWalk();
 }
 /* ---------- walking ---------- */
@@ -3849,7 +3881,7 @@ function wbPaint(){
   $('#wbdist').innerHTML=`${Math.round(dist)}<small>m to ${esc(t.name)}</small>`;
   const sv=$('#wbsv');if(sv)sv.textContent=WB.sim?Math.round(WB.d)+' m':'GPS';
   const n=$('#wbnear');n.classList.toggle('on',near);
-  if(near&&!n.dataset.k){n.dataset.k=1;n.innerHTML=`<b>You're back at ${esc(t.name)}</b>A memory from day ${t.day} is here. Can you find the exact spot?<button class="wbbtn p" id="wbfind">Find the spot</button>`;$('#wbfind').onclick=()=>wbMatch(t)}
+  if(near&&!n.dataset.k){n.dataset.k=1;n.innerHTML=`<b>You're back at ${esc(t.name)}</b>A memory from ${dayLab(t).toLowerCase()} is here. Point your phone where it was taken.<button class="wbbtn p" id="wbfind">Find the spot</button>`;$('#wbfind').onclick=()=>wbMatch(t)}
   if(!near){n.dataset.k='';n.innerHTML=''}
 }
 function wbToggleGPS(){
@@ -3861,44 +3893,64 @@ function wbToggleGPS(){
     e=>{wbStopGPS();WB.sim=true;$('#wbgn').textContent='Location is blocked here, so the slider stays on. Open Keep on its own page to use GPS.'},{enableHighAccuracy:true,maximumAge:2000,timeout:15000});
 }
 function wbStopGPS(){if(WB.watch!==null){try{navigator.geolocation.clearWatch(WB.watch)}catch(e){}WB.watch=null}}
-/* ---------- the match: clouds part as the live view lines up with the old photo ---------- */
+/* ---------- the match: AR. Point the phone where the photo was taken; the old photo hangs in the world, clouds part as you face it ---------- */
 let WM=null;
+const HFOV=48,VFOV=65;
 function sig(el,w,h){const c=sig.c||(sig.c=document.createElement('canvas'));c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true}),sw=el.videoWidth||el.naturalWidth||el.width,sh=el.videoHeight||el.naturalHeight||el.height;if(!sw||!sh)return null;const k=Math.max(w/sw,h/sh),dw=sw*k,dh=sh*k;x.drawImage(el,(w-dw)/2,(h-dh)/2,dw,dh);const d=x.getImageData(0,0,w,h).data,a=new Float32Array(w*h);let m=0;for(let i=0;i<a.length;i++){a[i]=.299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];m+=a[i]}m/=a.length;let q=0;for(let i=0;i<a.length;i++){a[i]-=m;q+=a[i]*a[i]}q=Math.sqrt(q)||1;for(let i=0;i<a.length;i++)a[i]/=q;return a}
 async function wbMatch(spot){
   wbStopMatch();wbStopGPS();
-  WM={spot,mode:'practice',px:(Math.random()<.5?-1:1)*(70+Math.random()*50),py:(Math.random()<.5?-1:1)*(80+Math.random()*60),sc:.82+Math.random()*.1,score:0,hold:0,last:0,done:false};
+  /* motion access has to be asked for inside this tap */
+  const sens=await orStart();
+  WM={spot,mode:'cam',sens,score:0,hold:0,ncc:0,nt:0,done:false,t0:performance.now()};
   const timg=new Image();timg.src=spot.src;await new Promise(ok=>{timg.onload=ok;timg.onerror=ok});WM.timg=timg;WM.tsig=sig(timg,24,32);
   $('#wb').innerHTML=`<div class="wbm" id="wbm"><div id="wbview"></div><img class="wbgh" id="wbgh" alt="" src="${spot.src}"><div class="fogw"><i></i><i></i><i></i><i></i></div>
    <div class="wbtop"><button class="ib" id="wbx" aria-label="Back">${ic.x}</button><div class="t">${esc(spot.name)}</div><div style="width:40px"></div></div>
-   <div class="wbbot"><div class="wbmt"><i id="wbmeter"></i></div><div class="wbhint" id="wbhint">Starting the camera…</div><input class="wbz" id="wbz" type="range" min="60" max="150" value="${Math.round(WM.sc*100)}" aria-label="Zoom" hidden></div></div>`;
+   <div class="wbedge" id="wbedge" aria-hidden="true"></div>
+   <div class="wbbot"><div class="wbmt"><i id="wbmeter"></i></div><div class="wbhint" id="wbhint">Starting the camera…</div></div></div>`;
   $('#wbx').onclick=()=>wbWalk();
-  /* real camera if the page may use it, otherwise a practice view you drag into place */
   try{
     if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw 0;
     const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:960},height:{ideal:1280}},audio:false});
     if(!WM||WM.spot!==spot){st.getTracks().forEach(t=>t.stop());return}
-    WM.stream=st;WM.mode='cam';$('#wbview').outerHTML='<video id="wbcam" playsinline muted autoplay></video>';$('#wbcam').srcObject=st;
-    $('#wbhint').textContent='Point at the spot. The clouds clear as the view lines up.';
+    WM.stream=st;$('#wbview').outerHTML='<video id="wbcam" playsinline muted autoplay></video>';$('#wbcam').srcObject=st;
   }catch(e){
-    WM.mode='practice';$('#wbview').outerHTML='<div class="wbscene" id="wbscene"></div>';const sc=$('#wbscene');sc.style.backgroundImage=`url(${spot.src})`;
-    const tf=()=>sc.style.transform=`translate(${WM.px}px,${WM.py}px) scale(${WM.sc})`;tf();WM.tf=tf;
-    let drag=null;sc.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};sc.setPointerCapture(e.pointerId);sc.style.cursor='grabbing'});
-    sc.addEventListener('pointermove',e=>{if(!drag)return;WM.px+=e.clientX-drag.x;WM.py+=e.clientY-drag.y;drag={x:e.clientX,y:e.clientY};tf()});
-    ['pointerup','pointercancel'].forEach(t=>sc.addEventListener(t,()=>{drag=null;sc.style.cursor=''}));
-    const z=$('#wbz');z.hidden=false;z.oninput=()=>{WM.sc=z.value/100;tf()};
-    $('#wbhint').textContent='No camera here, so this is a practice view. Drag it to line up with the cloud.';
+    /* no camera on this device: a scripted pass so the screen can be shown from a desk. On a phone you look around instead */
+    WM.mode='demo';$('#wbview').outerHTML='<div class="wbdemo" id="wbdemo"><span>Preview. On your phone this is your live camera.</span></div>';
   }
   WM.raf=requestAnimationFrame(wbLoop);
 }
-function wbScore(){
-  if(WM.mode==='cam'){const v=$('#wbcam'),a=v&&sig(v,24,32);if(!a||!WM.tsig)return 0;let d=0;for(let i=0;i<a.length;i++)d+=a[i]*WM.tsig[i];return Math.max(0,Math.min(1,(d-.05)/.5))}
-  return Math.max(0,Math.min(1,1-(Math.hypot(WM.px,WM.py)/170+Math.abs(WM.sc-1)*1.6)));
+/* how far the phone is from where the photo was taken, in degrees */
+function wbErr(){
+  const t=WM.spot,hasT=t.hd!==undefined&&t.hd!==null;
+  if(WM.mode==='demo'){const k=Math.min(1,(performance.now()-WM.t0)/7000),e=1-(1-k)*(1-k)*(1-k);return{dh:58*(1-e)+(k<1?4*Math.sin(k*18)*(1-k):0),dp:-9*(1-e),known:true}}
+  if(!WM.sens||!hasT||OR.h===null)return{known:false};
+  return{dh:angd(t.hd,OR.h),dp:(t.pt||0)-(OR.p||0),known:true};
 }
 function wbLoop(ts){
-  if(!WM||WM.done)return;WM.raf=requestAnimationFrame(wbLoop);if(ts-WM.last<120)return;WM.last=ts;
-  WM.score=WM.score*.55+wbScore()*.45;const root=$('#wbm');if(!root)return;
+  if(!WM||WM.done)return;WM.raf=requestAnimationFrame(wbLoop);
+  const root=$('#wbm');if(!root)return;
+  const dt=Math.min(100,ts-(WM.lt||ts));WM.lt=ts;
+  const W=root.clientWidth,H=root.clientHeight,e=wbErr();let hs=0;
+  if(WM.mode==='cam'&&ts-WM.nt>160){WM.nt=ts;const v=$('#wbcam'),a=v&&sig(v,24,32);if(a&&WM.tsig){let d=0;for(let i=0;i<a.length;i++)d+=a[i]*WM.tsig[i];WM.ncc=Math.max(0,Math.min(1,(d-.05)/.5))}}
+  const gh=$('#wbgh'),edge=$('#wbedge'),hint=$('#wbhint');
+  let raw;
+  if(e.known){
+    /* the photo hangs where it was taken: turn and tilt and it slides into view */
+    const x=e.dh/HFOV*W,y=-e.dp/VFOV*H;gh.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
+    const err=Math.hypot(e.dh,e.dp*.7);hs=Math.max(0,Math.min(1,1-(err-4)/26));
+    raw=WM.mode==='demo'?hs:Math.max(hs*.85+WM.ncc*.15,hs*.93);
+    const off=Math.abs(e.dh)>HFOV/2+4;
+    edge.className='wbedge'+(off?' on '+(e.dh>0?'r':'l'):'');
+    hint.textContent=hs>.9?'Hold steady…':off?(e.dh>0?'Turn right ':'Turn left ')+Math.round(Math.abs(e.dh))+'°':Math.abs(e.dp)>8?(e.dp>0?'Tilt up':'Tilt down'):'Almost there';
+  }else{
+    /* no compass: fall back to comparing the camera view with the photo */
+    gh.style.transform='';raw=WM.ncc;edge.className='wbedge';
+    hint.textContent=WM.mode==='cam'?'Stand where the photo was taken and point at the same view.':'';
+    hs=WM.ncc;
+  }
+  WM.score+=(raw-WM.score)*.2;
   root.style.setProperty('--fog',(1-WM.score).toFixed(3));$('#wbmeter').style.width=Math.round(WM.score*100)+'%';
-  if(WM.score>.86){WM.hold+=120;if(WM.hold>=700)wbMatched()}else WM.hold=0;
+  if(hs>.9&&(e.known||WM.ncc>.8)){WM.hold+=dt;if(WM.hold>=900)wbMatched()}else WM.hold=0;
 }
 function wbStopMatch(){if(WM){WM.done=true;cancelAnimationFrame(WM.raf);if(WM.stream)WM.stream.getTracks().forEach(t=>t.stop())}WM=null}
 function wbNow(){
@@ -3906,7 +3958,7 @@ function wbNow(){
   return WM.spot.src;
 }
 function wbMatched(){
-  const spot=WM.spot,live=WM.mode==='cam',now=wbNow(),pct=Math.round(Math.max(WM.score,.86)*100);
+  const spot=WM.spot,live=WM.mode==='cam',now=wbNow(),pct=Math.round(Math.max(WM.score,.9)*100);
   WM.done=true;cancelAnimationFrame(WM.raf);const root=$('#wbm');if(root)root.style.setProperty('--fog','0');
   wbStopMatch();WB.done[spot.id]=1;
   setTimeout(()=>wbReveal(spot,now,live,pct),650);
@@ -3922,7 +3974,7 @@ async function metaRecreate(src){
   return c.toDataURL('image/jpeg',.85);
 }
 function wbReveal(spot,now,live,pct){
-  $('#wb').innerHTML=wbHead('Found it',true)+`<div class="wbb"><h1>You found it</h1><p class="sub">${esc(spot.name)} · day ${spot.day} · ${pct}% match${live?'':' (practice view)'}</p>
+  $('#wb').innerHTML=wbHead('Found it',true)+`<div class="wbb"><h1>You found it</h1><p class="sub">${esc(spot.name)} · ${dayLab(spot).toLowerCase()} · ${pct}% match${live?'':' (demo)'}</p>
    <div class="wbpair"><div style="background-image:url(${spot.src})"><span>Then</span></div><div style="background-image:url(${now})"><span>Now</span></div></div>
    <div class="wbai"><div><h3>Meta AI avatar scene <em>Preview</em></h3><p class="sub" style="font-size:13px;margin-top:4px">Recreate this memory with avatars, as an illustrated scene.</p><div class="im" id="wbai" hidden></div><button class="wbbtn" id="wbre">Recreate with Meta AI</button></div></div>
    <button class="wbbtn p" id="wbkeep">Keep then &amp; now</button><button class="wbbtn" id="wbnext">Next place</button>

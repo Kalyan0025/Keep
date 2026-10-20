@@ -19,4 +19,6 @@ The camera and microphone only work on a page served over HTTPS, not inside an e
 
 ## First weeks (prototype)
 
-The pin button on the camera screen opens a walk-by game: add the first two weeks to a month of photos (location read from each photo's GPS tag), then walk toward a place. Within about 40 m Keep asks you to find the spot, with a cloudy ghost of the old photo over the camera that clears as the view lines up. With no camera it falls back to a drag-to-align practice view, and the walk can be simulated with a slider. The Meta AI step (`metaRecreate`) is an on-device style preview, the plug-in point for real avatar image generation.
+The pin button on the camera screen opens a walk-by game. Add the first two weeks to a month of photos (location, and the direction you were facing, are read from each photo's GPS tag; photos taken in Keep record both). Walk toward a place and, within about 40 m, Keep asks you to look for it.
+
+The match is AR, not a drag game: your camera is live and the old photo hangs in the world where it was taken, under clouds. Turn and tilt the phone (compass and motion sensors) and it slides into view; the clouds clear as you face it. Matching is by heading and tilt plus a light image comparison, not true visual positioning. Without a camera it runs a scripted preview. The Meta AI step (`metaRecreate`) is an on-device style preview, the plug-in point for real avatar image generation. Needs HTTPS, camera and motion permission.
