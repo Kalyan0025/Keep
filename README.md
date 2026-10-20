@@ -16,3 +16,7 @@ Demo data is sample content. Search is keyword matching, voice and video recordi
 ## Open it on your phone (live camera and mic)
 
 The camera and microphone only work on a page served over HTTPS, not inside an embedded viewer. `.github/workflows/pages.yml` publishes `index.html` to GitHub Pages. One-time setup: repo **Settings → Pages → Source: GitHub Actions**, then run the workflow (Actions → Deploy Keep to GitHub Pages → Run workflow). The page is at `https://<owner>.github.io/Keep/`.
+
+## First weeks (prototype)
+
+The pin button on the camera screen opens a walk-by game: add the first two weeks to a month of photos (location read from each photo's GPS tag), then walk toward a place. Within about 40 m Keep asks you to find the spot, with a cloudy ghost of the old photo over the camera that clears as the view lines up. With no camera it falls back to a drag-to-align practice view, and the walk can be simulated with a slider. The Meta AI step (`metaRecreate`) is an on-device style preview, the plug-in point for real avatar image generation.

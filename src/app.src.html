@@ -383,6 +383,66 @@ svg{display:block}
 :root[data-ds="meta"] .bar:focus-within{border-color:transparent;background:linear-gradient(var(--fill),var(--fill)) padding-box,linear-gradient(90deg,var(--ai1),var(--ai2),var(--ai3)) border-box}
 :root[data-ds="meta"] :is(button,a,label,[tabindex]):focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 :root[data-ds="meta"] .bar input:focus-visible{outline:none}
+
+.ov.landing .mb{width:44px;height:44px}.ov.landing .modes{gap:10px}.mb.mcal{margin-left:0}
+.mb.mpin{position:relative}.mb.mpin.new::after{content:"";position:absolute;right:5px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--blue,var(--acc));box-shadow:0 0 0 2px var(--bg);animation:pulse2 1.4s infinite}
+/* First weeks: a walk-by memory game */
+.wb{position:absolute;inset:0;z-index:38;background:var(--bg);display:none;flex-direction:column;color:var(--ink)}
+.wb.on{display:flex}
+.wbh{flex:none;display:flex;align-items:center;justify-content:space-between;padding:calc(var(--sat,env(safe-area-inset-top,0px)) + 12px) 12px 6px;height:calc(var(--sat,env(safe-area-inset-top,0px)) + 58px)}
+.wbh .t{font-size:16px;font-weight:600}
+.wbb{flex:1;min-height:0;overflow-y:auto;padding:6px 20px calc(var(--sab,env(safe-area-inset-bottom,0px)) + 24px);scrollbar-width:none}.wbb::-webkit-scrollbar{display:none}
+.wb h1{font-size:26px;line-height:1.15;letter-spacing:-.02em;font-weight:700;margin:6px 0 8px}
+.wb .sub{font-size:15px;line-height:1.45;color:var(--mute)}
+.wbs{display:flex;gap:8px;margin:14px 0 6px;flex-wrap:wrap}.wbs span{height:28px;padding:0 12px;border-radius:14px;background:var(--fill);font-size:13px;display:flex;align-items:center;font-weight:500}
+.wbg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px 10px;margin:14px 0 18px}
+.wbt{position:relative;aspect-ratio:3/4;border-radius:14px;background-size:cover;background-position:center;background-color:var(--fill);overflow:hidden}
+.wbt b{position:absolute;left:6px;top:6px;height:20px;padding:0 8px;border-radius:10px;background:rgba(0,0,0,.5);color:#fff;font-size:11px;font-weight:600;display:flex;align-items:center}
+.wbt.done::after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.55)}
+.wbt.done i{position:absolute;right:6px;bottom:6px;z-index:2;width:22px;height:22px;border-radius:11px;background:var(--blue,var(--ink));color:#fff;display:grid;place-items:center;font-style:normal;font-size:13px}
+.wbg small{display:block;font-size:12px;color:var(--mute);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wbbtn{width:100%;height:52px;border-radius:26px;font-size:16px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;background:var(--fill)}
+.wbbtn.p{background:var(--blue,var(--ink));color:var(--on-blue,var(--bg))}.wbbtn:disabled{opacity:.5}
+.wbnote{font-size:12px;color:var(--faint);line-height:1.45;margin-top:12px}
+.wbrad{position:relative;margin:4px auto 0;width:min(100%,320px);aspect-ratio:1}
+.wbrad svg{width:100%;height:100%;display:block;overflow:visible}
+.wbrad .ring{fill:none;stroke:var(--line2);stroke-dasharray:2 5}
+.wbrad .me{fill:var(--ink)}.wbrad .pin{fill:var(--faint)}.wbrad .pin.t{fill:url(#wbg)}.wbrad .pin.d{fill:var(--blue,var(--ink));opacity:.35}
+.wbrad .pulse{fill:none;stroke:var(--ai2,var(--blue));stroke-width:2;transform-box:fill-box;transform-origin:center;animation:wbp 1.8s ease-out infinite}
+@keyframes wbp{from{transform:scale(.5);opacity:.9}to{transform:scale(2.2);opacity:0}}
+.wbd{text-align:center;margin-top:6px;font-size:34px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}.wbd small{font-size:14px;color:var(--mute);font-weight:500;margin-left:4px}
+.wbn{margin:14px 0 0;border-radius:18px;padding:14px 16px;background:var(--fill);font-size:15px;line-height:1.4;display:none}
+.wbn.on{display:block}.wbn b{display:block;font-size:16px}
+.wbsl{margin-top:16px}.wbsl label{display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin-bottom:6px}
+.wbsl input[type=range]{width:100%;accent-color:var(--blue,var(--ink))}
+.wbtg{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:14px;color:var(--mute)}
+.wbtg button{height:30px;padding:0 14px;border-radius:15px;background:var(--fill);font-size:13px;font-weight:600;color:var(--ink)}.wbtg button.on{background:var(--blue,var(--ink));color:var(--on-blue,var(--bg))}
+/* the cloudy-memory camera: the live view, the old photo as a ghost, and clouds that part as the two line up */
+.wbm{position:absolute;inset:0;background:#0d0d0f;overflow:hidden;touch-action:none;--fog:1}
+.wbm video,.wbm .wbscene,.wbm .wbgh{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background-size:cover;background-position:center}
+.wbm .wbscene{will-change:transform;cursor:grab}
+.wbm .wbgh{filter:blur(calc(var(--fog)*16px)) saturate(calc(.55 + (1 - var(--fog))*.5));opacity:calc(.5 + (1 - var(--fog))*.1);mix-blend-mode:screen;pointer-events:none;transition:filter .2s}
+.wbm .fogw{position:absolute;inset:0;pointer-events:none;opacity:min(1,calc(var(--fog)*1.15));overflow:hidden;transition:opacity .2s;background:rgba(236,240,248,calc(var(--fog)*.32))}
+.wbm .fogw i{position:absolute;width:92%;aspect-ratio:1;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.96),rgba(255,255,255,.55) 52%,transparent 74%);filter:blur(24px);animation:wbd 16s ease-in-out infinite alternate}
+.wbm .fogw i:nth-child(1){left:-22%;top:-8%}.wbm .fogw i:nth-child(2){right:-26%;top:22%;animation-duration:19s;animation-delay:-5s}.wbm .fogw i:nth-child(3){left:6%;bottom:-18%;animation-duration:22s;animation-delay:-9s}.wbm .fogw i:nth-child(4){right:-10%;bottom:6%;width:60%;animation-duration:17s;animation-delay:-3s}
+@keyframes wbd{from{transform:translate(-6%,-3%) scale(.96)}to{transform:translate(8%,4%) scale(1.08)}}
+.wbm .fogw::after{content:"";position:absolute;inset:0;background-image:var(--noise);background-size:90px;opacity:.12;mix-blend-mode:overlay}
+.wbm::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 40%,transparent 55%,rgba(0,0,0,.38))}
+.wbm .wbtop{position:absolute;left:0;right:0;top:0;z-index:3;display:flex;align-items:center;justify-content:space-between;padding:calc(var(--sat,env(safe-area-inset-top,0px)) + 12px) 12px 0}
+.wbm .wbtop .ib{background:rgba(0,0,0,.4);color:#fff}.wbm .wbtop .t{color:#fff;font-weight:600;font-size:16px;text-shadow:0 1px 6px rgba(0,0,0,.4)}
+.wbm .wbbot{position:absolute;left:0;right:0;bottom:0;z-index:3;padding:0 20px calc(var(--sab,env(safe-area-inset-bottom,0px)) + 22px);color:#fff}
+.wbm .wbmt{height:6px;border-radius:3px;background:rgba(255,255,255,.28);overflow:hidden}.wbm .wbmt i{display:block;height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--ai1,#0082FB),var(--ai2,#8A5CF6),var(--ai3,#F2589D));transition:width .15s}
+.wbm .wbhint{margin-top:12px;font-size:15px;line-height:1.4;text-shadow:0 1px 8px rgba(0,0,0,.5);text-align:center}
+.wbm .wbz{margin:10px auto 0;display:block;width:60%;accent-color:#fff}
+.wbpair{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}
+.wbpair div{position:relative;aspect-ratio:3/4;border-radius:16px;background-size:cover;background-position:center;background-color:var(--fill)}
+.wbpair span{position:absolute;left:8px;top:8px;height:22px;padding:0 9px;border-radius:11px;background:rgba(0,0,0,.5);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center}
+.wbai{margin-top:8px;border-radius:22px;padding:2px;background:linear-gradient(135deg,var(--ai1,#0082FB),var(--ai2,#8A5CF6),var(--ai3,#F2589D))}
+.wbai>div{border-radius:20px;background:var(--bg);padding:14px}
+.wbai h3{font-size:16px;font-weight:600;display:flex;align-items:center;gap:8px}.wbai h3 em{font-style:normal;font-size:11px;font-weight:600;padding:3px 8px;border-radius:9px;background:var(--fill);color:var(--mute)}
+.wbai .im{margin-top:12px;aspect-ratio:3/4;border-radius:16px;background-size:cover;background-position:center;background-color:var(--fill);position:relative;overflow:hidden}
+.wbai .im.ld::after{content:"";position:absolute;inset:0;background:linear-gradient(100deg,transparent 20%,rgba(255,255,255,.55) 50%,transparent 80%);background-size:250% 100%;animation:wbsh 1.1s linear infinite}
+@keyframes wbsh{from{background-position:150% 0}to{background-position:-100% 0}}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 </style>
 
@@ -407,6 +467,7 @@ svg{display:block}
     <div class="dock"><div class="bar" id="bar2"><input id="q2" placeholder="Ask your memories" autocomplete="off" enterkeyhint="send" aria-label="Ask your memories"><button class="b send" id="sendB" aria-label="Send"></button></div></div></div>
 
   <div class="ov" id="ov"></div>
+  <div class="wb" id="wb" aria-hidden="true"></div>
 
   <div class="sheet" id="sh"><div class="scrim" id="scrim"></div><div class="panel" id="panel"><div class="handle"></div><button class="ib px" id="px" aria-label="Close"></button><div id="pc" style="display:flex;flex-direction:column;min-height:0;flex:1"></div></div></div>
   <div class="lb" id="lb"></div>
@@ -855,11 +916,11 @@ function openAdd(dayKey,landing){
    <section class="pane" data-p="text"><textarea class="big-in" id="tx" style="flex:1;min-height:0" placeholder="${PH.text}"></textarea></section>
    <section class="pane" data-p="more"><div class="mseg" id="mseg">${MORE.map(m=>`<button data-m="${m[0]}" class="${m[0]==='quote'?'on':''}">${m[1]}</button>`).join('')}</div><div class="in-wrap" id="mbody"></div></section>
   </div>
-  <div class="modes" id="modes">${MODES.map(m=>`<button class="mb ${m[0]==='photo'?'on':''}" data-m="${m[0]}" aria-label="${m[1]}">${ic[m[2]]}</button>`).join('')}${landing?`<button class="mb mcal" id="ovCal" aria-label="Your memories">${ic.cal}</button>`:''}</div>`;
+  <div class="modes" id="modes">${MODES.map(m=>`<button class="mb ${m[0]==='photo'?'on':''}" data-m="${m[0]}" aria-label="${m[1]}">${ic[m[2]]}</button>`).join('')}${landing?`<button class="mb mpin${wbSeen()?'':' new'}" id="ovWalk" aria-label="First weeks walk">${ic.pin}</button><button class="mb mcal" id="ovCal" aria-label="Your memories">${ic.cal}</button>`:''}</div>`;
   $('#ov').classList.toggle('landing',!!landing);
   $('#ov').classList.add('on');
   $('#ox').onclick=landing?()=>acct?openProfile():openLogin():closeAdd;$('#keep').onclick=save;
-  if(landing)$('#ovCal').onclick=closeAdd;
+  if(landing){$('#ovCal').onclick=closeAdd;$('#ovWalk').onclick=openWalk}
   $('#modes').addEventListener('pointerdown',e=>{const b=e.target.closest('.mb[data-m]');if(b&&b.dataset.m==='voice'&&mode==='voice'){e.preventDefault();voiceDown()}});
   $('#modes').addEventListener('pointerup',e=>{const b=e.target.closest('.mb[data-m]');if(b&&b.dataset.m==='voice'&&mode==='voice')voiceUp()});
   $('#modes').addEventListener('contextmenu',e=>e.preventDefault());
@@ -1015,6 +1076,167 @@ async function save(stay){
 let playing=null;
 document.addEventListener('click',e=>{const t=e.target.closest('[data-aid]');if(!t)return;e.stopPropagation();e.preventDefault();const m=user.find(x=>String(x.id)===t.dataset.aid);if(!m||!m.aurl)return;
   if(playing&&playing.id===m.id&&!playing.a.paused){playing.a.pause();return}if(playing)playing.a.pause();playing={id:m.id,a:new Audio(m.aurl)};playing.a.play().catch(()=>toast('Could not play this recording'))},true);
+
+/* ---------- First weeks: upload the first couple of weeks, then match each place again when you walk past ---------- */
+const wbSeen=()=>{try{return localStorage.getItem('keep.fwSeen')==='1'}catch(e){return true}};
+const WB={a:{lat:33.4255,lng:-111.94},spots:[],fw:[],target:null,sim:true,d:220,cur:null,watch:null,done:{}};
+const DEMO_SPOTS=[['brownstone','Brownstone steps',-.0012,.0007,2],['library','The library',.0009,.0011,5],['park','Park bench',.0016,-.0004,8],['bike','Bike rack on Mill',-.0008,-.0013,11],['lake','Lake path',.0004,-.0019,14],['coast','Rocky overlook',.0021,.0012,18]];
+const MLAT=111320,mlng=()=>111320*Math.cos(WB.a.lat*Math.PI/180);
+const ofs=(a,b)=>({x:(b.lng-a.lng)*mlng(),y:(b.lat-a.lat)*MLAT});
+function wbSpots(){return [...DEMO_SPOTS.filter(d=>IMG[d[0]]).map(d=>({id:'d'+d[0],src:IMG[d[0]],name:d[1],lat:WB.a.lat+d[2],lng:WB.a.lng+d[3],day:d[4],demo:1})),...WB.fw]}
+function exifGPS(buf){try{const v=new DataView(buf);if(v.getUint16(0)!==0xFFD8)return null;let o=2;while(o<v.byteLength-4){const m=v.getUint16(o);if(m===0xFFE1){if(v.getUint32(o+4)!==0x45786966)return null;const t=o+10,le=v.getUint16(t)===0x4949,g16=p=>v.getUint16(p,le),g32=p=>v.getUint32(p,le),ifd=p=>{const n=g16(p),r={};for(let i=0;i<n;i++){const e=p+2+i*12;r[g16(e)]=e}return r},i0=ifd(t+g32(t+4));if(!i0[0x8825])return null;const g=ifd(t+g32(i0[0x8825]+8)),ch=e=>String.fromCharCode(v.getUint8(e+8)),rat=e=>{const q=t+g32(e+8);return[0,1,2].map(k=>g32(q+k*8)/g32(q+k*8+4))};if(!g[2]||!g[4])return null;const dm=a=>a[0]+a[1]/60+a[2]/3600;let la=dm(rat(g[2])),lo=dm(rat(g[4]));if(ch(g[1])==='S')la=-la;if(ch(g[3])==='W')lo=-lo;return isFinite(la)&&isFinite(lo)?{lat:la,lng:lo}:null}o+=2+v.getUint16(o+2)}}catch(e){}return null}
+const shrink=(d,max)=>new Promise(ok=>{const im=new Image();im.onload=()=>{const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',.82))};im.onerror=()=>ok(d);im.src=d});
+async function fwLoad(){
+  let meta=[];try{meta=JSON.parse(localStorage.getItem('keep.fw')||'[]')}catch(e){}
+  WB.fw=[];for(const m of meta){try{const r=await KDB.get('fw'+m.id);if(r&&r.photo)WB.fw.push({...m,src:url(r.photo)})}catch(e){}}
+}
+const fwSave=()=>{try{localStorage.setItem('keep.fw',JSON.stringify(WB.fw.map(({src,...m})=>m)))}catch(e){}};
+async function fwAdd(files){
+  let near=null;try{near=await new Promise(ok=>navigator.geolocation.getCurrentPosition(p=>ok({lat:p.coords.latitude,lng:p.coords.longitude}),()=>ok(null),{timeout:2500}))}catch(e){}
+  let n=0;
+  for(const f of files){if(!f.type.startsWith('image/'))continue;
+    const buf=await f.arrayBuffer(),g=exifGPS(buf),d=await new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(r.result);r.readAsDataURL(f)}),sm=await shrink(d,1080),bl=await dataBlob(sm),i=WB.fw.length+n++;
+    const geo=g||(near?{lat:near.lat+(i%5)*.0002,lng:near.lng+Math.floor(i/5)*.0002}:{lat:WB.a.lat+.0007*Math.cos(i*1.3)+.0003,lng:WB.a.lng+.0007*Math.sin(i*1.3)-.0003});
+    const m={id:'u'+Date.now()+'_'+i,name:f.name.replace(/\.[^.]+$/,'').slice(0,24)||'Photo',lat:geo.lat,lng:geo.lng,day:Math.min(30,3+i),approx:g?0:1};
+    try{await KDB.put('fw'+m.id,{photo:bl})}catch(e){}
+    WB.fw.push({...m,src:url(bl)})}
+  fwSave();wbHome();toast(n?n+' added to your first weeks':'Choose photos');
+}
+async function openWalk(){
+  try{localStorage.setItem('keep.fwSeen','1')}catch(e){}const b=$('#ovWalk');if(b)b.classList.remove('new');
+  $('#wb').classList.add('on');$('#wb').setAttribute('aria-hidden','false');await fwLoad();WB.done={};wbHome();
+}
+function closeWalk(){wbStopMatch();wbStopGPS();$('#wb').classList.remove('on');$('#wb').setAttribute('aria-hidden','true')}
+const wbHead=(t,back)=>`<div class="wbh"><button class="ib" id="wbx" aria-label="${back?'Back':'Close'}">${back?'<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>':ic.x}</button><div class="t">${t}</div><div style="width:40px"></div></div>`;
+function wbHome(){
+  wbStopMatch();wbStopGPS();const L=wbSpots();
+  $('#wb').innerHTML=wbHead('First weeks')+`<div class="wbb"><h1>Bring in your first weeks</h1><p class="sub">Add two weeks to a month of photos. Keep remembers where each one was taken, and when you walk past that place again it asks you to find the spot.</p>
+   <div class="wbs"><span>${L.length} moments</span><span>${L.length} places</span><span>${WB.fw.length?WB.fw.length+' yours':'sample set'}</span></div>
+   <div class="wbg">${L.map(x=>`<div><div class="wbt${WB.done[x.id]?' done':''}" style="background-image:url(${x.src})"><b>Day ${x.day}</b>${WB.done[x.id]?'<i>✓</i>':''}</div><small>${esc(x.name)}${x.approx?' · near you':''}</small></div>`).join('')}</div>
+   <label class="wbbtn" for="wbf">${ic.img.replace('width="22" height="22"','width="20" height="20"')} Add photos<input type="file" id="wbf" accept="image/*" multiple hidden></label>
+   <button class="wbbtn p" id="wbgo">Start a walk</button>
+   <p class="wbnote">Locations come from each photo's GPS tag. Photos without one are placed near you. The sample set is spread around a made-up neighbourhood so you can try the walk from your desk.</p></div>`;
+  $('#wbx').onclick=closeWalk;$('#wbf').onchange=e=>fwAdd([...e.target.files]);$('#wbgo').onclick=()=>wbWalk();
+}
+/* ---------- walking ---------- */
+function wbNext(){const L=wbSpots();return L.find(x=>!WB.done[x.id])||null}
+function wbPos(){
+  const t=WB.target;if(!WB.sim&&WB.cur)return WB.cur;
+  const a=40*Math.PI/180;return{lat:t.lat+WB.d*Math.sin(a)/MLAT,lng:t.lng+WB.d*Math.cos(a)/mlng()};
+}
+function wbWalk(){
+  wbStopMatch();WB.target=wbNext();
+  if(!WB.target){$('#wb').innerHTML=wbHead('All matched')+`<div class="wbb"><h1>Every place matched</h1><p class="sub">You found all of your first weeks again.</p><button class="wbbtn p" id="wbdone">Done</button></div>`;$('#wbx').onclick=closeWalk;$('#wbdone').onclick=closeWalk;return}
+  WB.sim=true;WB.d=240;
+  $('#wb').innerHTML=wbHead('Walking',true)+`<div class="wbb"><div class="wbrad" id="wbrad"></div><div class="wbd" id="wbdist"></div>
+   <div class="wbn" id="wbnear"></div>
+   <div class="wbsl" id="wbsl"><label><span>Demo walk</span><span id="wbsv"></span></label><input type="range" id="wbr" min="0" max="260" step="1" value="${WB.d}" aria-label="Distance to the memory"></div>
+   <div class="wbtg"><span>Use my location</span><button id="wbgps">Off</button></div>
+   <p class="wbnote" id="wbgn">Drag the slider to walk toward the memory, or turn on your location to use the real thing.</p></div>`;
+  $('#wbx').onclick=wbHome;
+  $('#wbr').oninput=e=>{WB.d=260-(+e.target.value);wbPaint()};
+  $('#wbr').value=260-WB.d;
+  $('#wbgps').onclick=wbToggleGPS;wbPaint();
+}
+function wbDist(){const t=WB.target,p=wbPos(),o=ofs(p,t);return Math.hypot(o.x,o.y)}
+function wbPaint(){
+  const t=WB.target;if(!t||!$('#wbrad'))return;const p=wbPos(),dist=wbDist(),R=130,MAX=300,cx=150,cy=150;
+  const pt=sp=>{const o=ofs(p,sp),k=Math.min(1,Math.hypot(o.x,o.y)/MAX*1),a=Math.atan2(o.y,o.x),r=Math.min(R-8,Math.hypot(o.x,o.y)/MAX*R);return[cx+r*Math.cos(a),cy-r*Math.sin(a)]};
+  const near=dist<=40;
+  $('#wbrad').innerHTML=`<svg viewBox="0 0 300 300" role="img" aria-label="Radar of nearby memories"><defs><linearGradient id="wbg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--ai1,#0082FB)"/><stop offset=".5" stop-color="var(--ai2,#8A5CF6)"/><stop offset="1" stop-color="var(--ai3,#F2589D)"/></linearGradient></defs>
+   ${[43,86,130].map(r=>`<circle class="ring" cx="150" cy="150" r="${r}"/>`).join('')}
+   ${wbSpots().filter(x=>x.id!==t.id).map(x=>{const q=pt(x);return `<circle class="pin${WB.done[x.id]?' d':''}" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="5"/>`}).join('')}
+   ${(()=>{const q=pt(t);return `<circle class="pulse" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="12"/><circle class="pin t" cx="${q[0].toFixed(1)}" cy="${q[1].toFixed(1)}" r="11"/>`})()}
+   <circle class="me" cx="150" cy="150" r="7"/><circle cx="150" cy="150" r="14" fill="none" stroke="var(--ink)" stroke-opacity=".25"/></svg>`;
+  $('#wbdist').innerHTML=`${Math.round(dist)}<small>m to ${esc(t.name)}</small>`;
+  const sv=$('#wbsv');if(sv)sv.textContent=WB.sim?Math.round(WB.d)+' m':'GPS';
+  const n=$('#wbnear');n.classList.toggle('on',near);
+  if(near&&!n.dataset.k){n.dataset.k=1;n.innerHTML=`<b>You're back at ${esc(t.name)}</b>A memory from day ${t.day} is here. Can you find the exact spot?<button class="wbbtn p" id="wbfind">Find the spot</button>`;$('#wbfind').onclick=()=>wbMatch(t)}
+  if(!near){n.dataset.k='';n.innerHTML=''}
+}
+function wbToggleGPS(){
+  const b=$('#wbgps'),on=WB.watch!==null;
+  if(on){wbStopGPS();WB.sim=true;b.textContent='Off';b.classList.remove('on');$('#wbsl').style.display='';wbPaint();return}
+  if(!navigator.geolocation){$('#wbgn').textContent='This browser has no location access. Use the slider.';return}
+  $('#wbgn').textContent='Asking for your location…';
+  WB.watch=navigator.geolocation.watchPosition(p=>{WB.cur={lat:p.coords.latitude,lng:p.coords.longitude};WB.sim=false;b.textContent='On';b.classList.add('on');$('#wbsl').style.display='none';$('#wbgn').textContent='Using your real location (±'+Math.round(p.coords.accuracy)+' m).';wbPaint()},
+    e=>{wbStopGPS();WB.sim=true;$('#wbgn').textContent='Location is blocked here, so the slider stays on. Open Keep on its own page to use GPS.'},{enableHighAccuracy:true,maximumAge:2000,timeout:15000});
+}
+function wbStopGPS(){if(WB.watch!==null){try{navigator.geolocation.clearWatch(WB.watch)}catch(e){}WB.watch=null}}
+/* ---------- the match: clouds part as the live view lines up with the old photo ---------- */
+let WM=null;
+function sig(el,w,h){const c=sig.c||(sig.c=document.createElement('canvas'));c.width=w;c.height=h;const x=c.getContext('2d',{willReadFrequently:true}),sw=el.videoWidth||el.naturalWidth||el.width,sh=el.videoHeight||el.naturalHeight||el.height;if(!sw||!sh)return null;const k=Math.max(w/sw,h/sh),dw=sw*k,dh=sh*k;x.drawImage(el,(w-dw)/2,(h-dh)/2,dw,dh);const d=x.getImageData(0,0,w,h).data,a=new Float32Array(w*h);let m=0;for(let i=0;i<a.length;i++){a[i]=.299*d[i*4]+.587*d[i*4+1]+.114*d[i*4+2];m+=a[i]}m/=a.length;let q=0;for(let i=0;i<a.length;i++){a[i]-=m;q+=a[i]*a[i]}q=Math.sqrt(q)||1;for(let i=0;i<a.length;i++)a[i]/=q;return a}
+async function wbMatch(spot){
+  wbStopMatch();wbStopGPS();
+  WM={spot,mode:'practice',px:(Math.random()<.5?-1:1)*(70+Math.random()*50),py:(Math.random()<.5?-1:1)*(80+Math.random()*60),sc:.82+Math.random()*.1,score:0,hold:0,last:0,done:false};
+  const timg=new Image();timg.src=spot.src;await new Promise(ok=>{timg.onload=ok;timg.onerror=ok});WM.timg=timg;WM.tsig=sig(timg,24,32);
+  $('#wb').innerHTML=`<div class="wbm" id="wbm"><div id="wbview"></div><img class="wbgh" id="wbgh" alt="" src="${spot.src}"><div class="fogw"><i></i><i></i><i></i><i></i></div>
+   <div class="wbtop"><button class="ib" id="wbx" aria-label="Back">${ic.x}</button><div class="t">${esc(spot.name)}</div><div style="width:40px"></div></div>
+   <div class="wbbot"><div class="wbmt"><i id="wbmeter"></i></div><div class="wbhint" id="wbhint">Starting the camera…</div><input class="wbz" id="wbz" type="range" min="60" max="150" value="${Math.round(WM.sc*100)}" aria-label="Zoom" hidden></div></div>`;
+  $('#wbx').onclick=()=>wbWalk();
+  /* real camera if the page may use it, otherwise a practice view you drag into place */
+  try{
+    if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)throw 0;
+    const st=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:960},height:{ideal:1280}},audio:false});
+    if(!WM||WM.spot!==spot){st.getTracks().forEach(t=>t.stop());return}
+    WM.stream=st;WM.mode='cam';$('#wbview').outerHTML='<video id="wbcam" playsinline muted autoplay></video>';$('#wbcam').srcObject=st;
+    $('#wbhint').textContent='Point at the spot. The clouds clear as the view lines up.';
+  }catch(e){
+    WM.mode='practice';$('#wbview').outerHTML='<div class="wbscene" id="wbscene"></div>';const sc=$('#wbscene');sc.style.backgroundImage=`url(${spot.src})`;
+    const tf=()=>sc.style.transform=`translate(${WM.px}px,${WM.py}px) scale(${WM.sc})`;tf();WM.tf=tf;
+    let drag=null;sc.addEventListener('pointerdown',e=>{drag={x:e.clientX,y:e.clientY};sc.setPointerCapture(e.pointerId);sc.style.cursor='grabbing'});
+    sc.addEventListener('pointermove',e=>{if(!drag)return;WM.px+=e.clientX-drag.x;WM.py+=e.clientY-drag.y;drag={x:e.clientX,y:e.clientY};tf()});
+    ['pointerup','pointercancel'].forEach(t=>sc.addEventListener(t,()=>{drag=null;sc.style.cursor=''}));
+    const z=$('#wbz');z.hidden=false;z.oninput=()=>{WM.sc=z.value/100;tf()};
+    $('#wbhint').textContent='No camera here, so this is a practice view. Drag it to line up with the cloud.';
+  }
+  WM.raf=requestAnimationFrame(wbLoop);
+}
+function wbScore(){
+  if(WM.mode==='cam'){const v=$('#wbcam'),a=v&&sig(v,24,32);if(!a||!WM.tsig)return 0;let d=0;for(let i=0;i<a.length;i++)d+=a[i]*WM.tsig[i];return Math.max(0,Math.min(1,(d-.05)/.5))}
+  return Math.max(0,Math.min(1,1-(Math.hypot(WM.px,WM.py)/170+Math.abs(WM.sc-1)*1.6)));
+}
+function wbLoop(ts){
+  if(!WM||WM.done)return;WM.raf=requestAnimationFrame(wbLoop);if(ts-WM.last<120)return;WM.last=ts;
+  WM.score=WM.score*.55+wbScore()*.45;const root=$('#wbm');if(!root)return;
+  root.style.setProperty('--fog',(1-WM.score).toFixed(3));$('#wbmeter').style.width=Math.round(WM.score*100)+'%';
+  if(WM.score>.86){WM.hold+=120;if(WM.hold>=700)wbMatched()}else WM.hold=0;
+}
+function wbStopMatch(){if(WM){WM.done=true;cancelAnimationFrame(WM.raf);if(WM.stream)WM.stream.getTracks().forEach(t=>t.stop())}WM=null}
+function wbNow(){
+  if(WM.mode==='cam'){const v=$('#wbcam'),c=document.createElement('canvas'),k=Math.min(1,1080/Math.max(v.videoWidth,v.videoHeight));c.width=v.videoWidth*k;c.height=v.videoHeight*k;c.getContext('2d').drawImage(v,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.85)}
+  return WM.spot.src;
+}
+function wbMatched(){
+  const spot=WM.spot,live=WM.mode==='cam',now=wbNow(),pct=Math.round(Math.max(WM.score,.86)*100);
+  WM.done=true;cancelAnimationFrame(WM.raf);const root=$('#wbm');if(root)root.style.setProperty('--fog','0');
+  wbStopMatch();WB.done[spot.id]=1;
+  setTimeout(()=>wbReveal(spot,now,live,pct),650);
+}
+/* Meta AI plug-in point: today this is an on-device stylisation so the screen can be designed; swap in Meta AI's avatar image generation here */
+async function metaRecreate(src){
+  await new Promise(r=>setTimeout(r,1100));
+  const im=await new Promise(ok=>{const i=new Image();i.onload=()=>ok(i);i.src=src}),w=540,h=Math.round(540*im.height/im.width),c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
+  x.filter='saturate(1.35) contrast(1.08) blur(1.2px)';x.drawImage(im,0,0,w,h);x.filter='none';
+  const d=x.getImageData(0,0,w,h),p=d.data;for(let i=0;i<p.length;i+=4){for(let k=0;k<3;k++)p[i+k]=Math.round(p[i+k]/42)*42}x.putImageData(d,0,0);
+  x.globalCompositeOperation='soft-light';const g=x.createLinearGradient(0,0,w,h);g.addColorStop(0,'rgba(0,130,251,.55)');g.addColorStop(.55,'rgba(138,92,246,.45)');g.addColorStop(1,'rgba(242,88,157,.55)');x.fillStyle=g;x.fillRect(0,0,w,h);
+  x.globalCompositeOperation='screen';x.filter='blur(14px)';x.globalAlpha=.35;x.drawImage(im,0,0,w,h);
+  return c.toDataURL('image/jpeg',.85);
+}
+function wbReveal(spot,now,live,pct){
+  $('#wb').innerHTML=wbHead('Found it',true)+`<div class="wbb"><h1>You found it</h1><p class="sub">${esc(spot.name)} · day ${spot.day} · ${pct}% match${live?'':' (practice view)'}</p>
+   <div class="wbpair"><div style="background-image:url(${spot.src})"><span>Then</span></div><div style="background-image:url(${now})"><span>Now</span></div></div>
+   <div class="wbai"><div><h3>Meta AI avatar scene <em>Preview</em></h3><p class="sub" style="font-size:13px;margin-top:4px">Recreate this memory with avatars, as an illustrated scene.</p><div class="im" id="wbai" hidden></div><button class="wbbtn" id="wbre">Recreate with Meta AI</button></div></div>
+   <button class="wbbtn p" id="wbkeep">Keep then &amp; now</button><button class="wbbtn" id="wbnext">Next place</button>
+   <p class="wbnote">The recreation here is an on-device style preview. Meta AI's real avatar image generation plugs in at this step.</p></div>`;
+  $('#wbx').onclick=wbHome;let ai=null;
+  $('#wbre').onclick=async()=>{const im=$('#wbai'),b=$('#wbre');b.disabled=true;b.textContent='Recreating…';im.hidden=false;im.classList.add('ld');ai=await metaRecreate(live?now:spot.src);im.classList.remove('ld');im.style.backgroundImage=`url(${ai})`;b.textContent='Recreate again';b.disabled=false};
+  $('#wbkeep').onclick=async()=>{
+    const o={id:Date.now(),ts:Date.now(),type:'photo',ar:'3 / 4',text:'Then & now · '+spot.name,geo:{lat:spot.lat,lng:spot.lng}};
+    try{const bl=await dataBlob(now);await KDB.put(o.id,{photo:bl});o.idb=1;o.src=url(bl)}catch(e){o.src=now}
+    user.push(o);persist();refresh();toast('Kept to your calendar');$('#wbkeep').disabled=true;$('#wbkeep').textContent='Kept'};
+  $('#wbnext').onclick=()=>wbWalk();
+}
 /* ---------- theme: always opens in light; only the Profile switch changes it, so a host page's dark setting can't override it ---------- */
 document.documentElement.dataset.ds=document.documentElement.dataset.ds||'meta';
 let userTheme='light';
@@ -1098,7 +1320,7 @@ function press(key){
   const up=shift!=='off'&&kbMode==='abc';insert(up?key.toUpperCase():key);
   if(shift==='once'){shift='off';kbDraw()}
 }
-document.addEventListener('focusin',e=>{if(e.target.matches('input,textarea')&&!e.target.hidden&&e.target.type!=='file'){lastEl=e.target;if(SIM){shift=(!e.target.value)?'once':'off';kbShow()}}});
+document.addEventListener('focusin',e=>{if(e.target.matches('input,textarea')&&!e.target.hidden&&e.target.type!=='file'&&e.target.type!=='range'){lastEl=e.target;if(SIM){shift=(!e.target.value)?'once':'off';kbShow()}}});
 document.addEventListener('focusout',()=>{setTimeout(()=>{const a=document.activeElement;if(!a||!a.matches||!a.matches('input,textarea'))kbHide()},60)});
 $('#kbd').addEventListener('mousedown',e=>e.preventDefault());
 $('#kbd').addEventListener('click',e=>{const b=e.target.closest('.k');if(b)press(b.dataset.k)});
