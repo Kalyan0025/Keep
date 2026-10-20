@@ -455,19 +455,31 @@ svg{display:block}
 @keyframes avb{from{transform:translate(-50%,-100%)}to{transform:translate(-50%,calc(-100% - 5px))}}
 .wbav .wbbot .wbbtn.p{background:var(--blue,#0064E0);color:#fff}
 
-/* capture: the camera fills the whole phone and dissolves into the page at the edges, like a memory; the controls sit on the mist */
+/* capture: the framed viewfinder (rounded, with the controls beneath). A full-bleed variant that dissolves into the page at the edges is kept
+   below, off by default: add the class fb to #ov to switch it on. */
 .ov{--sb:var(--sab,env(safe-area-inset-bottom,0px));--st:var(--sat,env(safe-area-inset-top,0px))}
+.vfw{position:relative;flex:1;min-height:110px}
+.vf{position:absolute;inset:0;flex:none}
+.vflab{left:12px;top:12px;z-index:3}
+.vfa{right:12px;top:12px}
+.vfb{z-index:3;bottom:12px}.vfb.vl{left:12px}.vfb.vr{right:12px}
 .ov.fb .canvas{position:absolute;inset:0;flex:none}
 .ov.fb .ot{position:absolute;left:0;right:0;top:0;z-index:6}
 .ov.fb .modes{position:absolute;left:0;right:0;bottom:0;z-index:6;padding:10px 16px calc(var(--sb) + 16px)}
-.pane[data-p="cam"]{padding:0}
-.vfw{position:absolute;inset:0}
-.vf{position:absolute;inset:0;border-radius:0;border:0;background:var(--bg);flex:none;-webkit-mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 13%,#000 72%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 13%,#000 72%,transparent);mask-composite:intersect}
-.vflab{left:16px;top:calc(var(--st) + 62px);z-index:3}
-.vfa{right:16px;top:calc(var(--st) + 62px)}
-.vfb{z-index:3;bottom:calc(var(--sb) + 124px)}.vfb.vl{left:24px}.vfb.vr{right:24px}
-.pane[data-p="cam"] .shut{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 112px);padding:0;z-index:3}
-.pane[data-p="cam"] .cap-in{position:absolute;left:24px;right:24px;bottom:calc(var(--sb) + 72px);width:auto;padding:4px;z-index:3}
+.ov.fb .pane[data-p="cam"]{padding:0}
+.ov.fb .vfw{position:absolute;inset:0}
+.ov.fb .vf{border-radius:0;border:0;background:var(--bg);-webkit-mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 13%,#000 72%,transparent);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 13%,#000 72%,transparent);mask-composite:intersect}
+.ov.fb .vflab{left:16px;top:calc(var(--st) + 62px)}
+.ov.fb .vfa{right:16px;top:calc(var(--st) + 62px)}
+.ov.fb .vfb{bottom:calc(var(--sb) + 124px)}.ov.fb .vfb.vl{left:24px}.ov.fb .vfb.vr{right:24px}
+.ov.fb .pane[data-p="cam"] .shut{position:absolute;left:0;right:0;bottom:calc(var(--sb) + 112px);padding:0;z-index:3}
+.ov.fb .pane[data-p="cam"] .cap-in{position:absolute;left:24px;right:24px;bottom:calc(var(--sb) + 72px);width:auto;padding:4px;z-index:3}
+/* a recovered memory: the photo fills the phone and dissolves into mist at the edges, with its caption on the mist */
+.wbrv{position:absolute;inset:0}
+.wbrv .wbhero{position:absolute;inset:0;background-size:cover;background-position:center;-webkit-mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 12%,#000 52%,transparent 80%);-webkit-mask-composite:source-in;mask-image:linear-gradient(to right,transparent,#000 9%,#000 91%,transparent),linear-gradient(to bottom,transparent,#000 12%,#000 52%,transparent 80%);mask-composite:intersect}
+.wbrv .wbh{position:relative;z-index:2}
+.wbrv .wbrvb{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 20px calc(var(--sab,env(safe-area-inset-bottom,0px)) + 24px)}
+.wbrv .wbrvb h1{font-size:24px;margin:12px 0 2px}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 </style>
 
@@ -975,7 +987,6 @@ function setMode(m,first){
   document.querySelectorAll('.pane').forEach(x=>x.classList.toggle('on',x.dataset.p===p));
   $('#otitle').textContent=titleFor();
   const sh=$('#shutter');sh.classList.toggle('v',m==='video');sh.classList.remove('rec');
-  $('#ov').classList.toggle('fb',p==='cam');
   if(p==='cam'){showShot();if(!stream)startCam()}else{stopCam()}
   if(p!=='voice'){const a=$('#vplay');if(a)a.pause()}
   demoVid();
@@ -1302,9 +1313,8 @@ let AV=null;
 function wbStopAv(){if(AV){AV.done=true;cancelAnimationFrame(AV.raf);if(AV.stream)AV.stream.getTracks().forEach(t=>t.stop())}AV=null}
 function wbReveal(spot,now,live,pct){
   const L=wbSpots(),n=Object.keys(WB.done).length;
-  $('#wb').innerHTML=wbHead('Memory recovered',true)+`<div class="wbb"><div class="wbfr"><span class="wbchip">Memory fragments recovered</span><div class="wbfi" style="background-image:url(${spot.src})"></div><h1 style="font-size:22px;margin-top:14px">${esc(spot.name)}</h1><p class="sub">${esc(dayLab(spot))} · ${pct}% match${live?'':' · preview'}</p><div class="wbmt2"><i style="width:${Math.round(n/L.length*100)}%"></i></div><p class="wbnote" style="margin-top:6px">${n} of ${L.length} places found again</p></div>
-   <button class="wbbtn p" id="wbre">See who was there with Meta AI</button><button class="wbbtn" id="wbnext">Skip to the next place</button>
-   <p class="wbnote">Meta AI recreates the people in this memory as avatars and places them in the real scene. Here they are drawn on your device from a small scene description; Meta AI's avatar generation plugs in at this step.</p></div>`;
+  $('#wb').innerHTML=`<div class="wbrv"><div class="wbhero" style="background-image:url(${spot.src})"></div>${wbHead('Memory recovered',true)}<div class="wbrvb"><span class="wbchip">Memory fragments recovered</span><h1>${esc(spot.name)}</h1><p class="sub">${esc(dayLab(spot))} · ${pct}% match${live?'':' · preview'} · ${n} of ${L.length} places found again</p><div class="wbmt2"><i style="width:${Math.round(n/L.length*100)}%"></i></div>
+   <button class="wbbtn p" id="wbre">See who was there with Meta AI</button><button class="wbbtn" id="wbnext">Skip to the next place</button></div></div>`;
   $('#wbx').onclick=wbHome;$('#wbre').onclick=()=>wbAvatars(spot,live);$('#wbnext').onclick=()=>wbWalk();
 }
 /* the avatars stand where the people stood in the photo and stay put in the world as you move the phone */
