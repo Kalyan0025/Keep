@@ -111,6 +111,8 @@ function buildAvatar(look){
 
 /* ---- the overlay ---- */
 let ar=null;
+/* with a location fix, only memories kept within 200 m are candidates */
+const arC=()=>ar.near&&ar.near.length?ar.near:ar.cands;
 const arPose=m=>m.pose||'stand';
 function setQ(q,a,b,g,o){
   const T=THREE,E=new T.Euler(),q1=new T.Quaternion(-Math.sqrt(.5),0,0,Math.sqrt(.5)),d=T.MathUtils.degToRad;
@@ -141,6 +143,7 @@ async function openAR(pid){
   arBottom();
   if(pid){const p=ar.cands.find(x=>x.id===pid);if(p){await arLock(p,'photo');arTick();return}}
   arTick();arScanStart();
+  gps(pos=>{if(!ar||!ar.on)return;const n=ar.cands.filter(p=>geoOf(p)&&meters(pos,geoOf(p))<200);if(n.length){ar.near=n;if(!ar.cur)arBottom()}});
 }
 function arInitGL(){
   const T=THREE,cv=$('#arGL'),r=new T.WebGLRenderer({canvas:cv,alpha:true,antialias:true,preserveDrawingBuffer:true});
@@ -238,7 +241,7 @@ function arScanLoop(){
     const v=$('#arCam');if(!ar||ar.cur||!v||v.readyState<2||!ar.stream)return;
     $('#arScan').classList.add('on');
     const s=arSig(v);let best=null,bd=9,b2=9;
-    ar.cands.forEach(p=>{const q=ar.sigs.get(p.id);if(!q)return;const d=arDist(s,q);if(d<bd){b2=bd;bd=d;best=p}else if(d<b2)b2=d});
+    arC().forEach(p=>{const q=ar.sigs.get(p.id);if(!q)return;const d=arDist(s,q);if(d<bd){b2=bd;bd=d;best=p}else if(d<b2)b2=d});
     ar.lastD=bd;
     if(best&&bd<AR_THR&&b2-bd>AR_MARGIN){if(ar.hitId===best.id)ar.hit++;else{ar.hitId=best.id;ar.hit=1}if(ar.hit>=2){clearInterval(ar.iv);arLock(best,'camera')}}
     else{ar.hit=0;ar.hitId=0}
@@ -246,9 +249,9 @@ function arScanLoop(){
 }
 function arBottom(){
   const b=$('#arBot');if(!b)return;
-  const chips=ar.cands.map(p=>`<button class="archip ${ar.cur&&ar.cur.id===p.id?'on':''}" data-pid="${p.id}"><img src="${src(p)}" alt="">${esc(firstName(p.who))} · ${MS[new Date(p.ts).getMonth()]} ${new Date(p.ts).getDate()}</button>`).join('');
+  const chips=arC().map(p=>`<button class="archip ${ar.cur&&ar.cur.id===p.id?'on':''}" data-pid="${p.id}"><img src="${src(p)}" alt="">${esc(firstName(p.who))} · ${MS[new Date(p.ts).getMonth()]} ${new Date(p.ts).getDate()}</button>`).join('');
   if(!ar.cur){
-    b.innerHTML=`<div class="arhint">${ar.stream?'Point at a place you kept, or try one of these':'Pick a memory to stand in its place'}</div><div class="arrow">${chips}</div>`;
+    b.innerHTML=`<div class="arhint">${ar.near&&ar.near.length?ar.near.length+' kept within 200 m of you':ar.stream?'Point at a place you kept, or try one of these':'Pick a memory to stand in its place'}</div><div class="arrow">${chips}</div>`;
   }else{
     b.innerHTML=`<div class="arrow">${POSES.map(x=>`<button class="archip t ${ar.gl&&ar.gl.av&&ar.gl.av.pose===x[0]?'on':''}" data-pose="${x[0]}">${x[1]}</button>`).join('')}</div>
      <div class="arctl"><button class="archip t" id="arAgain">Scan again</button><button class="arshut" id="arShot" aria-label="Capture"><i></i></button><button class="archip t" id="arSw">${ar.how==='camera'?'Scene photo':'Live camera'}</button></div>`;

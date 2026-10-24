@@ -23,6 +23,17 @@ Tag a photo with who is in it, their pose (sit, stand, wave, walk) and the spot 
 
 Limits: the avatar is generated from the name (skin, hair, jacket), not from the real person, and the pose and spot are what you tagged, not detected. Matching is a fingerprint, so it needs a similar view of the same place; it does not track you as you walk (that needs ARKit/ARCore or WebXR). Journals are matched by day, link and name.
 
+## Google Maps
+
+Tap the pin in the header. Paste a Google Maps API key (Maps JavaScript API enabled) once; it is stored only in this browser (`localStorage`), never in the repo. Restrict the key to your site's HTTP referrer in Google Cloud.
+
+- Photos taken with the in-app camera save their location. The map shows them as photo markers (several in one spot become one marker with a count); tap one to open the day, see the person there (Re-live), or get directions.
+- The locate button finds you and shows what you kept within 200 m.
+- Re-live uses your location too: with a fix, the camera only has to match memories kept within 200 m.
+- With no key, or if Google rejects it, Places falls back to a list with "Open in Maps" links.
+
+Demo photos are placed around Tempe and Phoenix, AZ.
+
 ## Reference
 
 - `assets/reference/meta-ai-characters.webp`: Meta AI character lineup (stylized 3D avatars on a city street). Visual reference for people/avatar styling; not used by the build.
