@@ -32,6 +32,8 @@ Tap the pin in the header. Paste a Google Maps API key (Maps JavaScript API enab
 - Re-live uses your location too: with a fix, the camera only has to match memories kept within 200 m.
 - With no key, or if Google rejects it, Places falls back to a list with "Open in Maps" links.
 
+On a phone: open `https://<your-site>/#gmkey=YOUR_KEY` once. The key is stored in that browser and removed from the address bar.
+
 Demo photos are placed around Tempe and Phoenix, AZ.
 
 ## Reference
