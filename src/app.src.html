@@ -497,6 +497,15 @@ svg{display:block}
 .wbav.vr .eye[data-e="1"]{display:block}.wbav.vr .eye+.eye{box-shadow:-1px 0 0 rgba(0,0,0,.4)}.wbav.vr .wbbot,.wbav.vr .wbtop{display:none}
 .wbav .wbvrx{display:none;position:absolute;left:50%;top:10px;margin-left:-20px;z-index:5;background:rgba(0,0,0,.55);color:#fff}.wbav.vr .wbvrx{display:grid}
 .wbav .av3.bust{-webkit-mask-image:linear-gradient(to bottom,#000 78%,transparent);mask-image:linear-gradient(to bottom,#000 78%,transparent)}
+.today{flex:none;display:flex;gap:8px;overflow-x:auto;padding:2px 0 10px;scrollbar-width:none}.today::-webkit-scrollbar{display:none}
+.tchip{flex:none;height:34px;padding:0 14px;border-radius:17px;background:var(--fill);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.tchip.hot{background:linear-gradient(90deg,var(--ai1,#0082FB),var(--ai2,#8A5CF6),var(--ai3,#F2589D));color:#fff}
+.dcard.ins .dbody.insb,.dcard.ins .insb{justify-content:flex-end;padding-bottom:28px}
+.insn{font-size:64px;line-height:1;font-weight:700;letter-spacing:-.03em;text-shadow:0 2px 14px rgba(0,0,0,.25)}.inst{font-size:20px;font-weight:600;line-height:1.25;text-shadow:0 2px 12px rgba(0,0,0,.3)}
+.dcard.mem.ins .dbody{color:#fff}.dcard.mem.ins::before{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.55),transparent 60%)}
+.srcrow{display:flex;gap:10px;margin-top:16px}.srcc{flex:1;border-radius:16px;padding:12px;background:var(--fill)}.srcc b{display:block;font-size:15px}.srcc span{font-size:12px;color:var(--mute)}
+.monb{position:absolute;left:20px;right:20px;top:calc(var(--sat,env(safe-area-inset-top,0px)) + 14px);height:3px;border-radius:2px;background:rgba(0,0,0,.12);overflow:hidden;z-index:3}.monb i{display:block;height:100%;width:100%;transform-origin:left;background:linear-gradient(90deg,var(--ai1,#0082FB),var(--ai2,#8A5CF6),var(--ai3,#F2589D));animation:monp linear forwards}
+@keyframes monp{from{transform:scaleX(0)}to{transform:scaleX(1)}}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01ms!important;animation-duration:.01ms!important}}
 </style>
 
@@ -522,6 +531,7 @@ svg{display:block}
 
   <div class="ov" id="ov"></div>
   <div class="wb" id="wb" aria-hidden="true"></div>
+  <div class="wb" id="onb" aria-hidden="true"></div>
 
   <div class="sheet" id="sh"><div class="scrim" id="scrim"></div><div class="panel" id="panel"><div class="handle"></div><button class="ib px" id="px" aria-label="Close"></button><div id="pc" style="display:flex;flex-direction:column;min-height:0;flex:1"></div></div></div>
   <div class="lb" id="lb"></div>
@@ -544,7 +554,7 @@ const fullDay=d=>longDay(d)+', '+d.getFullYear();
 const tstr=ts=>{const d=new Date(ts);let h=d.getHours(),m=pad(d.getMinutes());const ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+m+' '+ap};
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const ini=n=>n.split(/\s+/).map(w=>w[0]).slice(0,2).join('').toUpperCase();
-const TL={photo:'Photo',video:'Video',text:'Note',quote:'Quote',voice:'Voice',person:'Person',file:'File',place:'Place'};
+const TL={insight:'Insight',photo:'Photo',video:'Video',text:'Note',quote:'Quote',voice:'Voice',person:'Person',file:'File',place:'Place'};
 const st=(p,w)=>`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w||1.7}" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
 const ic={
  plus:st('<path d="M12 5v14M5 12h14"/>',2),
@@ -621,6 +631,9 @@ function build(){
   return out;
 }
 let base=build(),user=[],emptyMode=false,revOn='weekly';
+/* two sources: what was posted (Stories) and what was kept privately in Keep. Older saves without a source count as private. */
+base.forEach(m=>{m.from=(m.id*7)%10<3?'posted':'private'});
+const srcOf=m=>m.from||'private',badge=m=>srcOf(m)==='posted'?'Posted':'Private';
 try{const u=JSON.parse(localStorage.getItem('kept.user')||'[]');if(Array.isArray(u))user=u}catch(e){}
 const all=()=>emptyMode?user:base.concat(user);
 let byDay={};
@@ -709,11 +722,11 @@ function openLb(ids){
   $('#lb').classList.add('on');
 }
 const pauseIn=sel=>document.querySelectorAll(sel+' video').forEach(v=>v.pause());
-function closeLb(){$('#lb').classList.remove('on');pauseIn('#lb')}
+function closeLb(){$('#lb').classList.remove('on');pauseIn('#lb');clearInterval(mon);const mb=$('#lb .monb');if(mb)mb.remove()}
 
 const wave=(n,seed)=>'<div class="wv">'+Array.from({length:n},(_,i)=>`<i style="height:${6+Math.abs(Math.sin(i*1.7+seed))*16}px"></i>`).join('')+'</div>';
 function item(m,withTime){
-  const t=`<div class="tm">${tstr(m.ts)} <em>· ${TL[m.type]}</em></div>`;let b='';
+  const t=`<div class="tm">${tstr(m.ts)} <em>· ${TL[m.type]} · ${badge(m)}</em></div>`;let b='';
   if(m.type==='photo'||m.type==='video')b=stackHTML([m])+(m.text?`<div class="tx">${esc(m.text)}</div>`:'');
   else if(m.type==='text')b=`<div class="tx">${esc(m.text)}</div>`;
   else if(m.type==='quote')b=`<div class="qcard fb"><q>${esc(m.text)}</q>${m.who?`<small>${esc(m.who)}</small>`:''}</div>`;
@@ -725,6 +738,7 @@ function item(m,withTime){
 }
 /* ---------- card deck ---------- */
 function deckCard(m){
+  if(m.type==='insight')return {cls:(m.bg?'mem ins':'gr g-'+(m.g||'text')+' ins'),bg:m.bg||'',html:`<div class="dbody insb"><div class="insn">${esc(m.big)}</div><div class="inst">${esc(m.title)}</div></div>`};
   const who=`<div class="dwho"><i>${m.type==='person'?esc(ini(m.name||'?')).slice(0,1):''}</i>${TL[m.type]} · ${tstr(m.ts)}</div>`;
   if((m.type==='photo'||m.type==='video')&&src(m))
     return {cls:'mem'+(vsrc(m)?' vidc':''),bg:src(m),html:(m.vurl?`<video class="dv" data-snd="1" muted loop playsinline preload="auto" src="${m.vurl}"></video>`:vsrc(m)?`<video class="dv" muted loop playsinline preload="auto">${vsources(m.vid)}</video>`:'')+(m.type==='video'?`<span class="dplay">${ic.play}</span>`:'')};
@@ -802,7 +816,7 @@ function memCap(el,list,m,api){
   const tx=el.querySelector('.mtxt');tx.querySelector('h3').textContent=title;tx.querySelector('p').textContent=desc;
   tx.classList.remove('in');void tx.offsetWidth;tx.classList.add('in');
   el.querySelector('.mic').innerHTML=ic[TIC[m.type]]||'';
-  el.querySelector('.mlab').textContent=TL[m.type]+(n>1?' · '+(i+1)+' of '+n:'');
+  el.querySelector('.mlab').textContent=TL[m.type]+' · '+badge(m)+(n>1?' · '+(i+1)+' of '+n:'');
 }
 /* ---------- sheets ---------- */
 function openSheet(html,opts){
@@ -895,14 +909,21 @@ function search(q){
 }
 function ask(q){
   q=q.trim();if(!q)return;openChat(true);
-  const res=search(q);let h=`<div class="qb">${esc(q)}</div>`;
+  let h=`<div class="qb">${esc(q)}</div>`;
+  /* "who appears most", "my friends": answered from the people Keep has counted, minus anyone you've hidden */
+  if(/\b(who|friends?|people)\b.*\b(most|often|appear|friends?|know)\b|\bmy friends\b/i.test(q)){
+    const P=people().filter(p=>!p.hidden).slice(0,4);
+    h+=P.length?`<div class="ans">${P.map((p,i)=>`<b>${esc(p.label)}</b> ${i?'':'comes up most, '}${p.n} times`).join('. ')}.</div><div class="lbl">Counted on this device from names you saved and captions. <u data-open-people style="cursor:pointer">Manage people</u></div>`:`<div class="ans">No one yet. Save a person, or mention someone in a caption.</div>`;
+    const cb0=$('#cb');cb0.insertAdjacentHTML('beforeend',h);cb0.scrollTop=cb0.scrollHeight;return}
+  const res=search(q.replace(/\b(show me|every|all my|all|montage of|a montage of|everything with|video|videos|photos?)\b/ig,' '));
   if(!res.length)h+=`<div class="ans">Nothing you kept matches that. I would rather say so than guess.</div><div class="empty">Try a name, a place, or a date such as “June 22”.</div>`;
   else{
     const top=res[0],list=res.slice(0,6);let line;
     if(top.type==='person')line=`<b>${esc(top.name)}.</b> ${esc(top.text)}`;
     else if(top.type==='quote')line=`<b>“${esc(top.text)}”</b> ${top.who?esc(top.who)+', ':''}${longDay(new Date(top.ts))}.`;
     else line=`<b>${longDay(new Date(top.ts))}.</b> ${esc(top.text||top.name||'')}`;
-    h+=`<div class="ans">${line}</div><div class="lbl">From your memories · ${res.length} found</div><div class="res">${list.map(m=>`<div class="rwrap"><div class="tm">${fullDay(new Date(m.ts))}</div>${item(m,false)}</div>`).join('')}</div>`;
+    const media=res.filter(m=>m.type==='photo'||m.type==='video');
+    h+=`<div class="ans">${line}</div>${media.length>1?`<button class="pill d" data-montage="${media.slice(0,24).map(m=>m.id).join(',')}" style="margin:12px 0 4px">Play montage · ${Math.min(24,media.length)}</button>`:''}<div class="lbl">From your memories · ${res.length} found</div><div class="res">${list.map(m=>`<div class="rwrap"><div class="tm">${fullDay(new Date(m.ts))}</div>${item(m,false)}</div>`).join('')}</div>`;
     const ds=[...new Set(res.map(m=>dk(new Date(m.ts))))].slice(0,8);
     h+=`<div class="lbl">Where it sits in your life</div><div class="strip">${ds.map(k=>{const [y,mo,d]=k.split('-').map(Number);return `<button class="sd" data-d="${k}">${orb(byDay[k],46)}<span>${MS[mo-1]} ${d}</span></button>`}).join('')}</div>`;
   }
@@ -911,7 +932,7 @@ function ask(q){
 function openChat(keep){$('#chat').classList.add('on');if(!keep)sugg();$('#q2').focus({preventScroll:true})}
 function closeChat(){$('#chat').classList.remove('on');$('#q').value='';$('#q2').value='';blurAll()}
 function sugg(){
-  $('#cb').innerHTML=`<div class="empty" style="margin-top:6px">Ask in your own words. Answers come from what you kept, and show the original.</div><div class="sugg">${['Who is Jake?','Where did I have coffee?'].map(s=>`<button class="chip fb flat" data-s="${s}">${s}</button>`).join('')}</div>`;
+  $('#cb').innerHTML=`<div class="empty" style="margin-top:6px">Ask in your own words. Answers come from what you kept, and show the original.</div><div class="sugg">${['Who appears most?','Show me every flower video','Montage of Jake','Where did I have coffee?'].map(s=>`<button class="chip fb flat" data-s="${s}">${s}</button>`).join('')}</div>`;
 }
 /* ---------- add: full overlay, camera first ---------- */
 const MODES=[['photo','Photo','cam'],['video','Video','vid'],['voice','Voice','mic'],['text','Note','txt'],['more','More','dots']];
@@ -959,7 +980,7 @@ function openAdd(dayKey,landing){
   newM={day:dayKey||dk(TODAY),landing:!!landing};mode='photo';moreT='quote';cap={photo:null,video:null,voice:null};
   $('#ov').innerHTML=`<div class="ot">${landing?`<button class="acctb" id="ox" aria-label="${acct?'Account':'Log in'}">${acctHTML()}</button>`:`<button class="ib" id="ox" aria-label="Close">${ic.x}</button>`}<div class="title" id="otitle">Photo</div><button class="keepb" id="keep" disabled>Keep</button></div>
   <div class="canvas">
-   <section class="pane on" data-p="cam"><div class="vfw"><div class="vf" id="vf"><video id="cam" playsinline muted autoplay></video><div class="fbk" id="fbk" style="background-image:url(${IMG.mug||''})"></div><video id="fbkv" muted loop playsinline preload="auto">${vsources('bouquet')}</video><img id="shot" alt="" hidden><video id="shotv" playsinline loop hidden></video></div><div class="vflab" id="vflab">Demo viewfinder</div>
+   <section class="pane on" data-p="cam">${landing?todayStrip():''}<div class="vfw"><div class="vf" id="vf"><video id="cam" playsinline muted autoplay></video><div class="fbk" id="fbk" style="background-image:url(${IMG.mug||''})"></div><video id="fbkv" muted loop playsinline preload="auto">${vsources('bouquet')}</video><img id="shot" alt="" hidden><video id="shotv" playsinline loop hidden></video></div><div class="vflab" id="vflab">Demo viewfinder</div>
       <label class="vfb vl" id="libb" aria-label="Choose from library">${ic.img.replace('width="22" height="22"','width="20" height="20"')}<input type="file" id="lib" accept="image/*,video/*" hidden></label>
       <button class="vfb vr" id="flip" hidden aria-label="Switch camera"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9a8 8 0 0114-3l2 2M20 15a8 8 0 01-14 3l-2-2"/><path d="M20 4v4h-4M4 20v-4h4"/></svg></button>
       <button class="vfb vr" id="retake" hidden aria-label="Retake">${ic.x.replace('width="22" height="22"','width="18" height="18"')}</button>
@@ -974,7 +995,7 @@ function openAdd(dayKey,landing){
   $('#ov').classList.toggle('landing',!!landing);
   $('#ov').classList.add('on');
   $('#ox').onclick=landing?()=>acct?openProfile():openLogin():closeAdd;$('#keep').onclick=save;
-  if(landing){$('#ovCal').onclick=closeAdd;$('#ovWalk').onclick=openWalk}
+  if(landing){$('#ovCal').onclick=closeAdd;$('#ovWalk').onclick=openWalk;bindToday()}
   $('#modes').addEventListener('pointerdown',e=>{const b=e.target.closest('.mb[data-m]');if(b&&b.dataset.m==='voice'&&mode==='voice'){e.preventDefault();voiceDown()}});
   $('#modes').addEventListener('pointerup',e=>{const b=e.target.closest('.mb[data-m]');if(b&&b.dataset.m==='voice'&&mode==='voice')voiceUp()});
   $('#modes').addEventListener('contextmenu',e=>e.preventDefault());
@@ -1113,7 +1134,7 @@ function closeAdd(){stopRec(true);stopCam();const sv=$('#shotv');if(sv)sv.pause(
 const persist=()=>{try{localStorage.setItem('kept.user',JSON.stringify(user.map(x=>x.idb?{...x,src:undefined,vurl:undefined,aurl:undefined}:x).filter(x=>!x.src||x.src.length<150000)))}catch(e){}};
 async function save(stay){
   if(rec||saving)return;saving=true;const [y,m,d]=newM.day.split('-').map(Number),now=new Date();
-  const o={id:Date.now(),ts:new Date(y,m-1,d,now.getHours(),now.getMinutes()).getTime()},media={};
+  const o={id:Date.now(),ts:new Date(y,m-1,d,now.getHours(),now.getMinutes()).getTime(),from:'private'},media={};
   const where=()=>{if(LOC)o.geo={...LOC};if(OR.h!==null){o.hd=Math.round(OR.h);o.pt=Math.round(OR.p||0)}};
   if(mode==='photo'){o.type='photo';o.ar=lastAr;o.src=cap.photo;o.text=val('capIn');where();if(cap.photo&&cap.photo.startsWith('data:')&&cap.photo!==IMG.mug)media.photo=await dataBlob(cap.photo)}
   if(mode==='video'){o.type='video';o.ar=lastAr;o.src=cap.video.src;o.dur=cap.video.dur;o.text=val('capIn');where();
@@ -1381,6 +1402,116 @@ async function wbAvatars(spot,live){
     }catch(e){o.src=spot.clean||spot.src}
     user.push(o);persist();refresh();toast('Kept to your calendar');$('#wbkeep').disabled=true;$('#wbkeep').textContent='Kept'};
 }
+/* ---------- people: from the names you kept and mentions in captions, on this device. Rename or hide anyone. ---------- */
+const PPL={hidden:{},alias:{}};try{Object.assign(PPL,JSON.parse(localStorage.getItem('keep.people')||'{}'))}catch(e){}
+const pplSave=()=>{try{localStorage.setItem('keep.people',JSON.stringify(PPL))}catch(e){}};
+function people(){
+  const names={};
+  all().filter(m=>m.type==='person'&&m.name).forEach(m=>{const t=m.name.split(' '),f=/^(Mr|Mrs|Ms|Dr)\.?$/.test(t[0])&&t[1]?t[1]:t[0];(names[f]=names[f]||{key:f,full:m.name,ids:new Set()}).ids.add(m.id)});
+  all().forEach(m=>{const hay=[m.text,m.who,m.name].join(' ');Object.values(names).forEach(p=>{if(new RegExp('\\b'+p.key+'\\b').test(hay))p.ids.add(m.id)})});
+  return Object.values(names).map(p=>({key:p.key,full:p.full,ids:[...p.ids],n:p.ids.size,label:PPL.alias[p.key]||p.key,hidden:!!PPL.hidden[p.key]})).sort((a,b)=>b.n-a.n);
+}
+/* ---------- your story: what the archive says about you, as a swipe row ---------- */
+const WSTOP=new Set('the and for with that this from they them were have been just into your about over after before again still very more some what when where which while there their than then also like only back here made make kept took take went going gets got'.split(' '));
+function insights(){
+  const A=all();if(!A.length)return[];const out=[],byId=new Map(A.map(m=>[m.id,m]));
+  const bg=ids=>{const m=ids.map(i=>byId.get(i)).find(x=>x&&(x.type==='photo'||x.type==='video')&&src(x));return m?src(m):''};
+  const posted=A.filter(m=>srcOf(m)==='posted').length;
+  out.push({big:String(A.length),title:'memories in your archive',sub:`${posted} posted as Stories · ${A.length-posted} kept privately in Keep`,ids:A.map(m=>m.id),g:'text'});
+  const ty={};A.forEach(m=>{ty[m.type]=(ty[m.type]||0)+1});const tt=Object.entries(ty).sort((a,b)=>b[1]-a[1])[0];
+  out.push({big:Math.round(tt[1]/A.length*100)+'%',title:`of what you keep is ${({photo:'photos',video:'videos',voice:'voice notes',text:'notes',quote:'quotes',person:'people',file:'files',place:'places'})[tt[0]]||tt[0]}`,sub:Object.entries(ty).sort((a,b)=>b[1]-a[1]).slice(0,4).map(([k,v])=>v+' '+(TL[k]||k).toLowerCase()).join(' · '),ids:A.filter(m=>m.type===tt[0]).map(m=>m.id),bg:bg(A.filter(m=>m.type===tt[0]).map(m=>m.id)),g:'voice'});
+  const pp=people().filter(x=>!x.hidden);
+  if(pp[0])out.push({big:pp[0].n+'×',title:`${pp[0].label} keeps showing up`,sub:'in people you saved, captions and quotes'+(pp[1]?` · then ${pp[1].label} (${pp[1].n}×)`:''),ids:pp[0].ids,bg:bg(pp[0].ids),g:'person'});
+  const mo={};A.forEach(m=>{const d=new Date(m.ts),k=d.getFullYear()+'-'+d.getMonth();(mo[k]=mo[k]||[]).push(m.id)});const bm=Object.entries(mo).sort((a,b)=>b[1].length-a[1].length)[0],[by,bmo]=bm[0].split('-').map(Number);
+  out.push({big:String(bm[1].length),title:`${MN[bmo]} ${by} was your fullest month`,sub:'Play it back as a montage',ids:bm[1],bg:bg(bm[1]),g:'place'});
+  const days=[...new Set(A.map(m=>dk(new Date(m.ts))))].sort();let best=[],run=[];days.forEach((k,i)=>{const [y,mm,d]=k.split('-').map(Number),pr=i&&days[i-1].split('-').map(Number);if(i&&Math.round((new Date(y,mm-1,d)-new Date(pr[0],pr[1]-1,pr[2]))/864e5)===1)run.push(k);else run=[k];if(run.length>best.length)best=run.slice()});
+  if(best.length>2)out.push({big:best.length+' days',title:'in a row, something worth keeping',sub:`${fullDay(new Date(...best[0].split('-').map((v,i)=>i===1?v-1:+v)))} to ${fullDay(new Date(...best[best.length-1].split('-').map((v,i)=>i===1?v-1:+v)))}`,ids:best.flatMap(k=>(byDay[k]||[]).map(m=>m.id)),g:'file'});
+  const vids=A.filter(m=>m.type==='video');
+  if(vids.length>1){const w={};vids.forEach(m=>(m.text||'').toLowerCase().replace(/[^a-z ]/g,' ').split(/\s+/).filter(t=>t.length>4&&!WSTOP.has(t)).forEach(t=>w[t]=(w[t]||0)+1));const tw=Object.entries(w).sort((a,b)=>b[1]-a[1])[0];
+    out.push({big:String(vids.length),title:tw&&tw[1]>1?`videos, mostly about ${tw[0]}`:'videos you kept',sub:'Tap play montage to watch them in a row',ids:vids.map(m=>m.id),bg:bg(vids.map(m=>m.id)),g:'quote'})}
+  const pl={};A.filter(m=>m.type==='place'&&m.name).forEach(m=>(pl[m.name]=pl[m.name]||[]).push(m.id));const tp=Object.entries(pl).sort((a,b)=>b[1].length-a[1].length)[0];
+  if(tp)out.push({big:tp[1].length+'×',title:`you kept ${tp[0]}`,sub:'your most saved place',ids:tp[1],g:'place'});
+  return out;
+}
+let story=null;
+function openStory(){
+  const L=insights().map((c,i)=>({id:-(i+1),ts:Date.now(),type:'insight',...c}));
+  if(!L.length){toast('Nothing to read yet');return}
+  openSheet(`<div class="dh"><h1>Your story</h1><p>Read from what you kept, on this device</p></div><div class="pb" style="padding-top:0"><div class="deck" id="insdeck"></div><div class="mcap" id="inscap"></div><div class="btns" style="margin-top:6px"><button class="pill d" id="insM">Play montage</button><button class="pill g" id="insP">People</button></div></div>`,{full:true});
+  const cap=m=>{story=m;const el=$('#inscap');el.innerHTML=`<div class="mtxt in"><h3>${esc(m.title)}</h3><p>${esc(m.sub||'')}</p></div>`;$('#insM').style.display=m.ids&&m.ids.length>1?'':'none'};
+  deck($('#insdeck'),L,cap);
+  $('#insM').onclick=()=>story&&openMontage(story.ids.map(i=>byId2(i)).filter(Boolean));
+  $('#insP').onclick=openPeople;
+}
+const byId2=id=>all().find(m=>m.id===id);
+function openPeople(){
+  const P=people();
+  openSheet(`<div class="dh"><h1>People</h1><p>Counted on this device from the names you saved and mentions in your captions. Nothing is uploaded.</p></div><div class="pb" style="padding-top:0"><div class="grp">${P.map(p=>`<div class="row" data-k="${esc(p.key)}"><span style="opacity:${p.hidden?.4:1}"><b>${esc(p.label)}</b> <small style="color:var(--mute)">· ${p.n} memories</small></span><span style="display:flex;gap:6px"><button class="pill g" data-a="rn" style="height:32px;padding:0 12px;font-size:13px">Rename</button><button class="pill ${p.hidden?'d':'g'}" data-a="hd" style="height:32px;padding:0 12px;font-size:13px">${p.hidden?'Show':'Hide'}</button></span></div>`).join('')||'<div class="empty">No people yet.</div>'}</div><p class="note">Recognising faces in photos isn't switched on in this prototype. When it is, it will run only on this device, ask before naming anyone, and let you hide anyone from your story and from search.</p></div>`,{full:true});
+  $('#pc').onclick=e=>{const b=e.target.closest('[data-a]');if(!b)return;const k=b.closest('[data-k]').dataset.k;
+    if(b.dataset.a==='hd'){PPL.hidden[k]=!PPL.hidden[k];pplSave();openPeople()}
+    else{const v=prompt('Show this person as',PPL.alias[k]||k);if(v!==null){if(v.trim())PPL.alias[k]=v.trim();else delete PPL.alias[k];pplSave();openPeople()}}};
+}
+/* ---------- montage: the answer to "show me every...", played with the same transitions as everything else ---------- */
+let mon=null;
+function openMontage(list){
+  const L=list.filter(m=>m&&(m.type==='photo'||m.type==='video')&&src(m));if(L.length<2){toast('Not enough photos or videos for a montage');return}
+  L.forEach(m=>lbReg[m.id]=m);openLb(L.map(m=>m.id));clearInterval(mon);let n=0;
+  const bar=document.createElement('div');bar.className='monb';bar.innerHTML=`<i></i>`;$('#lb').appendChild(bar);
+  mon=setInterval(()=>{if(!$('#lb').classList.contains('on')){clearInterval(mon);return}n++;if(n>=L.length){clearInterval(mon);bar.classList.add('done');return}window.keepDeck&&window.keepDeck.next()},2300);
+  bar.firstChild.style.animationDuration=(L.length*2.3)+'s';
+}
+/* ---------- today: resurface first, context next, browse last ---------- */
+function todayStrip(){
+  const rv=findRevisit(),chips=[];
+  if(rv&&!emptyMode)chips.push(`<button class="tchip hot" data-t="rv">${ic.cal.replace('width="22" height="22"','width="15" height="15"')} ${rv.label} · ${(byDay[rv.k]||[]).length}</button>`);
+  chips.push(`<button class="tchip" data-t="walk">${ic.pin.replace('width="22" height="22"','width="15" height="15"')} Find places again</button>`);
+  chips.push(`<button class="tchip" data-t="story">✦ Your story</button>`);
+  chips.push(`<button class="tchip" data-t="ask"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg> Ask</button>`);
+  return `<div class="today" id="today">${chips.join('')}</div>`;
+}
+function bindToday(){
+  const t=$('#today');if(!t)return;
+  t.onclick=e=>{const b=e.target.closest('[data-t]');if(!b)return;const k=b.dataset.t;
+    if(k==='rv'){const rv=findRevisit();if(rv){const ms=byDay[rv.k];ms.forEach(m=>lbReg[m.id]=m);openLb(ms.map(m=>m.id))}}
+    else if(k==='walk')openWalk();else if(k==='story')openStory();else if(k==='ask')openChat();};
+}
+/* ---------- onboarding: bring the archive in first ---------- */
+const onbDone=()=>{try{return localStorage.getItem('keep.onb')==='1'}catch(e){return true}};
+function openOnboarding(){
+  const o=$('#onb');o.classList.add('on');o.setAttribute('aria-hidden','false');
+  o.innerHTML=`<div class="wbb" style="padding-top:calc(var(--sat,env(safe-area-inset-top,0px)) + 40px)"><span class="wbchip">Step 1 of 1</span><h1>Bring in your Stories</h1><p class="sub">Keep is only as good as what's in it. Start with the Stories you've already shared, and keep what you save from here on privately. Everything stays on this phone.</p>
+   <div class="srcrow"><div class="srcc"><b>Posted</b><span>Stories you shared on Instagram</span></div><div class="srcc"><b>Private</b><span>Saved only in Keep</span></div></div>
+   <label class="wbbtn p" for="onbf" style="margin-top:18px">Import your Instagram export<input type="file" id="onbf" multiple webkitdirectory hidden></label>
+   <p class="wbnote" style="margin-top:8px">In Instagram: Settings, Accounts Center, Your information, Download your information, choose JSON. Unzip it, then pick the folder here.</p>
+   <button class="wbbtn" id="onbs">Use a sample archive</button><button class="wbbtn" id="onbk" style="background:none;color:var(--mute)">Start empty</button><div id="onbst" class="wbnote"></div></div>`;
+  const fin=msg=>{try{localStorage.setItem('keep.onb','1')}catch(e){}o.innerHTML=`<div class="wbb" style="padding-top:calc(var(--sat,env(safe-area-inset-top,0px)) + 60px)"><span class="wbchip">Ready</span><h1>${msg}</h1><p class="sub">Your archive is organised by day. Keep will bring back a memory from a year ago, and nudge you when you walk past a place you've been before.</p><button class="wbbtn p" id="onbst2">See your story</button><button class="wbbtn" id="onbgo">Open the camera</button></div>`;
+    $('#onbst2').onclick=()=>{closeOnb();setTimeout(openStory,150)};$('#onbgo').onclick=closeOnb};
+  $('#onbk').onclick=()=>{emptyMode=false;fin('Starting fresh')};
+  $('#onbs').onclick=()=>{const n=base.length,p=base.filter(m=>srcOf(m)==='posted').length;fin(`${n} memories found: ${p} posted, ${n-p} private`)};
+  $('#onbf').onchange=async e=>{const st=$('#onbst');st.textContent='Reading your export…';const r=await importIG([...e.target.files],c=>st.textContent=`Imported ${c} so far…`);
+    if(!r.n){st.textContent=r.why;return}fin(`${r.n} Stories imported`)};
+}
+function closeOnb(){const o=$('#onb');o.classList.remove('on');o.setAttribute('aria-hidden','true');o.innerHTML=''}
+/* Instagram's data export: a stories JSON listing each Story's media file and time, beside the media files. Posted Stories come in as "Posted". */
+async function importIG(files,progress){
+  const byName=new Map();files.forEach(f=>{const n=(f.webkitRelativePath||f.name).split('/').pop();byName.set(n,f)});
+  const js=files.filter(f=>/\.json$/i.test(f.name)&&/stor/i.test((f.webkitRelativePath||f.name)));
+  if(!js.length)return{n:0,why:'No stories JSON found in that folder. Choose the unzipped export (JSON format).'};
+  const items=[];
+  const walk=v=>{if(Array.isArray(v))v.forEach(walk);else if(v&&typeof v==='object'){if(typeof v.uri==='string'&&(v.creation_timestamp||v.taken_at))items.push(v);else Object.values(v).forEach(walk)}};
+  for(const f of js){try{walk(JSON.parse(await f.text()))}catch(e){}}
+  let n=0;
+  for(const it of items.slice(0,400)){
+    const f=byName.get(it.uri.split('/').pop());if(!f)continue;const isV=/\.(mp4|mov|m4v|webm)$/i.test(f.name),ts=(it.creation_timestamp||it.taken_at)*1000,id=ts+n;
+    try{
+      let o;
+      if(isV){const u=url(f),p=await posterOf(u);o={id,ts,type:'video',from:'posted',src:p,vurl:u,dur:'',text:it.title||'',idb:1};await KDB.put(id,{video:f,photo:p?await dataBlob(p):undefined})}
+      else{const d=await new Promise(ok=>{const r=new FileReader();r.onload=()=>ok(r.result);r.readAsDataURL(f)}),sm=await shrink(d,1080),bl=await dataBlob(sm);await KDB.put(id,{photo:bl});o={id,ts,type:'photo',from:'posted',ar:'3 / 4',src:url(bl),text:it.title||'',idb:1}}
+      user.push(o);n++;if(n%5===0&&progress)progress(n);
+    }catch(e){}
+  }
+  persist();refresh();return{n,why:'Found the stories list but none of the media files matched. Pick the whole export folder, not just the JSON.'};
+}
 /* ---------- theme: always opens in light; only the Profile switch changes it, so a host page's dark setting can't override it ---------- */
 document.documentElement.dataset.ds=document.documentElement.dataset.ds||'meta';
 let userTheme='light';
@@ -1512,9 +1643,9 @@ $('#q2').addEventListener('keydown',e=>{if(e.key==='Enter'){const v=$('#q2').val
 $('#sendB').onclick=()=>{const v=$('#q2').value;$('#q2').value='';ask(v)};
 $('#chatX').onclick=closeChat;
 $('#cb').addEventListener('click',e=>{const s=e.target.closest('[data-s]');if(s){ask(s.dataset.s);return}const d=e.target.closest('[data-d]');if(d){blurAll();openDay(d.dataset.d)}});
-document.addEventListener('click',e=>{const t=e.target.closest('[data-lb]');if(t){e.stopPropagation();openLb(t.dataset.lb.split(','))}});
+document.addEventListener('click',e=>{const mt=e.target.closest('[data-montage]');if(mt){e.stopPropagation();closeChat();openMontage(mt.dataset.montage.split(',').map(Number).map(byId2));return}if(e.target.closest('[data-open-people]')){openPeople();return}const t=e.target.closest('[data-lb]');if(t){e.stopPropagation();openLb(t.dataset.lb.split(','))}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#lb').classList.contains('on'))closeLb();else if($('#ov').classList.contains('on'))closeAdd();else if($('#sh').classList.contains('on'))closeSheet();else closeChat()}});
-refresh();setYear(false);syncAcct();openAdd(null,true);hydrate();
+refresh();setYear(false);syncAcct();openAdd(null,true);hydrate();if(!onbDone())openOnboarding();
 addEventListener('pointerup',()=>{if(rec&&rec.kind==='voice')stopRec()});addEventListener('pointercancel',()=>{if(rec&&rec.kind==='voice')stopRec()});
 </script>
 <!-- DialKit (MIT, joshpuckett/dialkit): live prototyping dials, desktop only. Loaded after the app so it never delays it. -->

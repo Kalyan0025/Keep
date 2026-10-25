@@ -26,3 +26,11 @@ The match is AR, not a drag game: your camera is live and the old photo hangs in
 **People-free scenes.** A spot can carry a clean plate (`<key>_clean` in `src/sample-images.json`): the same place with the people taken out. When present, the match screen shows it instead of the original photo, and the Meta AI avatars stand where the people were. Without one, the original photo is used.
 
 **3D / VR.** After the avatars appear, "View in 3D / VR" splits the screen into two eyes for a phone viewer (Cardboard style). The scene and the avatars sit on separate depth layers with a small per-eye offset, and everything stays anchored to where the photo was taken as you turn your head (compass and tilt). It is a layered stereo effect, not a generated 3D model or 360-degree panorama.
+
+## Archive, story and montage (prototype)
+
+- **Onboarding** asks you to bring in your Stories first: import an unzipped Instagram export (JSON format; the stories JSON plus its media files), use the sample archive, or start empty. Imported Stories are marked Posted; everything captured in Keep is marked Private. Both show as a badge in the caption pill and the day timeline.
+- **Today strip** on the camera screen leads with resurfacing ("A year ago"), then places to find again, Your story, and Ask. The calendar stays one tap away.
+- **Your story** reads the archive into a swipe row: size and source split, what you keep most, who keeps showing up, the fullest month, the longest streak, videos by theme, most-saved place. Every card can play as a **montage**.
+- **Ask** answers "who appears most?" from the people Keep has counted, and turns "show me every flower video" or "montage of Jake" into a montage button. It only answers from what is in the archive.
+- **People** are counted on the device from saved people and caption mentions, and can be renamed or hidden. Face recognition is not switched on.
