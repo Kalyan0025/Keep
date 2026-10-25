@@ -282,7 +282,7 @@ __MAPS_CSS__
     <div class="cal" id="cal"></div>
     <div class="yr" id="yr"></div>
     <div class="hint" id="hint"><b>Nothing kept yet</b>Tap + when something is worth remembering. It will show up here, on its day.</div>
-    <div class="dock"><button class="addp" id="addBtn" aria-label="Add a moment"></button><div class="bar" id="bar"><input id="q" placeholder="Ask your memories" autocomplete="off" enterkeyhint="search" aria-label="Ask your memories"><button class="b" id="micB" aria-label="Dictate"></button></div></div>
+    <div class="dock"><button class="chip fb rvp" id="rvp" hidden></button><button class="addp" id="addBtn" aria-label="Add a moment"></button><div class="bar" id="bar"><input id="q" placeholder="Ask your memories" autocomplete="off" enterkeyhint="search" aria-label="Ask your memories"><button class="b" id="micB" aria-label="Dictate"></button></div></div>
   </div>
 
   <div class="chat" id="chat"><div class="hdr"><button class="ib" id="chatX" aria-label="Close"></button><div class="title"><svg class="logo" viewBox="0 0 96 96" width="22" height="22" aria-hidden="true"><path d="M48.2 43.1 L45.4 44.0 L44.0 45.4 L43.1 47.6 L44.0 50.5 L45.4 51.9 L47.6 52.8 L50.5 51.9 L51.9 50.5 L52.8 48.2 L51.9 45.4 L50.5 44.0Z M57.8 9.0 L56.1 9.0 L53.6 8.4 L51.2 8.4 L49.6 8.9 L47.0 9.2 L46.4 9.8 L45.4 10.0 L44.4 10.8 L43.4 11.1 L42.1 12.1 L40.1 14.4 L39.8 15.6 L39.1 16.0 L37.2 16.0 L34.8 15.0 L28.9 15.0 L27.8 15.2 L26.4 16.0 L25.0 16.1 L24.4 16.8 L23.4 17.0 L22.4 17.8 L21.4 18.1 L18.1 21.1 L16.2 23.6 L15.9 24.9 L15.1 25.9 L14.9 27.1 L14.1 28.2 L14.0 35.5 L14.9 37.1 L15.2 38.5 L16.0 39.4 L16.0 39.9 L15.8 40.4 L14.0 41.9 L11.2 45.4 L10.9 46.5 L10.1 47.4 L9.9 49.1 L9.1 50.5 L9.0 57.8 L9.9 59.8 L10.1 61.4 L10.9 62.2 L11.1 63.4 L13.1 66.2 L15.6 68.6 L16.6 69.1 L17.2 69.8 L18.6 70.1 L19.5 70.9 L20.8 70.9 L23.5 71.5 L24.5 71.5 L25.9 74.0 L26.0 75.5 L26.8 76.5 L27.0 77.5 L27.8 78.5 L28.2 79.9 L33.2 84.8 L34.1 84.9 L35.2 85.8 L36.5 86.0 L38.1 86.9 L39.8 86.9 L42.2 87.5 L44.6 87.5 L46.9 86.9 L48.6 86.8 L49.5 86.1 L50.5 85.9 L51.5 85.1 L52.5 84.8 L53.8 83.8 L55.8 81.5 L56.1 80.2 L56.8 79.9 L58.6 79.9 L61.1 80.9 L67.1 80.9 L68.1 80.6 L69.1 80.0 L70.5 79.9 L71.5 79.1 L72.5 78.9 L73.5 78.1 L74.5 77.8 L77.8 74.8 L79.6 72.2 L80.0 71.0 L80.8 70.0 L81.0 68.8 L81.8 67.6 L81.9 60.4 L81.0 58.8 L80.8 57.5 L79.9 56.5 L79.9 56.0 L80.1 55.5 L81.9 54.0 L84.8 50.4 L85.0 49.4 L85.8 48.5 L86.0 46.8 L86.8 45.4 L86.9 38.1 L86.0 36.1 L85.8 34.5 L85.0 33.6 L84.8 32.5 L82.8 29.6 L80.2 27.2 L79.2 26.8 L78.6 26.1 L77.2 25.8 L76.4 25.0 L75.1 25.0 L72.4 24.4 L71.4 24.4 L70.0 21.9 L69.8 20.0 L69.1 19.4 L68.9 18.4 L68.1 17.4 L67.6 16.0 L62.6 11.1 L61.8 11.0 L60.6 10.1 L59.4 9.9Z M53.8 14.0 L58.4 15.4 L60.8 17.0 L61.9 18.1 L63.8 20.5 L64.1 22.1 L65.0 23.5 L65.0 27.1 L64.1 28.2 L63.8 29.2 L62.2 30.8 L61.4 31.1 L60.5 32.0 L59.1 32.9 L57.9 33.2 L57.1 33.9 L55.5 34.1 L54.2 35.0 L53.4 35.0 L51.2 36.6 L51.0 37.2 L51.0 38.5 L52.1 40.1 L53.2 40.9 L54.8 40.9 L56.2 40.0 L57.5 39.9 L58.8 39.0 L60.0 38.8 L60.8 38.1 L62.2 37.6 L63.9 36.6 L64.6 35.9 L65.4 35.6 L67.8 33.4 L69.1 31.2 L71.2 30.1 L73.2 30.1 L74.4 30.8 L75.8 31.0 L77.9 32.9 L80.0 35.5 L80.1 36.6 L81.0 38.1 L81.0 44.9 L80.0 46.5 L79.8 47.6 L79.2 48.0 L78.9 48.8 L75.6 51.9 L73.9 52.1 L70.2 52.0 L69.2 51.2 L67.8 50.8 L64.4 48.2 L63.2 47.8 L61.9 46.2 L60.1 45.2 L59.1 45.2 L57.5 46.1 L57.0 47.0 L57.0 49.5 L58.1 50.8 L60.5 52.8 L61.4 53.1 L63.2 54.8 L64.2 55.1 L65.0 55.8 L65.9 56.0 L66.9 56.8 L68.5 57.0 L70.1 57.9 L73.5 57.9 L75.0 59.4 L75.9 60.8 L76.1 62.0 L76.2 64.2 L75.9 67.1 L73.8 70.6 L71.6 72.8 L70.1 73.8 L68.8 74.1 L67.4 75.0 L61.0 75.0 L59.4 74.0 L58.2 73.8 L57.1 72.6 L56.8 71.5 L55.9 70.4 L55.6 64.6 L55.9 63.5 L55.9 60.2 L56.4 59.1 L56.4 57.8 L55.9 56.4 L55.5 56.0 L54.1 55.2 L53.1 55.2 L51.2 56.4 L50.0 60.8 L50.0 70.5 L50.1 71.1 L50.9 72.2 L51.0 73.5 L52.0 75.1 L51.9 76.5 L50.8 78.6 L48.4 80.8 L46.5 81.1 L44.6 81.9 L42.1 81.9 L37.5 80.5 L35.1 78.9 L34.0 77.8 L32.1 75.4 L31.8 73.8 L30.9 72.4 L30.9 68.8 L31.8 67.6 L32.1 66.6 L33.5 65.1 L34.5 64.8 L36.5 63.1 L37.5 62.9 L38.8 62.0 L40.4 61.8 L41.2 61.0 L43.0 60.6 L44.6 59.2 L44.9 58.6 L44.9 57.4 L43.8 55.8 L42.6 55.0 L41.1 55.0 L39.6 55.9 L38.4 56.0 L37.1 56.9 L35.9 57.1 L35.1 57.8 L33.6 58.2 L32.0 59.2 L31.2 60.0 L30.5 60.2 L28.1 62.5 L26.8 64.6 L24.6 65.8 L22.6 65.8 L21.5 65.1 L20.1 64.9 L17.9 62.9 L16.9 61.4 L15.9 60.4 L15.8 59.2 L14.9 57.8 L14.9 51.1 L15.8 49.8 L16.1 48.2 L16.6 47.9 L17.0 47.1 L20.2 44.0 L22.1 43.8 L25.6 43.9 L26.6 44.6 L28.1 45.1 L31.5 47.6 L32.6 48.1 L34.0 49.6 L35.8 50.6 L36.8 50.6 L38.4 49.8 L38.9 49.0 L38.9 46.4 L37.8 45.1 L35.4 43.1 L34.5 42.8 L32.6 41.1 L31.6 40.8 L30.9 40.1 L30.0 39.9 L29.0 39.1 L27.4 38.9 L25.8 38.0 L22.4 38.0 L20.9 36.5 L20.0 35.1 L19.8 33.9 L19.6 31.6 L20.0 28.8 L22.1 25.2 L24.2 23.1 L25.8 22.1 L27.1 21.8 L28.5 20.9 L34.9 20.9 L36.5 21.9 L37.6 22.1 L38.8 23.2 L39.1 24.4 L40.0 25.5 L40.2 31.2 L40.0 32.4 L40.0 35.6 L39.5 36.8 L39.5 38.1 L40.0 39.5 L40.4 39.9 L41.8 40.6 L42.8 40.6 L44.8 39.4 L44.9 38.2 L45.9 35.1 L45.9 25.4 L45.8 24.8 L45.0 23.6 L44.8 22.0 L44.1 21.4 L43.9 20.8 L44.0 19.4 L45.1 17.2 L47.5 15.1 L49.4 14.8 L51.2 14.0Z" fill="currentColor" fill-rule="evenodd"/></svg>Keep</div><div style="width:40px"></div></div><div class="cb" id="cb"></div>
@@ -300,8 +300,10 @@ __MAPS_CSS__
 
 <script>
 const IMG=__IMGS__;
-/* demo "today" is fixed so the sample history lines up */
-const TODAY=new Date(2026,9,18);
+const CFG=window.KEEP||{};
+const DEMOLAB=CFG.demo?'Demo viewfinder':'No camera · pick from library';
+/* the demo build pins "today" so the sample history lines up; the real app uses the actual date */
+let TODAY=CFG.demo?new Date(2026,9,18):(()=>{const d=new Date();return new Date(d.getFullYear(),d.getMonth(),d.getDate())})();
 const $=s=>document.querySelector(s);
 const pad=n=>String(n).padStart(2,'0');
 const dk=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
@@ -415,8 +417,22 @@ function build(){
   out.push(M(j,21,10,{type:'photo',img:'dahlia',geo:[33.4627,-111.944]}));
   return out;
 }
-let base=build(),user=[],emptyMode=false,revOn='weekly';
-try{const u=JSON.parse(localStorage.getItem('kept.user')||'[]');if(Array.isArray(u))user=u}catch(e){}
+let base=CFG.demo?build():[],user=[],emptyMode=false,revOn='weekly';
+/* what you keep lives in IndexedDB on this device, photos included. The old localStorage copy is migrated once. */
+const saved=new Set();
+const idb=(()=>{
+  let p;const open=()=>p||(p=new Promise((res,rej)=>{const r=indexedDB.open('keep',1);r.onupgradeneeded=()=>r.result.createObjectStore('mem',{keyPath:'id'});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}));
+  const tx=(mode,fn)=>open().then(db=>new Promise((res,rej)=>{const t=db.transaction('mem',mode),r=fn(t.objectStore('mem'));t.oncomplete=()=>res(r&&r.result);t.onerror=t.onabort=()=>rej(t.error)}));
+  return{all:()=>tx('readonly',s=>s.getAll()),put:o=>tx('readwrite',s=>s.put(o)),del:id=>tx('readwrite',s=>s.delete(id))};
+})();
+function persistUser(){user.forEach(o=>{if(saved.has(o.id))return;saved.add(o.id);idb.put(o).catch(()=>{saved.delete(o.id);toast('Could not save that. Storage may be full.')})})}
+async function loadUser(){
+  let L=[];try{L=await idb.all()}catch(e){}
+  L.forEach(o=>saved.add(o.id));
+  try{const old=JSON.parse(localStorage.getItem('kept.user')||'[]');if(Array.isArray(old)){old.forEach(o=>{if(o&&o.id&&!saved.has(o.id))L.push(o)});localStorage.removeItem('kept.user')}}catch(e){}
+  user=L;persistUser();refresh();
+  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+}
 const all=()=>emptyMode?user:base.concat(user);
 let byDay={};
 function index(){byDay={};all().forEach(m=>{const k=dk(new Date(m.ts));(byDay[k]=byDay[k]||[]).push(m)});Object.values(byDay).forEach(a=>a.sort((x,y)=>x.ts-y.ts))}
@@ -461,20 +477,27 @@ function monthHTML(y,m){
   for(let i=0;i<cells.length;i+=7){if(y===TODAY.getFullYear()&&m===TODAY.getMonth()&&new Date(y,m,+(cells.slice(i,i+7).join('').match(/<span class="dn">(\d+)/)||[0,1])[1])>TODAY)break;html+='<div class="wk">'+cells.slice(i,i+7).join('')+'</div>'}
   return `<section id="m-${y}-${m}"><div class="mh"><h2>${MN[m]}<span>${y}</span></h2><p>${count?count+' kept':''}</p></div>${html}</section>`;
 }
+const firstMonth=()=>{
+  let t=new Date(TODAY.getFullYear(),TODAY.getMonth()-2,1);
+  const e=all().reduce((a,m)=>Math.min(a,m.ts),Infinity);
+  if(e<Infinity){const f=new Date(new Date(e).getFullYear(),new Date(e).getMonth(),1);if(f<t)t=f}
+  return t;
+};
 function renderCal(){
-  let h='';const first=emptyMode?new Date(2026,6,1):new Date(2025,2,1);
-  for(let y=first.getFullYear(),m=first.getMonth();y<2026||(y===2026&&m<=9);){h+=monthHTML(y,m);if(++m>11){m=0;y++}}
+  let h='';const f=firstMonth(),ty=TODAY.getFullYear(),tm=TODAY.getMonth();
+  for(let y=f.getFullYear(),m=f.getMonth();y<ty||(y===ty&&m<=tm);){h+=monthHTML(y,m);if(++m>11){m=0;y++}}
   $('#cal').innerHTML=h;
-  $('#hint').style.display=emptyMode&&!user.length?'block':'none';
-  const tgt=$('#m-2026-9');$('#cal').scrollTop=1e6;updSeason();
+  $('#hint').style.display=!all().length?'block':'none';
+  $('#cal').scrollTop=1e6;updSeason();
 }
 function renderYear(){
   let h='';
-  [2026,2025].forEach(y=>{
+  const f=firstMonth(),ty=TODAY.getFullYear(),tm=TODAY.getMonth(),ys=[];for(let y=ty;y>=f.getFullYear();y--)ys.push(y);
+  ys.forEach(y=>{
     let c=0;for(let m=0;m<12;m++)for(let d=1;d<=new Date(y,m+1,0).getDate();d++)c+=(byDay[y+'-'+pad(m+1)+'-'+pad(d)]||[]).length;
     h+=`<div class="yh"><h2>${y}</h2><p>${c} kept</p></div><div class="yg">`;
     for(let m=0;m<12;m++){
-      if(y===2026&&m>9||(y===2025&&m<2)){h+='<div class="ym"></div>';continue}
+      if((y===ty&&m>tm)||(y===f.getFullYear()&&m<f.getMonth())){h+='<div class="ym"></div>';continue}
       const lead=(new Date(y,m,1).getDay()+6)%7,days=new Date(y,m+1,0).getDate();let dots='';
       for(let i=0;i<lead;i++)dots+='<i style="opacity:0"></i>';
       for(let d=1;d<=days;d++){const n=(byDay[y+'-'+pad(m+1)+'-'+pad(d)]||[]).length;dots+=`<i class="${n>2?'m2':n?'h':''}"></i>`}
@@ -519,7 +542,9 @@ function openSheet(html,opts){
 function closeSheet(){$('#sh').classList.remove('on')}
 $('#scrim').onclick=closeSheet;$('#px').onclick=closeSheet;
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.remove('on'),1700)}
+let curDay='';
 function openDay(k){
+  curDay=k;
   const [y,m,d]=k.split('-').map(Number),dt=new Date(y,m-1,d),L=byDay[k]||[];
   const ph=L.filter(x=>x.type==='photo'||x.type==='video');let done=false,h='';
   L.forEach(x=>{
@@ -529,6 +554,8 @@ function openDay(k){
     }else h+=`<div class="ev">${item(x)}</div>`;
   });
   ph.filter(p=>p.who&&src(p)).forEach(p=>{h+=`<div class="ev"><button class="pill d arbtn" data-ar="${p.id}">${ic.cube} See ${esc(firstName(p.who))} there</button></div>`});
+  const mine=L.filter(x=>user.includes(x));
+  if(mine.length)h+=`<div class="lbl" style="margin-top:22px">Manage</div><div class="grp" style="padding:0 14px;margin-top:8px">${mine.map(x=>`<div class="row"><span style="font-size:14px;color:var(--mute);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:10px">${TL[x.type]} · ${esc((x.text||x.name||'').slice(0,40))||tstr(x.ts)}</span><button class="chip fb flat" data-del="${x.id}" style="height:30px;font-size:13px;padding:0 12px;flex:none">Delete</button></div>`).join('')}</div>`;
   if(!L.length)h=`<div class="empty">Nothing kept on this day.</div>`;
   openSheet(`<div class="dh"><h1>${longDay(dt)}</h1><p>${dt.getFullYear()} · ${L.length?L.length+' moment'+(L.length>1?'s':''):'quiet day'}</p></div><div class="pb" style="padding-top:16px">${h}</div>`,{full:true});
 }
@@ -538,6 +565,7 @@ function findRevisit(){const t=new Date(TODAY.getFullYear()-1,TODAY.getMonth(),T
 function renderRv(){
   /* Look back is delivered as a notification in the real product, so no on-screen pill here. */
   rvDate=revOn==='off'||emptyMode?null:findRevisit();
+  const rp=$('#rvp');if(rp){if(rvDate&&!CFG.demo){rp.hidden=false;rp.innerHTML=ic.cal.replace('width="22" height="22"','width="16" height="16"')+' '+rvDate.label}else rp.hidden=true}
 }
 function cardHTML(m){
   const lab=`<div class="lab"><span>${TL[m.type]}</span><span>${tstr(m.ts)}</span></div>`;let b='';
@@ -583,7 +611,7 @@ function bindDrag(el){
 const STOP=new Set('the a an of in on at to and or for with who what where when which is was were did do i me my met about from that this it happened'.split(' '));
 function parseDate(q){
   const lq=q.toLowerCase();const hits=[];
-  MN.forEach((mn,i)=>{const mt=lq.match(new RegExp('\\b('+mn.toLowerCase()+'|'+MS[i].toLowerCase()+')\\.?\\s+(\\d{1,2})\\b'));if(mt){[2026,2025].forEach(y=>{const d=new Date(y,i,+mt[2]);if(d<=TODAY&&byDay[dk(d)])hits.push(dk(d))})}});
+  MN.forEach((mn,i)=>{const mt=lq.match(new RegExp('\\b('+mn.toLowerCase()+'|'+MS[i].toLowerCase()+')\\.?\\s+(\\d{1,2})\\b'));if(mt){[TODAY.getFullYear(),TODAY.getFullYear()-1].forEach(y=>{const d=new Date(y,i,+mt[2]);if(d<=TODAY&&byDay[dk(d)])hits.push(dk(d))})}});
   return hits;
 }
 function search(q){
@@ -635,11 +663,13 @@ async function startCam(){
     stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'},audio:false});
     const v=$('#cam');if(!v){stopCam();return}
     v.srcObject=stream;v.style.display='block';$('#fbk').style.display='none';live=true;$('#vflab').innerHTML='Camera';
-  }catch(e){live=false;const l=$('#vflab');if(l)l.innerHTML='Demo viewfinder'}
+  }catch(e){live=false;const l=$('#vflab');if(l)l.innerHTML=DEMOLAB}
 }
+const shrinkImage=(file,max=1600)=>new Promise((res,rej)=>{const u=URL.createObjectURL(file),i=new Image();i.onload=()=>{const k=Math.min(1,max/Math.max(i.naturalWidth,i.naturalHeight)),c=document.createElement('canvas');c.width=Math.round(i.naturalWidth*k);c.height=Math.round(i.naturalHeight*k);c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);lastAr=c.width>=c.height?'4 / 3':'3 / 4';res(c.toDataURL('image/jpeg',.85))};i.onerror=()=>{URL.revokeObjectURL(u);rej()};i.src=u});
+const videoPoster=file=>new Promise((res,rej)=>{const u=URL.createObjectURL(file),v=document.createElement('video');v.muted=true;v.playsInline=true;v.preload='metadata';v.onloadeddata=()=>{v.currentTime=Math.min(.5,(v.duration||1)/2)};v.onseeked=()=>{const k=Math.min(1,1280/Math.max(v.videoWidth,v.videoHeight)),c=document.createElement('canvas');c.width=Math.round(v.videoWidth*k);c.height=Math.round(v.videoHeight*k);c.getContext('2d').drawImage(v,0,0,c.width,c.height);const n=Math.round(v.duration||0);URL.revokeObjectURL(u);res({src:c.toDataURL('image/jpeg',.8),dur:Math.floor(n/60)+':'+pad(n%60)})};v.onerror=()=>{URL.revokeObjectURL(u);rej()};v.src=u});
 function frame(){
-  if(live){const v=$('#cam'),w=v.videoWidth||640,h=v.videoHeight||480,k=Math.min(1,720/Math.max(w,h)),c=document.createElement('canvas');c.width=w*k;c.height=h*k;lastAr=w>=h?'4 / 3':'3 / 4';c.getContext('2d').drawImage(v,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.8)}
-  return IMG.bike||IMG.cup||'';
+  if(live){const v=$('#cam'),w=v.videoWidth||640,h=v.videoHeight||480,k=Math.min(1,1280/Math.max(w,h)),c=document.createElement('canvas');c.width=w*k;c.height=h*k;lastAr=w>=h?'4 / 3':'3 / 4';c.getContext('2d').drawImage(v,0,0,c.width,c.height);return c.toDataURL('image/jpeg',.8)}
+  return CFG.demo?(IMG.bike||IMG.cup||''):'';
 }
 function openAdd(dayKey){
   newM={day:dayKey||dk(TODAY)};mode='photo';moreT='quote';cap={photo:null,video:null,voice:null};
@@ -666,7 +696,10 @@ function openAdd(dayKey){
   $('#vf').addEventListener('click',e=>{if(!cap.photo||e.target.closest('.vfb'))return;const r=$('#vf').getBoundingClientRect();newM.at=[+((e.clientX-r.left)/r.width).toFixed(3),+((e.clientY-r.top)/r.height).toFixed(3)];let d=$('#atDot');if(!d){d=document.createElement('i');d.id='atDot';d.className='atdot';$('#vf').appendChild(d)}d.style.left=newM.at[0]*100+'%';d.style.top=newM.at[1]*100+'%';toast('Spot saved')});
   $('#shutter').onclick=shutter;{const br=$('#bigrec');br.addEventListener('pointerdown',e=>{e.preventDefault();try{br.setPointerCapture(e.pointerId)}catch(_){}voiceStart()});['pointerup','pointercancel'].forEach(t=>br.addEventListener(t,()=>{if(rec&&rec.kind==='voice')stopRec()}));br.addEventListener('contextmenu',e=>e.preventDefault());br.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();voiceStart()}});br.addEventListener('keyup',e=>{if((e.key===' '||e.key==='Enter')&&rec&&rec.kind==='voice')stopRec()})}
   $('#retake').onclick=()=>{cap[mode]=null;showShot();validate()};
-  $('#lib').onchange=e=>{const fl=e.target.files[0];if(!fl)return;const rd=new FileReader();rd.onload=()=>{cap[fl.type.startsWith('video')?'video':'photo']=fl.type.startsWith('video')?{src:rd.result,dur:''}:rd.result;if(fl.type.startsWith('video')&&mode!=='video')setMode('video');if(!fl.type.startsWith('video')&&mode!=='photo')setMode('photo');showShot();validate()};rd.readAsDataURL(fl)};
+  $('#lib').onchange=async e=>{const fl=e.target.files[0];e.target.value='';if(!fl)return;
+    try{const isV=fl.type.startsWith('video'),r=isV?await videoPoster(fl):await shrinkImage(fl);
+      if(isV){cap.video=r;if(mode!=='video')setMode('video')}else{cap.photo=r;if(mode!=='photo')setMode('photo')}
+      showShot();validate()}catch(err){toast('Could not read that file')}};
   document.querySelectorAll('#ov textarea').forEach(e=>e.addEventListener('input',validate));
   drawMore(false);setMode('photo',true);startCam();
 }
@@ -692,7 +725,7 @@ function showShot(){
   if(src_){sh.src=src_;sh.hidden=false;$('#retake').hidden=false;$('#libb').style.display='none'}else{sh.hidden=true;$('#retake').hidden=true;$('#libb').style.display=''}
 }
 function shutter(){
-  if(mode==='photo'){cap.photo=frame();gps(g=>{newM.geo=[+g.lat.toFixed(5),+g.lng.toFixed(5)];const l=$('#vflab');if(l&&!rec)l.innerHTML=(live?'Camera':'Demo viewfinder')+' · located'});showShot();validate();return}
+  if(mode==='photo'){cap.photo=frame();if(!cap.photo){toast('No camera here. Use the library button.');return}gps(g=>{newM.geo=[+g.lat.toFixed(5),+g.lng.toFixed(5)];const l=$('#vflab');if(l&&!rec)l.innerHTML=(live?'Camera':DEMOLAB)+' · located'});showShot();validate();return}
   if(rec){stopRec();return}
   const t0=Date.now(),l=$('#vflab');
   rec={t0,iv:setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);l.innerHTML='<i></i>'+Math.floor(s/60)+':'+pad(s%60)},250),kind:'video'};
@@ -729,7 +762,7 @@ function voiceStart(){
 }
 function stopRec(){
   if(!rec)return;clearInterval(rec.iv);const s=Math.max(1,Math.round((Date.now()-rec.t0)/1000)),d=Math.floor(s/60)+':'+pad(s%60);
-  if(rec.kind==='video'){cap.video={src:frame(),dur:d};const l=$('#vflab');if(l){l.classList.remove('rec');l.innerHTML=live?'Camera':'Demo viewfinder'}const sh=$('#shutter');if(sh)sh.classList.remove('rec')}
+  if(rec.kind==='video'){cap.video={src:frame(),dur:d};const l=$('#vflab');if(l){l.classList.remove('rec');l.innerHTML=live?'Camera':DEMOLAB}const sh=$('#shutter');if(sh)sh.classList.remove('rec')}
   else{cap.voice=d;audStop();const mb=document.querySelector('#modes [data-m="voice"]');if(mb)mb.classList.remove('hold');document.querySelectorAll('#lw i').forEach(i=>i.style.height='');const b=$('#bigrec');if(b)b.classList.remove('live');const w=$('#lw');if(w)w.classList.remove('live');const v=$('#vt');if(v)v.textContent=d}
   rec=null;if(mode==='video')showShot();validate();
 }
@@ -760,10 +793,24 @@ function save(){
   if(mode==='text'){o.type='text';o.text=val('tx')}
   if(mode==='more'){o.type=moreT;if(moreT==='quote'){o.text=val('f2');o.who=val('f1')}else{o.name=val('f1');o.text=val('f2')}}
   user.push(o);
-  try{localStorage.setItem('kept.user',JSON.stringify(user.filter(x=>!x.src||x.src.length<150000)))}catch(e){}
+  persistUser();
   closeAdd();refresh();toast('Kept');
 }
 /* ---------- profile ---------- */
+function backup(){
+  const d={app:'keep',v:1,saved:new Date().toISOString(),memories:user},a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(d)],{type:'application/json'}));a.download='keep-backup-'+dk(new Date())+'.json';
+  document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000);toast(user.length+(user.length===1?' memory':' memories')+' saved to a file');
+}
+function restore(e){
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  f.text().then(t=>{
+    const d=JSON.parse(t),L=Array.isArray(d)?d:d.memories;if(!Array.isArray(L))throw 0;
+    const have=new Set(user.map(o=>o.id));let n=0;
+    L.forEach(o=>{if(o&&o.id&&o.ts&&o.type&&!have.has(o.id)){user.push(o);have.add(o.id);n++}});
+    persistUser();refresh();toast(n?n+(n===1?' memory':' memories')+' restored':'Nothing new in that file');
+  }).catch(()=>toast('That is not a Keep backup'));
+}
 function openProfile(){
   const n=all().length,first=n?new Date(Math.min(...all().map(m=>m.ts))):null;
   const th=document.documentElement.getAttribute('data-theme')||'light';
@@ -771,21 +818,22 @@ function openProfile(){
    <div class="grp">
     <div class="row"><span>Appearance</span><div class="seg" data-k="theme">${['light','dark'].map(x=>`<button data-v="${x}" class="${th===x?'on':''}">${x[0].toUpperCase()+x.slice(1)}</button>`).join('')}</div></div>
     <div class="row"><span>Revisits</span><div class="seg" data-k="rev">${[['off','Off'],['monthly','Monthly'],['weekly','Weekly']].map(x=>`<button data-v="${x[0]}" class="${revOn===x[0]?'on':''}">${x[1]}</button>`).join('')}</div></div>
-    <div class="row"><span>Preview empty state</span><div class="seg" data-k="empty">${[['0','Off'],['1','On']].map(x=>`<button data-v="${x[0]}" class="${(emptyMode?'1':'0')===x[0]?'on':''}">${x[1]}</button>`).join('')}</div></div>
-    <div class="row"><span>Google Maps</span><button class="chip fb flat" id="gmOpen" style="height:32px;font-size:14px;padding:0 12px">${gmKey()?'Key saved':'Add key'}</button></div>
-    <div class="row"><span>Export everything</span><button class="chip fb flat" id="exp" style="height:32px;font-size:14px;padding:0 12px">Copy JSON</button></div>
+    ${CFG.demo?`<div class="row"><span>Preview empty state</span><div class="seg" data-k="empty">${[['0','Off'],['1','On']].map(x=>`<button data-v="${x[0]}" class="${(emptyMode?'1':'0')===x[0]?'on':''}">${x[1]}</button>`).join('')}</div></div>`:''}
+    <div class="row"><span>Google Maps</span><button class="chip fb flat" id="gmOpen" style="height:32px;font-size:14px;padding:0 12px">${gmKey()?'On':'Add key'}</button></div>
+    <div class="row"><span>Back up</span><button class="chip fb flat" id="bak" style="height:32px;font-size:14px;padding:0 12px">Download</button></div>
+    <div class="row"><span>Restore</span><label class="chip fb flat" style="height:32px;font-size:14px;padding:0 12px;display:grid;place-items:center;cursor:pointer">Choose file<input type="file" id="rst" accept="application/json,.json" hidden></label></div>
    </div>
-   <p class="note">Demo build. Moments you add stay in this browser only. Revisits only look backward. Keep never asks you to add anything.</p></div>`);
+   <p class="note">${CFG.demo?'Demo build. ':''}What you keep is saved on this device only. Download a backup now and then, and restore it on a new phone. Revisits only look backward. Keep never asks you to add anything.</p></div>`);
   document.querySelectorAll('.seg').forEach(sg=>sg.onclick=e=>{const b=e.target.closest('button');if(!b)return;const k=sg.dataset.k,v=b.dataset.v;
     if(k==='theme'){v==='light'?document.documentElement.removeAttribute('data-theme'):document.documentElement.setAttribute('data-theme',v)}
     if(k==='rev'){revOn=v;renderRv()}
     if(k==='empty'){emptyMode=v==='1';refresh()}
     sg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b))});
   $('#gmOpen').onclick=()=>{closeSheet();openMap()};
-  $('#exp').onclick=()=>{const t=JSON.stringify(all().map(m=>({...m,src:m.src?'[image]':undefined})),null,1);(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('Copied')).catch(()=>toast('Copy not available here'))};
+  $('#bak').onclick=backup;$('#rst').onchange=restore;
 }
 /* ---------- simulated iPhone keyboard (desktop only) ---------- */
-const SIM=matchMedia('(pointer:fine)').matches&&!('ontouchstart' in window);
+const SIM=CFG.demo&&matchMedia('(pointer:fine)').matches&&!('ontouchstart' in window);
 let kbMode='abc',shift='once',lastEl=null;
 const R1='qwertyuiop'.split(''),R2='asdfghjkl'.split(''),R3='zxcvbnm'.split('');
 const N1='1234567890'.split(''),N2='-/:;()$&@"'.split(''),N3='.,?!\''.split('');
@@ -846,6 +894,11 @@ function fit(){
 addEventListener('resize',fit);fit();
 __AR_JS__
 __MAPS_JS__
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-del]');if(!b)return;
+  if(!b.dataset.arm){b.dataset.arm=1;b.textContent='Tap again';setTimeout(()=>{b.textContent='Delete';delete b.dataset.arm},2500);return}
+  const id=+b.dataset.del;user=user.filter(o=>o.id!==id);saved.delete(id);idb.del(id).catch(()=>{});refresh();openDay(curDay);toast('Deleted');
+});
 let yearMode=false;
 function refresh(){index();renderCal();renderYear();renderRv()}
 $('#cal').addEventListener('click',e=>{const c=e.target.closest('[data-d]');if(c)openDay(c.dataset.d)});
@@ -855,7 +908,7 @@ $('#zoomBtn').onclick=()=>setYear(!yearMode);
 $('#mapBtn').innerHTML=ic.pinm;$('#mapBtn').onclick=openMap;$('#arBtn').innerHTML=ic.cube;$('#arBtn').onclick=()=>openAR();
 $('#addBtn').innerHTML=ic.plus+'<span>Add a moment</span>';$('#addBtn').onclick=()=>openAdd();
 $('#micB').innerHTML=ic.mic;$('#px').innerHTML=ic.x;$('#chatX').innerHTML=ic.x;$('#sendB').innerHTML=ic.up;
-$('#profBtn').onclick=openProfile;
+$('#profBtn').onclick=openProfile;$('#rvp').onclick=openRevisit;
 $('#q').addEventListener('focus',()=>{openChat()});
 $('#micB').onclick=()=>openChat();
 $('#q2').addEventListener('keydown',e=>{if(e.key==='Enter'){const v=$('#q2').value;$('#q2').value='';ask(v)}});
@@ -864,7 +917,10 @@ $('#chatX').onclick=closeChat;
 $('#cb').addEventListener('click',e=>{const s=e.target.closest('[data-s]');if(s){ask(s.dataset.s);return}const d=e.target.closest('[data-d]');if(d){blurAll();openDay(d.dataset.d)}});
 document.addEventListener('click',e=>{const t=e.target.closest('[data-lb]');if(t){e.stopPropagation();openLb(t.dataset.lb.split(','))}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if($('#lb').classList.contains('on'))closeLb();else if($('#ov').classList.contains('on'))closeAdd();else if($('#sh').classList.contains('on'))closeSheet();else closeChat()}});
-refresh();setYear(false);
+refresh();setYear(false);loadUser();
+/* a new day while the app sat open */
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&!CFG.demo){const d=new Date(),t=new Date(d.getFullYear(),d.getMonth(),d.getDate());if(+t!==+TODAY){TODAY=t;refresh()}}});
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)&&!CFG.demo)navigator.serviceWorker.register('sw.js').catch(()=>{});
 addEventListener('pointerup',()=>{if(rec&&rec.kind==='voice')stopRec()});addEventListener('pointercancel',()=>{if(rec&&rec.kind==='voice')stopRec()});
 </script>
 <script type="text/plain" id="three-src">__THREE__</script>

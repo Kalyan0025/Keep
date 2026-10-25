@@ -10,7 +10,6 @@ function journalsFor(p){
   const fn=firstName(p.who).toLowerCase(),k=dk(new Date(p.ts));
   return all().filter(m=>m.id!==p.id&&(m.link===p.id||dk(new Date(m.ts))===k||(fn&&[m.text,m.name,m.who].join(' ').toLowerCase().includes(fn)))).sort((a,b)=>a.ts-b.ts).slice(0,14);
 }
-function persistUser(){try{localStorage.setItem('kept.user',JSON.stringify(user.filter(x=>!x.src||x.src.length<150000)))}catch(e){}}
 
 /* ---- matching: a small fingerprint (16x16 gradient hash + coarse colour) ---- */
 function arSig(el){

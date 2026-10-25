@@ -2,7 +2,8 @@
 ic.pinm=st('<path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',1.7);
 ic.locate=st('<circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>',1.7);
 const GMKEY='kept.gmkey';
-const gmKey=()=>{try{return localStorage.getItem(GMKEY)||''}catch(e){return''}};
+/* the key comes from the build environment (GM_KEY); a key saved in Profile or via #gmkey= overrides it */
+const gmKey=()=>{try{return localStorage.getItem(GMKEY)||CFG.gmKey||''}catch(e){return CFG.gmKey||''}};
 const gmSet=v=>{try{v?localStorage.setItem(GMKEY,v):localStorage.removeItem(GMKEY)}catch(e){}};
 const gps=(ok,no,o)=>{if(!navigator.geolocation)return no&&no();navigator.geolocation.getCurrentPosition(p=>ok({lat:p.coords.latitude,lng:p.coords.longitude,acc:Math.round(p.coords.accuracy)}),()=>no&&no(),Object.assign({enableHighAccuracy:true,timeout:7000,maximumAge:30000},o))};
 /* open https://<site>/#gmkey=YOUR_KEY once on a phone: the key is stored in that browser and stripped from the address bar */
@@ -59,7 +60,7 @@ async function drawMap(){
   const {Map}=await google.maps.importLibrary('maps'),{AdvancedMarkerElement}=await google.maps.importLibrary('marker');
   if(!mp)return;
   const pl=groupPlaces(),dark=document.documentElement.getAttribute('data-theme')==='dark';
-  const map=new Map($('#gmap'),{center:pl[0]?pl[0].at:{lat:33.4484,lng:-112.074},zoom:13,mapId:'DEMO_MAP_ID',disableDefaultUI:true,zoomControl:false,gestureHandling:'greedy',colorScheme:dark?'DARK':'LIGHT'});
+  const map=new Map($('#gmap'),{center:pl[0]?pl[0].at:{lat:20,lng:0},zoom:pl[0]?13:2,mapId:'DEMO_MAP_ID',disableDefaultUI:true,zoomControl:false,gestureHandling:'greedy',colorScheme:dark?'DARK':'LIGHT'});
   mp.map=map;mp.AM=AdvancedMarkerElement;
   const b=new google.maps.LatLngBounds();
   pl.forEach(p=>{
