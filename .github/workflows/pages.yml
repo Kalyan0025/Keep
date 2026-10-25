@@ -21,6 +21,8 @@ jobs:
       - name: Build
         env:
           GM_KEY: ${{ secrets.GM_KEY }}
+          FIREBASE_CONFIG: ${{ secrets.FIREBASE_CONFIG }}
+          RECAPTCHA_KEY: ${{ secrets.RECAPTCHA_KEY }}
         run: python3 build.py
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3

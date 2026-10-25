@@ -18,6 +18,27 @@ function groupPlaces(){
 }
 const gmapsLink=p=>`https://www.google.com/maps/search/?api=1&query=${p.lat},${p.lng}`;
 
+/* Firebase App Check (optional). Build with FIREBASE_CONFIG (the web app config as JSON) and RECAPTCHA_KEY (reCAPTCHA Enterprise site key).
+   Maps requests then carry an App Check token. Google enforces it for Places API (New); start in monitor mode and check the metrics before enforcing.
+   Debug: open the site with ?appcheck-debug=<token registered in the Firebase console>, or ?appcheck-debug to have the SDK print one in the console. */
+let acP=null;
+function setupAppCheck(){
+  if(acP)return acP;
+  if(!CFG.firebase||!CFG.recaptcha)return(acP=Promise.resolve(false));
+  acP=(async()=>{
+    try{
+      const dbg=/[?&]appcheck-debug(?:=([\w-]+))?/.exec(location.search);
+      if(dbg)self.FIREBASE_APPCHECK_DEBUG_TOKEN=dbg[1]||true;
+      const B='https://www.gstatic.com/firebasejs/10.14.1/';
+      const [{initializeApp},{initializeAppCheck,ReCaptchaEnterpriseProvider,getToken}]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-app-check.js')]);
+      const ac=initializeAppCheck(initializeApp(CFG.firebase),{provider:new ReCaptchaEnterpriseProvider(CFG.recaptcha),isTokenAutoRefreshEnabled:true});
+      const {Settings}=await google.maps.importLibrary('core');
+      Settings.getInstance().fetchAppCheckToken=()=>getToken(ac,false);
+      return true;
+    }catch(e){console.warn('App Check unavailable, continuing without it',e);return false}
+  })();
+  return acP;
+}
 let gmP=null;
 function loadMaps(){
   if(window.google&&google.maps&&google.maps.importLibrary)return Promise.resolve();
@@ -41,6 +62,7 @@ async function openMap(){
   drawMapLoading();
   try{
     await loadMaps();if(!mp)return;
+    await setupAppCheck();if(!mp)return;
     await drawMap();
   }catch(e){if(mp)drawMapSetup('Could not reach Google Maps. Check your connection and key.')}
 }

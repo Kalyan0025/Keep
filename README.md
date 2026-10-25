@@ -22,6 +22,9 @@ All configuration is read at build time from environment variables or a local `.
 | `GM_KEY` | Google Maps JavaScript API key. Restrict it to your site's HTTP referrer (`https://<user>.github.io/*`) in Google Cloud: it is visible in the served page, as every browser key is. |
 | `KEEP_DEMO` | `1` builds the sample-data demo (fixed date, sample photos, simulated keyboard). Default is the real app. |
 
+| `FIREBASE_CONFIG` | Optional. Firebase web app config as JSON, for App Check (below). |
+| `RECAPTCHA_KEY` | Optional. reCAPTCHA Enterprise site key for App Check. |
+
 Local build: `cp .env.example .env`, fill it in, `python3 build.py`, serve `dist/` over HTTPS or localhost (camera, location and the service worker need a secure origin).
 
 A key saved in Profile → Google Maps (or opened once via `https://<site>/#gmkey=KEY`) overrides the built-in one on that device.
@@ -46,6 +49,16 @@ Limits: the avatar is generated from the name, not from the real person; pose an
 ## Places (Google Maps)
 
 The pin icon shows photos kept with a location as markers; tap one to open the day, see the person there, or get directions. The locate button shows what you kept within 200 m. Photos taken with the in-app camera save their location; library photos do not. Without a key, Places falls back to a list with "Open in Maps" links.
+
+## App Check (optional)
+
+[Firebase App Check](https://firebase.google.com/docs/app-check) makes Maps Platform reject traffic that doesn't come from this app. Google currently enforces it for **Places API (New)** only; Keep loads maps and markers, not Places, so enforcement would not block anything yet. It is wired in for when Places is added.
+
+1. Create a Firebase project for the same Google Cloud project, register a web app, and set up App Check with reCAPTCHA Enterprise (a site key for your domain).
+2. Add repository secrets `FIREBASE_CONFIG` (the config object as JSON) and `RECAPTCHA_KEY`, then redeploy.
+3. Leave enforcement off at first. Watch the App Check metrics in the Firebase console until nearly all requests are verified, then enforce.
+
+Local or CI debugging: open the site with `?appcheck-debug` (the SDK prints a debug token to the console) or `?appcheck-debug=<token>` for one you registered in the Firebase console. If Firebase can't be reached, the map still loads without a token. reCAPTCHA Enterprise is free up to 10,000 assessments a month.
 
 ## Data and limits
 
