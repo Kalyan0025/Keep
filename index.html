@@ -4054,11 +4054,17 @@ function avatarSVG(a){
 }
 let AV=null;
 function wbStopAv(){if(AV){AV.done=true;cancelAnimationFrame(AV.raf);if(AV.stream)AV.stream.getTracks().forEach(t=>t.stop())}AV=null}
+const hasScene=sp=>!!(sp.clean||AV_SCENES[sp.id&&sp.id[0]==='d'?sp.id.slice(1):'']);
 function wbReveal(spot,now,live,pct){
   const L=wbSpots(),n=Object.keys(WB.done).length;
   $('#wb').innerHTML=`<div class="wbrv"><div class="wbhero" style="background-image:url(${spot.src})"></div>${wbHead('Memory recovered',true)}<div class="wbrvb"><span class="wbchip">Memory fragments recovered</span><h1>${esc(spot.name)}</h1><p class="sub">${esc(dayLab(spot))} · ${pct}% match${live?'':' · preview'} · ${n} of ${L.length} places found again</p><div class="wbmt2"><i style="width:${Math.round(n/L.length*100)}%"></i></div>
-   <button class="wbbtn p" id="wbre">See who was there with Meta AI</button><button class="wbbtn" id="wbnext">Skip to the next place</button></div></div>`;
-  $('#wbx').onclick=wbHome;$('#wbre').onclick=()=>wbAvatars(spot,live);$('#wbnext').onclick=()=>wbWalk();
+   <button class="wbbtn p" id="wbre">${hasScene(spot)?'See who was there with Meta AI':'Keep then &amp; now'}</button><button class="wbbtn" id="wbnext">${hasScene(spot)?'Skip to the next place':'Next place'}</button></div></div>`;
+  $('#wbx').onclick=wbHome;$('#wbnext').onclick=()=>wbWalk();
+  /* only places with a scene description (or a people-free plate) get avatars; others just keep the then and now pair */
+  $('#wbre').onclick=hasScene(spot)?()=>wbAvatars(spot,live):async()=>{
+    const o={id:Date.now(),ts:Date.now(),type:'photo',ar:'3 / 4',text:'Then & now · '+spot.name,geo:{lat:spot.lat,lng:spot.lng},from:'private'};
+    try{const bl=await dataBlob(now);await KDB.put(o.id,{photo:bl});o.idb=1;o.src=url(bl)}catch(e){o.src=now}
+    user.push(o);persist();refresh();toast('Kept to your calendar');$('#wbre').disabled=true;$('#wbre').textContent='Kept'};
 }
 /* the avatars stand where the people stood in the photo and stay put in the world as you move the phone */
 async function wbAvatars(spot,live){
@@ -4089,7 +4095,7 @@ async function wbAvatars(spot,live){
       ey.querySelectorAll('.wbimg').forEach(l=>{wbFit(l,ey,timg);const d=AV.vr?(e===0?1:-1)*(+l.dataset.d):0;l.style.transform=`translate(${(x+d).toFixed(1)}px,${y.toFixed(1)}px)`})})};
   AV.raf=requestAnimationFrame(loop);
   $('#wbkeep').onclick=async()=>{
-    const o={id:Date.now(),ts:Date.now(),type:'photo',ar:'3 / 4',text:'Then & now · '+spot.name,geo:{lat:spot.lat,lng:spot.lng}};
+    const o={id:Date.now(),ts:Date.now(),type:'photo',ar:'3 / 4',text:'Then & now · '+spot.name,geo:{lat:spot.lat,lng:spot.lng},from:'private'};
     try{
       const c=document.createElement('canvas'),v=document.querySelector('#wbav .wbcam');let w=720,h=960;
       if(v&&v.videoWidth){const k=Math.min(1,1080/Math.max(v.videoWidth,v.videoHeight));w=v.videoWidth*k;h=v.videoHeight*k}
